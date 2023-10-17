@@ -6,6 +6,8 @@
 
 <script setup>
 import { useCiudadStore } from "../stores/ciudad.js";
+
+
 </script>
 
 <style scoped>

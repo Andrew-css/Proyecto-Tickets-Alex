@@ -1,7 +1,7 @@
 
 import { createApp } from 'vue'
 import {Quasar, Dialog} from 'quasar'
-import { createPinia} from 'pinia'
+import { createPinia } from 'pinia'
 // import './style.css'
 import App from './App.vue'
 import {router} from "./routes/routes.js"
