@@ -1,12 +1,9 @@
-
-
 <template>
-  <div>
-  </div>
+  
 </template>
 
-
 <script setup>
+import {useRutaStore} from '../stores/ruta.js'
 
 </script>
 
