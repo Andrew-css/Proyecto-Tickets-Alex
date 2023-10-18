@@ -51,7 +51,7 @@
           <label for="">Email: </label><br />
           <input type="text" v-model="email" /><br />
           <label for="">Estado: </label><br />
-          <input type="number" v-model="estado" /><br />
+          <p :class="{'text-right': true, 'activo': estado === 1, 'inactivo': estado === 0}">{{ obtenerTextoEstado(estado) }}</p>
           <button @click="useCliente.actualizarCliente()">Enviar</button>
         </q-card-section>
       </q-card>
@@ -78,7 +78,7 @@
             <td class="text-left">{{ row.nombre }}</td>
             <td class="text-right">{{ row.cedula }}</td>
             <td class="text-right">{{ row.email }}</td>
-            <td class="text-right">{{ row.estado }}</td>
+            <td class="text-right" :class="{'text-right': true, 'activo': row.estado === 1, 'inactivo': row.estado === 0}">{{ obtenerTextoEstado(row.estado) }}</td>
             <td class="text-right">
               <q-btn label="Editar" color="primary" @click="editar(row)" />
               <q-btn label="Activar" color="primary" @click="useCliente.activar(row._id)" v-if="row.estado == 0" />
@@ -144,7 +144,7 @@ const columns = ref([
     field: (row) => row.estado,
   },
   {
-    name: "Opciones",
+    name: "d",
     label: "Opciones",
     field: "actions",
   },
@@ -177,6 +177,9 @@ async function activarCliente(id) {
   obtenerCliente()
 }
 
+const obtenerTextoEstado = (estado) => {
+  return estado === 1 ? 'Activo' : 'Inactivo';
+}
 
 onMounted(async () => {
   obtenerCliente()
@@ -185,4 +188,17 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+  .activo {
+    color: green; 
+    font-weight: bold;
+  }
+  .inactivo {
+    color: red; 
+    font-weight: bold;
+
+  }
+  p{
+    display: flex;
+  }
+</style>
