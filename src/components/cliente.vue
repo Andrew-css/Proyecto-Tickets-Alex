@@ -178,7 +178,6 @@ async function activarCliente(id) {
 }
 
 
-
 onMounted(async () => {
   obtenerCliente()
   desactivarCliente()
