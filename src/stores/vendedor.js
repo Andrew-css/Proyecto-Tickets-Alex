@@ -9,4 +9,4 @@ export const useVendedorStore = defineStore("vendedor",()=>{
     return{
         
     }
-}
+})

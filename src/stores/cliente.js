@@ -9,15 +9,9 @@ export const useClienteStore = defineStore("cliente", () => {
   const cedula = ref("");
   const email = ref("");
   const estado = ref(1);
-  const toolbar = ref(false);
   const cambiar = ref(false);
+  const toolbar = ref(false);
 
-  const agregar = () => {
-    toolbar.value = true;
-    nombre.value = "";
-    cedula.value = "";
-    email.value = "";
-  };
   const agregarcliente = async () => {
     if (cambiar.value) {
       const data = {
@@ -56,19 +50,21 @@ export const useClienteStore = defineStore("cliente", () => {
 
     toolbar.value = false;
   };
+  function obtenerClientes(){
+    const obtenerCliente = async () => {
+      console.log("Esperando datos");
+      try {
+        const clientes = await axios.get(
+          "https://transporte-el2a.onrender.com/api/cliente/all"
+        );
+        rows.value = clientes.data.cliente;
+      } catch (error) {
+        console.log("e", error);
+      }
+    };
+  }
+  
 
-  const obtenerClientes = async () => {
-    console.log("Esperando datos");
-    try {
-      const clientes = await axios.get(
-        "https://transporte-el2a.onrender.com/api/cliente/all"
-      );
-      rows.value = clientes.data.cliente;
-    } catch (error) {
-      console.log("e", error);
-    }
-  };
-  obtenerClientes();
 
   const editar = (row) => {
     console.log(row);
@@ -115,5 +111,7 @@ export const useClienteStore = defineStore("cliente", () => {
     }
   };
 
-  return agregarcliente, editar, activar, desactivar;
+  return {
+    agregarcliente, editar, activar, desactivar, obtenerClientes
+  }
 });

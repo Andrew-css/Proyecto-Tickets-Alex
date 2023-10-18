@@ -9,4 +9,4 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
     return{
         
     }
-}
+})
