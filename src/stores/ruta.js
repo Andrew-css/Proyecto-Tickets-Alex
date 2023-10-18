@@ -9,4 +9,4 @@ export const useRutaStore = defineStore("ruta",()=>{
     return{
         
     }
-}
+})

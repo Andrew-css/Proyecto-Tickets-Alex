@@ -4,61 +4,84 @@ import { ref } from "vue";
 
 export const useClienteStore = defineStore("cliente", () => {
   const rows = ref([]);
-  const id = ref("");
-  const nombre = ref("");
-  const cedula = ref("");
-  const email = ref("");
-  const estado = ref(1);
-  const toolbar = ref(false);
-  const cambiar = ref(false);
+  let id = ref("");
+  let nombre = ref("");
+  let cedula = ref("");
+  let email = ref("");
+  let toolbar = ref(false);
+  let cambiar = ref(false);
+  const columns = ref([
+    {
+      name: "Nombre",
+      label: "Nombre",
+      align: "left",
+      field: (row) => row.nombre,
+    },
+    {
+      name: "Cedula",
+      label: "Cedula",
+      field: (row) => row.cedula,
+    },
+    {
+      name: "Email",
+      label: "Email",
+      field: (row) => row.email,
+    },
+    {
+      name: "Estado",
+      label: "Estado",
+      field: (row) => row.estado,
+    },
+    {
+      name: "Opciones",
+      label: "Opciones",
+      field: "actions",
+    },
+  ]);
 
-  const agregar = () => {
-    toolbar.value = true;
-    nombre.value = "";
-    cedula.value = "";
-    email.value = "";
-  };
-  const agregarcliente = async () => {
-    if (cambiar.value) {
-      const data = {
-        id: id.value,
-        nombre: nombre.value,
-      };
-      const buscar = rows.value.findIndex((r) => r._id == id.value);
-
-      console.log(data);
-      try {
-        const response = await axios.put(
-          `https://transporte-el2a.onrender.com/api/cliente/editar`,
-          data
-        );
-        console.log("r", response);
-        rows.value.splice(buscar, 1, response.data.cliente);
-      } catch (error) {
-        console.log("e", error);
-      }
-    } else {
-      const data = {
-        nombre: nombre.value,
-        cedula: cedula.value,
-        email: email.value,
-      };
-      try {
-        const response = await axios.post(
-          "https://transporte-el2a.onrender.com/api/cliente/guardar",
-          data
-        );
-        rows.value.push(response.data.cliente);
-      } catch (error) {
-        console.log("e", error);
-      }
+  const agregarNuevoCliente = async () => {
+    const data = {
+      nombre: nombre.value,
+      cedula: cedula.value,
+      email: email.value,
+    };
+    try {
+      const response = await axios.post(
+        "https://transporte-el2a.onrender.com/api/cliente/guardar",
+        data
+      );
+      rows.value.push(response.data.cliente);
+    } catch (error) {
+      console.log("e", error);
     }
-
     toolbar.value = false;
   };
+  
+
+  const actualizarCliente = async () => {
+    const data = {
+      id: id.value,
+      nombre: nombre.value,
+    };
+    const buscar = rows.value.findIndex((r) => r._id == id.value);
+  
+    console.log(data);
+    try {
+      const response = await axios.put(
+        `https://transporte-el2a.onrender.com/api/cliente/editar`,
+        data
+      );
+      console.log("r", response);
+      rows.value.splice(buscar, 1, response.data.cliente);
+    } catch (error) {
+      console.log("e", error);
+    }
+  
+    toolbar.value = false;
+  };
+  
 
   const obtenerClientes = async () => {
-    console.log("Esperando datos");
     try {
       const clientes = await axios.get(
         "https://transporte-el2a.onrender.com/api/cliente/all"
@@ -67,18 +90,6 @@ export const useClienteStore = defineStore("cliente", () => {
     } catch (error) {
       console.log("e", error);
     }
-  };
-  obtenerClientes();
-
-  const editar = (row) => {
-    console.log(row);
-    toolbar.value = true;
-    id.value = row._id;
-    cambiar.value = true;
-    nombre.value = row.nombre;
-    cedula.value = row.cedula;
-    email.value = row.email;
-    estado.value = row.estado;
   };
 
   const activado = ref(false);
@@ -110,10 +121,18 @@ export const useClienteStore = defineStore("cliente", () => {
         rows.value.splice(buscar, 1, cliente.data.cliente);
         activado.value = true;
       }
+      return cliente;
     } catch (error) {
       console.log("e", error);
     }
   };
 
-  return agregarcliente, editar, activar, desactivar;
+  return {
+    agregarNuevoCliente,
+    actualizarCliente,
+    activar,
+    desactivar,
+    obtenerClientes,
+    rows,
+  };
 });
