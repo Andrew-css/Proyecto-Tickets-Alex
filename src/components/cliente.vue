@@ -22,9 +22,7 @@
           <br />
           <label for="">Email: </label><br />
           <input type="text" v-model="email" /><br />
-          <label for="">Estado: </label><br />
-          <input type="number" v-model="estado" /><br />
-          <button @click="useCliente.agregarNuevoCliente()">Enviar</button>
+          <button @click="useCliente.agregarNuevoCliente(data)">Enviar</button>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -51,8 +49,12 @@
           <label for="">Email: </label><br />
           <input type="text" v-model="email" /><br />
           <label for="">Estado: </label><br />
-          <p :class="{'text-right': true, 'activo': estado === 1, 'inactivo': estado === 0}">{{ obtenerTextoEstado(estado) }}</p>
-          <button @click="useCliente.actualizarCliente()">Enviar</button>
+          <p
+            :class="{ 'text-right': true, activo: estado === 1, inactivo: estado === 0 }"
+          >
+            {{ obtenerTextoEstado(estado) }}
+          </p>
+          <button @click="useCliente.actualizarCliente(id, data); toolbard = false">Enviar</button>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -78,11 +80,30 @@
             <td class="text-left">{{ row.nombre }}</td>
             <td class="text-right">{{ row.cedula }}</td>
             <td class="text-right">{{ row.email }}</td>
-            <td class="text-right" :class="{'text-right': true, 'activo': row.estado === 1, 'inactivo': row.estado === 0}">{{ obtenerTextoEstado(row.estado) }}</td>
+            <td
+              class="text-right"
+              :class="{
+                'text-right': true,
+                activo: row.estado === 1,
+                inactivo: row.estado === 0,
+              }"
+            >
+              {{ obtenerTextoEstado(row.estado) }}
+            </td>
             <td class="text-right">
               <q-btn label="Editar" color="primary" @click="editar(row)" />
-              <q-btn label="Activar" color="primary" @click="useCliente.activar(row._id)" v-if="row.estado == 0" />
-              <q-btn label="Desactivar" color="primary" @click="useCliente.desactivar(row._id)" v-if="row.estado == 1" />
+              <q-btn
+                label="Activar"
+                color="primary"
+                @click="useCliente.activar(row._id)"
+                v-if="row.estado == 0"
+              />
+              <q-btn
+                label="Desactivar"
+                color="primary"
+                @click="useCliente.desactivar(row._id)"
+                v-if="row.estado == 1"
+              />
             </td>
           </tr>
         </tbody>
@@ -91,17 +112,15 @@
   </div>
 </template>
 
-
 <script setup>
-import { useClienteStore } from '../stores/cliente.js';
+import { useClienteStore } from "../stores/cliente.js";
 import { onMounted, ref } from "vue";
 
-
-const useCliente = useClienteStore()
+const useCliente = useClienteStore();
 let rows = ref([]);
 let clientes = ref([]);
 
-let id = ref("")
+let id = ref("");
 let nombre = ref("");
 let cedula = ref("");
 let email = ref("");
@@ -109,17 +128,21 @@ let estado = ref(1);
 let toolbard = ref(false);
 let toolbar = ref(false);
 let cambiar = ref(false);
+const data = ref({
+  nombre: nombre,
+  email: email,
+});
 
-  const editar = (row) => {
-    console.log(row);
-    toolbard.value = true;
-    id.value = row._id;
-    cambiar.value = true;
-    nombre.value = row.nombre;
-    cedula.value = row.cedula;
-    email.value = row.email;
-    estado.value = row.estado;
-  };
+const editar = (row) => {
+  console.log(row);
+  toolbard.value = true;
+  id.value = row._id;
+  cambiar.value = true;
+  nombre.value = row.nombre;
+  cedula.value = row.cedula;
+  email.value = row.email;
+  estado.value = row.estado;
+};
 
 const columns = ref([
   {
@@ -168,37 +191,38 @@ async function obtenerCliente() {
 }
 
 async function desactivarCliente(id) {
-  await useCliente.desactivar(id)
-  obtenerCliente()
+  await useCliente.desactivar(id);
+  obtenerCliente();
 }
 
 async function activarCliente(id) {
-  await useCliente.activar(id)
-  obtenerCliente()
+  await useCliente.activar(id);
+  obtenerCliente();
 }
 
 const obtenerTextoEstado = (estado) => {
-  return estado === 1 ? 'Activo' : 'Inactivo';
-}
+  return estado === 1 ? "Activo" : "Inactivo";
+};
+
+
 
 onMounted(async () => {
-  obtenerCliente()
-  desactivarCliente()
-  activarCliente()
-})
+  obtenerCliente();
+  desactivarCliente();
+  activarCliente();
+});
 </script>
 
 <style scoped>
-  .activo {
-    color: green; 
-    font-weight: bold;
-  }
-  .inactivo {
-    color: red; 
-    font-weight: bold;
-
-  }
-  p{
-    display: flex;
-  }
+.activo {
+  color: green;
+  font-weight: bold;
+}
+.inactivo {
+  color: red;
+  font-weight: bold;
+}
+p {
+  display: flex;
+}
 </style>

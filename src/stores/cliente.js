@@ -56,30 +56,26 @@ export const useClienteStore = defineStore("cliente", () => {
     }
     toolbar.value = false;
   };
-  
 
-  const actualizarCliente = async () => {
-    const data = {
-      id: id.value,
-      nombre: nombre.value,
-    };
-    const buscar = rows.value.findIndex((r) => r._id == id.value);
-  
-    console.log(data);
+
+  const actualizarCliente = async (id, data) => {
+
+    console.log("Hola soy data", data);
     try {
       const response = await axios.put(
-        `https://transporte-el2a.onrender.com/api/cliente/editar`,
+        `https://transporte-el2a.onrender.com/api/cliente/editar/${id}`,
         data
       );
-      console.log("r", response);
+      const buscar = rows.value.findIndex((r) => r._id == id);
       rows.value.splice(buscar, 1, response.data.cliente);
+      console.log("r", response);
     } catch (error) {
       console.log("e", error);
     }
-  
+
     toolbar.value = false;
   };
-  
+
 
   const obtenerClientes = async () => {
     try {
