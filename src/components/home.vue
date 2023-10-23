@@ -3,16 +3,14 @@
 
     <q-page-container>
       <div class="lcare">
-        <div class="card-info">Cerar sesion</div>
-        <div class="card-info">Conductores</div>
-        <div class="card-info">Vendedores</div>
-        <div class="card-info">Vehiculos</div>
-        <div class="card-info"><router-link class="router" to="/cliente" ><img src="../assets/home-lineal-colored.png" alt="">Clientes</router-link>
-        
-        </div>
-        <div class="card-info">Rutas</div>
-        <div class="card-info">Ticketes</div>
-        <div class="card-info">Ventas</div>
+        <div class="card-info"><router-link class="router" to="" ><img src="../assets/finalizarsc.png" alt=""></router-link>Cerar sesion</div>
+        <div class="card-info"><router-link class="router" to="/conductor" ><img src="../assets/bus-driver-outline.png" alt=""></router-link>Conductores</div>
+        <div class="card-info"><router-link class="router" to="/vendedor" ><img src="../assets/businessman-outline.png" alt=""></router-link>Vendedores</div>
+        <div class="card-info"><router-link class="router" to="" ><img src="../assets/bus-driver-flatline.png" alt=""></router-link> Vehiculos</div>
+        <div class="card-info"><router-link class="router" to="/cliente" ><img src="../assets/home-line.png" alt="">Clientes</router-link></div>
+        <div class="card-info"><router-link class="router" to="" ><img src="../assets/la-carretera.png" alt=""></router-link>Rutas</div>
+        <div class="card-info"><router-link class="router" to="" ><img src="../assets/boleto.png" alt=""></router-link>Ticketes</div>
+        <div class="card-info"><router-link class="router" to="/cliente" ><img src="../assets/shopping-bag-line.png" alt=""></router-link>Ventas</div>
       </div>
       <router-view />
     </q-page-container>

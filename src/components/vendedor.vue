@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>vendedor</h1>
     
   </div>
 </template>
