@@ -59,59 +59,61 @@
       </q-card>
     </q-dialog>
 
-    <div class="q-pa-md">
-      <q-markup-table>
-        <thead>
-          <tr>
-            <th class="text-left">
-              <h4 class="q-ma-xs text-left">Clientes</h4>
-            </th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-          <tr>
-            <th class="text-left"><b>Nombre</b></th>
-            <th class="text-right"><b>Cedula</b></th>
-            <th class="text-right"><b>Email</b></th>
-            <th class="text-right"><b>Estado</b></th>
-            <th class="text-right"><b>Opciones</b></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, i) in rows" :key="i">
-            <td class="text-left">{{ row.nombre }}</td>
-            <td class="text-right">{{ row.cedula }}</td>
-            <td class="text-right">{{ row.email }}</td>
-            <td
-              class="text-right"
-              :class="{
-                'text-right': true,
-                activo: row.estado === 1,
-                inactivo: row.estado === 0,
-              }"
-            >
-              {{ obtenerTextoEstado(row.estado) }}
-            </td>
-            <td class="text-right">
-              <q-btn label="Editar" color="primary" @click="editar(row)" />
+    <div class="q-pa-xl">
+      <q-table
+        :rows="rows"
+        :columns="columns"
+        row-key="id"
+      >
+        <template v-slot:top>
+          <q-toolbar>
+            <q-toolbar-title class="text-center">Clientes</q-toolbar-title>
+          </q-toolbar>
+        </template>
+        <template v-slot:body="props">
+          <q-tr :props="props">
+            <q-td auto-width>
+              <div class="q-ma-xs text-left">{{ props.row.nombre }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-right">{{ props.row.cedula }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-right">{{ props.row.email }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div
+                :class="{
+                  'text-right': true,
+                  activo: props.row.estado === 1,
+                  inactivo: props.row.estado === 0
+                }"
+              >
+                {{ obtenerTextoEstado(props.row.estado) }}
+              </div>
+            </q-td>
+            <q-td auto-width>
               <q-btn
-                label="Activar"
+                label="📋"
                 color="primary"
-                @click="useCliente.activar(row._id)"
-                v-if="row.estado == 0"
+                @click="editar(props.row)"
               />
               <q-btn
-                label="Desactivar"
+                label="✅"
                 color="primary"
-                @click="useCliente.desactivar(row._id)"
-                v-if="row.estado == 1"
+                @click="useCliente.activar(props.row._id)"
+                v-if="props.row.estado === 0"
               />
-            </td>
-          </tr>
-        </tbody>
-      </q-markup-table>
+              <q-btn
+                label="❌"
+                color="primary"
+                @click="useCliente.desactivar(props.row._id)"
+                v-if="props.row.estado === 1"
+              />
+            </q-td>
+          </q-tr>
+        </template>
+      </q-table>
     </div>
   </div>
 </template>
@@ -123,7 +125,6 @@ import { onMounted, ref } from "vue";
 const useCliente = useClienteStore();
 let rows = ref([]);
 let clientes = ref([]);
-
 let id = ref("");
 let nombre = ref("");
 let cedula = ref("");

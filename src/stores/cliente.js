@@ -10,34 +10,7 @@ export const useClienteStore = defineStore("cliente", () => {
   let email = ref("");
   let toolbar = ref(false);
   let cambiar = ref(false);
-  const columns = ref([
-    {
-      name: "Nombre",
-      label: "Nombre",
-      align: "left",
-      field: (row) => row.nombre,
-    },
-    {
-      name: "Cedula",
-      label: "Cedula",
-      field: (row) => row.cedula,
-    },
-    {
-      name: "Email",
-      label: "Email",
-      field: (row) => row.email,
-    },
-    {
-      name: "Estado",
-      label: "Estado",
-      field: (row) => row.estado,
-    },
-    {
-      name: "Opciones",
-      label: "Opciones",
-      field: "actions",
-    },
-  ]);
+
 
   const agregarNuevoCliente = async (data) => {
     try {
