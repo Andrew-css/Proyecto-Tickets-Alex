@@ -20,7 +20,7 @@
           <q-btn flat round dense icon="close" v-close-popup />
         </q-toolbar>
 
-        <q-card-section>
+        <q-card-section class="a">
           <label for="">Nombre: </label><br />
           <input type="text-center" v-model="nombre" />
           <br />
@@ -29,7 +29,7 @@
           <br />
           <label for="">Email: </label><br />
           <input type="text" v-model="email" /><br />
-          <button @click="useCliente.agregarNuevoCliente(data), toolbar = false">Enviar</button>
+          <button class="butonenviar" @click="useCliente.agregarNuevoCliente(data), toolbar = false">Enviar</button>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -46,7 +46,7 @@
           <q-btn flat round dense icon="close" v-close-popup />
         </q-toolbar>
 
-        <q-card-section>
+        <q-card-section class="a">
           <label for="">Nombre: </label><br />
           <input type="text" v-model="nombre" />
           <br />
@@ -61,7 +61,7 @@
           >
             {{ obtenerTextoEstado(estado) }}
           </p>
-          <button @click="useCliente.actualizarCliente(id, data); toolbard = false">Enviar</button>
+          <button class="butonenviar" @click="useCliente.actualizarCliente(id, data); toolbard = false">Enviar</button>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -266,12 +266,28 @@ p {
   align-items: center;
 }
 .butoagre{
-  margin-right: 20px;
+  margin-right: 47px;
   margin-bottom: 0px;
   margin-top: 0px;
 }
 .q-pa-xl{
   padding: 10px 48px 48px 48px;
+}
+
+.q-card{
+  width: 60%;
+  height: 60%;
+  display: grid;
+  grid-template-rows: 10% 90%;
+}
+
+.q-card__section{
+  display: flex;
+  flex-direction: column;
+}
+
+.butonenviar{
+  margin-top: 30px;
 }
 
 </style>
