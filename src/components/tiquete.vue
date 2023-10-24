@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>Tiquete</h1>
 
   </div>
 </template>

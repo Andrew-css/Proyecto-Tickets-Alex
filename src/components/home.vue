@@ -6,13 +6,13 @@
         <div class="card-info"><router-link class="router" to="" ><img src="../assets/finalizarsc.png" alt=""></router-link>Cerar sesion</div>
         <div class="card-info"><router-link class="router" to="/conductor" ><img src="../assets/bus-driver-outline.png" alt=""></router-link>Conductores</div>
         <div class="card-info"><router-link class="router" to="/vendedor" ><img src="../assets/businessman-outline.png" alt=""></router-link>Vendedores</div>
-        <div class="card-info"><router-link class="router" to="" ><img src="../assets/bus-driver-flatline.png" alt=""></router-link> Vehiculos</div>
-        <div class="card-info"><router-link class="router" to="/cliente" ><img src="../assets/home-line.png" alt="">Clientes</router-link></div>
-        <div class="card-info"><router-link class="router" to="" ><img src="../assets/la-carretera.png" alt=""></router-link>Rutas</div>
-        <div class="card-info"><router-link class="router" to="" ><img src="../assets/boleto.png" alt=""></router-link>Ticketes</div>
-        <div class="card-info"><router-link class="router" to="/cliente" ><img src="../assets/shopping-bag-line.png" alt=""></router-link>Ventas</div>
+        <div class="card-info"><router-link class="router" to="/bus" ><img src="../assets/bus-driver-flatline.png" alt=""></router-link> Vehiculos</div>
+        <div class="card-info"><router-link class="router" to="/cliente" ><img src="../assets/home-line.png" alt=""></router-link>Clientes</div>
+        <div class="card-info"><router-link class="router" to="/ruta" ><img src="../assets/la-carretera.png" alt=""></router-link>Rutas</div>
+        <div class="card-info"><router-link class="router" to="/tiquete" ><img src="../assets/boleto.png" alt=""></router-link>Ticketes</div>
+        <div class="card-info"><router-link class="router" to="/ventas" ><img src="../assets/shopping-bag-line.png" alt=""></router-link>Ventas</div>
       </div>
-      <router-view />
+      <router-view /> 
     </q-page-container>
   </q-layout>
 </template>
