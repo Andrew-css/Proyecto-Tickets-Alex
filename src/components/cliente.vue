@@ -270,4 +270,8 @@ p {
   margin-bottom: 0px;
   margin-top: 0px;
 }
+.q-pa-xl{
+  padding: 10px 48px 48px 48px;
+}
+
 </style>
