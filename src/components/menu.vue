@@ -25,49 +25,49 @@
       <div class="btns-m">
         <button class="btn-17">
           <span class="text-container">
-            <span class="text">Home</span>
+            <router-link class="router" to="/home"><span class="text">Página principal</span></router-link>
           </span>
         </button>
 
         <button class="btn-17">
           <span class="text-container">
-            <span class="text">Conducto</span>
+            <router-link class="router" to="/conductor"><span class="text">Conductor</span></router-link>
           </span>
         </button>
 
         <button class="btn-17">
           <span class="text-container">
-            <span class="text">Vendedor</span>
+            <router-link class="router" to="/vendedor"><span class="text">Vendedor</span></router-link>
           </span>
         </button>
 
         <button class="btn-17">
           <span class="text-container">
-            <span class="text">Vehiculo</span>
+            <router-link class="router" to="/bus"><span class="text">Vehiculo</span></router-link>
           </span>
         </button>
 
         <button class="btn-17">
           <span class="text-container">
-            <span class="text">Cliente</span>
+            <router-link class="router" to="/cliente"><span class="text">Cliente</span></router-link>
           </span>
         </button>
 
         <button class="btn-17">
           <span class="text-container">
-            <span class="text">Rutas</span>
+            <router-link class="router" to="/ruta"><span class="text">Ruta</span></router-link>
           </span>
         </button>
 
         <button class="btn-17">
           <span class="text-container">
-            <span class="text">Tiquete</span>
+            <router-link class="router" to="/tiquete"><span class="text">tiquete</span></router-link>
           </span>
         </button>
      
         <button class="btn-17">
           <span class="text-container">
-            <span class="text">Ventas</span>
+            <router-link class="router" to="/ventas"><span class="text">Venta</span></router-link>
           </span>
         </button>
 

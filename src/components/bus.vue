@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>Buses</h1>
 
   </div>
 </template>
