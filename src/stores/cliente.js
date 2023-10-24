@@ -39,17 +39,13 @@ export const useClienteStore = defineStore("cliente", () => {
     },
   ]);
 
-  const agregarNuevoCliente = async () => {
-    const data = {
-      nombre: nombre.value,
-      cedula: cedula.value,
-      email: email.value,
-    };
+  const agregarNuevoCliente = async (data) => {
     try {
       const response = await axios.post(
         "https://transporte-el2a.onrender.com/api/cliente/guardar",
         data
       );
+      console.log("Respuesta del servidor al agregar nuevo cliente:", response);
       rows.value.push(response.data.cliente);
     } catch (error) {
       console.log("e", error);

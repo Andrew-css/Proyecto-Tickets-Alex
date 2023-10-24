@@ -22,7 +22,7 @@
           <br />
           <label for="">Email: </label><br />
           <input type="text" v-model="email" /><br />
-          <button @click="useCliente.agregarNuevoCliente(data)">Enviar</button>
+          <button @click="useCliente.agregarNuevoCliente(data), toolbar = false">Enviar</button>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -130,6 +130,7 @@ let toolbar = ref(false);
 let cambiar = ref(false);
 const data = ref({
   nombre: nombre,
+  cedula: cedula,
   email: email,
 });
 
