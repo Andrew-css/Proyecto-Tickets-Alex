@@ -1,6 +1,13 @@
 <template>
   <div>
-    <q-btn label="Añadir" color="primary" @click="agregar()" />
+    <div class="contenedor">
+      <h1 class="titulocli">CLIENTES</h1>
+      <div class="linea"></div>
+    </div>    
+    <div class="botongregar">
+      <q-btn class="butoagre" label="Añadir" color="primary" @click="agregar()" />
+    </div>
+    
     <q-dialog v-model="toolbar">
       <q-card>
         <q-toolbar>
@@ -15,7 +22,7 @@
 
         <q-card-section>
           <label for="">Nombre: </label><br />
-          <input type="text" v-model="nombre" />
+          <input type="text-center" v-model="nombre" />
           <br />
           <label for="">Cedula: </label><br />
           <input type="number" v-model="cedula" />
@@ -61,6 +68,7 @@
 
     <div class="q-pa-xl">
       <q-table
+      class="text-center"
         :rows="rows"
         :columns="columns"
         row-key="id"
@@ -73,18 +81,18 @@
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td auto-width>
-              <div class="q-ma-xs text-left">{{ props.row.nombre }}</div>
+              <div class="q-ma-xs text-center">{{ props.row.nombre }}</div>
             </q-td>
             <q-td auto-width>
-              <div class="text-right">{{ props.row.cedula }}</div>
+              <div class="text-center">{{ props.row.cedula }}</div>
             </q-td>
             <q-td auto-width>
-              <div class="text-right">{{ props.row.email }}</div>
+              <div class="text-center">{{ props.row.email }}</div>
             </q-td>
             <q-td auto-width>
               <div
                 :class="{
-                  'text-right': true,
+                  'text-center': true,
                   activo: props.row.estado === 1,
                   inactivo: props.row.estado === 0
                 }"
@@ -154,28 +162,32 @@ const columns = ref([
   {
     name: "Nombre",
     label: "Nombre",
-    align: "left",
+    align: "center",
     field: (row) => row.nombre,
   },
   {
     name: "Cedula",
     label: "Cedula",
+    align: "center",
     field: (row) => row.cedula,
   },
   {
     name: "Email",
     label: "Email",
+    align: "center",
     field: (row) => row.email,
   },
   {
     name: "Estado",
     label: "Estado",
+    align: "center",
     field: (row) => row.estado,
   },
   {
     name: "d",
     label: "Opciones",
     field: "actions",
+    align: "center",
   },
 ]);
 
@@ -230,5 +242,32 @@ onMounted(async () => {
 }
 p {
   display: flex;
+}
+.contenedor{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.linea{
+  background-color: #1976d2;
+  width: 50%;
+  height: 5px;
+}
+.titulocli{
+  font-size: 45px;
+  font-family: "Roboto", "-apple-system", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.botongregar{
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.butoagre{
+  margin-right: 20px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 </style>

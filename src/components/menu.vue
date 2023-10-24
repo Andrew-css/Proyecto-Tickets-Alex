@@ -61,7 +61,7 @@
 
         <button class="btn-17">
           <span class="text-container">
-            <span class="text">Tiquet</span>
+            <span class="text">Tiquete</span>
           </span>
         </button>
      
@@ -110,8 +110,8 @@ export default {
     display: flex;
 }
 .btns-m{
-    
-    margin-top: 80px;
+  margin: 25px;  
+  margin-top: 80px;
 }
 
 .btn-17,
