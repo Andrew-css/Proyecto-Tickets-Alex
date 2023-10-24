@@ -63,9 +63,13 @@
       <q-markup-table>
         <thead>
           <tr>
-            <th>
+            <th class="text-left">
               <h4 class="q-ma-xs text-left">Clientes</h4>
             </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
           </tr>
           <tr>
             <th class="text-left"><b>Nombre</b></th>
