@@ -1,6 +1,12 @@
 <template>
   <div>
-    <q-btn label="Añadir" color="primary" @click="agregar()" />
+    <div class="contenedor">
+      <h1 class="titulocli">CONDUCTORES</h1>
+      <div class="linea"></div>
+    </div>    
+    <div class="botongregar">
+      <q-btn class="butoagre" label="Añadir" color="primary" @click="agregar()" />
+    </div>
     <q-dialog v-model="toolbar">
       <q-card>
         <q-toolbar>
@@ -50,58 +56,64 @@
           >
             {{ obtenerTextoEstado(estado) }}
           </p>
-          <button @click="useCliente.actualizarCliente(id, data); toolbard = false">Enviar</button>
+          <button @click="useConductor.actualizarConductor(id, data); toolbard = false">Enviar</button>
         </q-card-section>
       </q-card>
     </q-dialog>
 
-    <div class="q-pa-md">
-      <q-markup-table>
-        <thead>
-          <tr>
-            <th>
-              <h4 class="q-ma-xs text-left">Conductores</h4>
-            </th>
-          </tr>
-          <tr>
-            <th class="text-left"><b>Nombre</b></th>
-            <th class="text-right"><b>Cedula</b></th>
-            <th class="text-right"><b>Estado</b></th>
-            <th class="text-right"><b>Opciones</b></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, i) in rows" :key="i">
-            <td class="text-left">{{ row.nombre }}</td>
-            <td class="text-right">{{ row.cedula }}</td>
-            <td
-              class="text-right"
-              :class="{
-                'text-right': true,
-                activo: row.estado === 1,
-                inactivo: row.estado === 0,
-              }"
-            >
-              {{ obtenerTextoEstado(row.estado) }}
-            </td>
-            <td class="text-right">
-              <q-btn label="Editar" color="primary" @click="editar(row)" />
+    <div class="q-pa-xl">
+      <q-table
+      class="text-center"
+        :rows="rows"
+        :columns="columns"
+        row-key="id"
+      >
+        <template v-slot:top>
+          <q-toolbar>
+            <q-toolbar-title class="text-center">Conductores</q-toolbar-title>
+          </q-toolbar>
+        </template>
+        <template v-slot:body="props">
+          <q-tr :props="props">
+            <q-td auto-width>
+              <div class="q-ma-xs text-center">{{ props.row.nombre }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-center">{{ props.row.cedula }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div
+                :class="{
+                  'text-center': true,
+                  activo: props.row.estado === 1,
+                  inactivo: props.row.estado === 0
+                }"
+              >
+                {{ obtenerTextoEstado(props.row.estado) }}
+              </div>
+            </q-td>
+            <q-td auto-width>
               <q-btn
-                label="Activar"
+                label="📋"
                 color="primary"
-                @click="useConductor.activar(row._id)"
-                v-if="row.estado == 0"
+                @click="editar(props.row)"
               />
               <q-btn
-                label="Desactivar"
+                label="✅"
                 color="primary"
-                @click="useConductor.desactivar(row._id)"
-                v-if="row.estado == 1"
+                @click="useConductor.activar(props.row._id)"
+                v-if="props.row.estado === 0"
               />
-            </td>
-          </tr>
-        </tbody>
-      </q-markup-table>
+              <q-btn
+                label="❌"
+                color="primary"
+                @click="useConductor.desactivar(props.row._id)"
+                v-if="props.row.estado === 1"
+              />
+            </q-td>
+          </q-tr>
+        </template>
+      </q-table>
     </div>
   </div>
   
@@ -140,22 +152,25 @@ const columns = ref([
   {
     name: "Nombre",
     label: "Nombre",
-    align: "left",
+    align: "center",
     field: (row) => row.nombre,
   },
   {
     name: "Cedula",
     label: "Cedula",
+    align: "center",
     field: (row) => row.cedula,
   },
   {
     name: "Estado",
     label: "Estado",
+    align: "center",
     field: (row) => row.estado,
   },
   {
-    name: "d",
+    name: "Opciones",
     label: "Opciones",
+    align: "center",
     field: "actions",
   },
 ]);
@@ -208,5 +223,61 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.activo {
+  color: green;
+  font-weight: bold;
+}
+.inactivo {
+  color: red;
+  font-weight: bold;
+}
+p {
+  display: flex;
+}
+.contenedor{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.linea{
+  background-color: #1976d2;
+  width: 50%;
+  height: 5px;
+}
+.titulocli{
+  font-size: 45px;
+  font-family: "Roboto", "-apple-system", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.botongregar{
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.butoagre{
+  margin-right: 47px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+.q-pa-xl{
+  padding: 10px 48px 48px 48px;
+}
+
+.q-card{
+  width: 60%;
+  height: 60%;
+  display: grid;
+  grid-template-rows: 10% 90%;
+}
+
+.q-card__section{
+  display: flex;
+  flex-direction: column;
+}
+
+.butonenviar{
+  margin-top: 30px;
+}
 </style>

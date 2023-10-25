@@ -57,7 +57,7 @@ export const useConductorStore = defineStore("conductor", () => {
     console.log("Hola soy data", data);
     try {
       const response = await axios.put(
-        `https://tu-api.com/conductor/editar/${id}`,
+        `https://transporte-el2a.onrender.com/api/conductor/editar/${id}`,
         data
       );
       const buscar = rows.value.findIndex((c) => c._id == id);
