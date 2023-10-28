@@ -31,6 +31,12 @@
 
         <button class="btn-17">
           <span class="text-container">
+            <router-link class="router" to="/ciudad"><span class="text">Ciudad</span></router-link>
+          </span>
+        </button>
+
+        <button class="btn-17">
+          <span class="text-container">
             <router-link class="router" to="/conductor"><span class="text">Conductor</span></router-link>
           </span>
         </button>
@@ -61,7 +67,7 @@
 
         <button class="btn-17">
           <span class="text-container">
-            <router-link class="router" to="/tiquete"><span class="text">tiquete</span></router-link>
+            <router-link class="router" to="/tiquete"><span class="text">Tiquete</span></router-link>
           </span>
         </button>
      
@@ -253,5 +259,11 @@ export default {
 
 .btn-17:hover:after {
   --progress: -102%;
+}
+
+.router{
+  width:100% ;
+  height: 100%;
+  text-decoration: none;
 }
 </style>

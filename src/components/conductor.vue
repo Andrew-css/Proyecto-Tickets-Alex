@@ -194,12 +194,12 @@ async function obtenerConductor() {
 }
 
 async function desactivarConductor(id) {
-  await useConductor.desactivarConductor(id);
+  await useConductor.desactivar(id);
   obtenerConductor();
 }
 
 async function activarConductor(id) {
-  await useConductor.activarConductor(id);
+  await useConductor.activar(id);
   obtenerConductor();
 }
 

@@ -8,6 +8,7 @@ import Bus from '../components/bus.vue'
 import Ventas from '../components/ventas.vue'
 import Ruta from '../components/ruta.vue'
 import Tiquete from '../components/tiquete.vue'
+import Ciudad from '../components/ciudad.vue'
 
 
 
@@ -28,6 +29,7 @@ const routes = [
       {path: "/ventas", component:Ventas},
       {path: "/ruta", component:Ruta},
       {path: "/tiquete", component:Tiquete},
+      {path: "/ciudad", component:Ciudad},
 
 
       
