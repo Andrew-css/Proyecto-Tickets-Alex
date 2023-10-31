@@ -4,12 +4,7 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
-          Title
-        </q-toolbar-title>
+        <q-toolbar-title>CityExpress</q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -98,6 +93,12 @@ export default {
 </script>
 
 <style>
+.router{
+  text-decoration: none;
+}
+.text-container{
+  text-decoration: none;
+}
 .user{
     justify-content: center;
     align-items: center;
@@ -111,7 +112,7 @@ export default {
 }
 .btns-m{
   margin: 25px;  
-  margin-top: 80px;
+  margin-top: 40px;
 }
 
 .btn-17,
@@ -186,6 +187,12 @@ export default {
 .btn-17:hover .text {
   -webkit-animation: move-up-alternate 0.3s forwards;
   animation: move-up-alternate 0.3s forwards;
+}
+
+.text{
+  color: #fff;
+  text-decoration: none;
+  
 }
 
 @-webkit-keyframes move-up-alternate {
