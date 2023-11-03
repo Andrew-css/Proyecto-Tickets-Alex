@@ -4,14 +4,7 @@
       <h1 class="titulocli">CONDUCTORES</h1>
       <div class="linea"></div>
     </div>    
-    <div class="botongregar">
-      
-      <button type="button" class="button" @click="agregar()">
-        <span class="button__text">Añadir</span>
-        <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span>
-      </button>
-            <!-- <q-btn class="butoagre" label="Añadir" color="primary" @click="agregar()" /> -->
-    </div>
+    <div class="botongregar"> <button type="button" class="button" @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span> </button> </div>
     <q-dialog v-model="toolbar">
       <q-card>
         <q-toolbar>
@@ -285,6 +278,7 @@ p {
 .butonenviar{
   margin-top: 30px;
 }
+
 .button {
   position: relative;
   width: 156px;

@@ -101,6 +101,8 @@ export default {
 <style>
 .router{
   text-decoration: none;
+  width: 100%;
+  height: 100%;
 }
 .text-container{
   text-decoration: none;
