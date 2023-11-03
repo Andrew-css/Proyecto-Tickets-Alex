@@ -34,7 +34,7 @@ button{
   height: 50px;
 }
 .router{
-  width:100% ;
+  width:100%;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -42,11 +42,12 @@ button{
   flex-wrap: wrap;
 }
 .lcare {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columnas iguales */
-  gap: 10px; /* Espacio entre las tarjetas */
+  display: flex;
+  gap: 30px;
   margin: 100px;
-  padding: 100px;
+  padding: 100px 150px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .card-info {
   box-sizing: border-box;
