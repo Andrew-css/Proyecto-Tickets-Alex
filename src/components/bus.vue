@@ -149,7 +149,7 @@ const editar = (row) => {
   empresa.value = row.empresa;
   asiento.value = row.asiento;
   placa.value = row.placa;
-  conductor.value = row.conductor;
+  conductor.value = row.conductor._nombre;
   estado.value = row.estado;
 };
 
@@ -192,6 +192,7 @@ const columns = ref([
   },
 ]);
 
+console.log("Conductores", conductores)
 
 
 const agregar = () => {

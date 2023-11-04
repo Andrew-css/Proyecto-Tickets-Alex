@@ -75,7 +75,7 @@
           <label for="bus">Bus: </label><br />
           <select v-model="bus" id="bus">
             <option value="" disabled>Selecciona un bus</option>
-            <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.empresa }}</option>
+            <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
           </select>
           <br />
           <p
