@@ -67,13 +67,24 @@
   }
 
   const login = async () => {
+    // Verifica si los campos de usuario y contraseña no están vacíos
+    if (usuario.value === '' || contrasena.value === '') {
+      // Muestra un mensaje de error y luego desaparece después de 2 segundos
+      useVendedor.errorvalidacion = "Por favor complete todos los campos.";
+      setTimeout(() => {
+        useVendedor.errorvalidacion = "";
+      }, 2000);
+      return; // Detén la función para evitar la solicitud vacía
+    }
+
     const response = await useVendedor.loginRequest(usuario, contrasena);
     if (response.success) {
       // El inicio de sesión fue exitoso, redirige al usuario a la página de inicio
       // o realiza cualquier acción necesaria.
       router.push("/home");
     } else {
-      console.log("Error de inicio de sesion")
+      console.log("Error de inicio de sesión");
+      // Muestra el mensaje de error y luego desaparece después de 2 segundos
       setTimeout(() => {
         useVendedor.errorvalidacion = "";
       }, 2000);
