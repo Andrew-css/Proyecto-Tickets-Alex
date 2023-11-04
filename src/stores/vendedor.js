@@ -14,6 +14,7 @@ export const useVendedorStore = defineStore("vendedor", () => {
   let estado = ref(1);
   let toolbar = ref(false);
   let cambiar = ref(false);
+  let errorvalidacion = ref("")
   const columns = ref([
     {
       name: "Nombre",
@@ -126,12 +127,40 @@ export const useVendedorStore = defineStore("vendedor", () => {
     }
   };
 
+  const loginRequest = async (usuario, contrasena) => {
+    try {
+      const response = await axios.post("https://transporte-el2a.onrender.com/api/vendedor/login", {
+        usuario: usuario.value, 
+        contrasena: contrasena.value,
+      });
+  
+      if (response.status === 200) {
+        return {
+          success: true,
+          user: response.data.vendedor,
+          token: response.data.token,
+        };
+      }
+     
+    } catch (error) {
+      console.error('Error al iniciar sesión', error);
+      errorvalidacion.value = error.response.data.msg
+      console.log("Error backend", errorvalidacion)
+      return {
+        success: false,
+      };
+    }
+  };
+  
+
   return {
     agregarNuevoVendedor,
     actualizarVendedor,
     activar,
     desactivar,
     obtenerVendedores,
+    loginRequest,
+    errorvalidacion,
     rows,
   };
 });
