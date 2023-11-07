@@ -30,7 +30,7 @@
           <span v-if="nombreError" class="error-message">{{ nombreError }}</span>
           <br />
           <label for="">Cedula: </label><br />
-          <input type="number" v-model="cedula" />
+          <input type="text" v-model="cedula" name="cedula"/>
           <span v-if="cedulaError" class="error-message">{{ cedulaError }}</span>
           <br />
           <label for="">Email: </label><br />
@@ -155,6 +155,11 @@ const data = ref({
   email: email,
 });
 
+const soloNumeros = (value) => {
+  const numeroRegex = /^[0-9]+$/;
+  return numeroRegex.test(value);
+};
+
 const mostrarMensajeExito = (message) => {
   mensaje.value = message;
   setTimeout(() => {
@@ -230,14 +235,20 @@ const agregarNuevoCliente = async () => {
   nombreError.value = null;
   cedulaError.value = null;
   emailError.value = null;
-  useCliente.errorvalidacion = ''; // Restablece el mensaje de validación
+  useCliente.errorvalidacion = '';
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
+  } else if (nombre.value.length > 15) {
+    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
   }
 
   if (!cedula.value) {
-    cedulaError.value = 'La cedula es requerida';
+    cedulaError.value = 'La cédula es requerida';
+  } else if (cedula.value.length !== 10) {
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
+  } else if (!soloNumeros(cedula.value)) {
+    cedulaError.value = 'La cédula debe contener solo números';
   }
 
   if (!email.value) {
@@ -282,8 +293,10 @@ const agregarNuevoCliente = async () => {
   }
 
   loading.value = false;
-  clearErrors()
+  clearErrors();
 };
+
+  
 
 const editarCliente = async () => {
   clearErrors();
@@ -291,6 +304,8 @@ const editarCliente = async () => {
   // Validar los campos
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
+  } else if (nombre.value.length > 15) {
+    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
   }
 
   if (!nombreError.value) {
