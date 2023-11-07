@@ -286,7 +286,6 @@ const agregarNuevoCliente = async () => {
 };
 
 const editarCliente = async () => {
-  loading.value = true; 
   clearErrors();
 
   // Validar los campos
@@ -295,6 +294,7 @@ const editarCliente = async () => {
   }
 
   if (!nombreError.value) {
+    loading.value = true
     const data = {
       nombre: nombre.value,
       cedula: cedula.value,
