@@ -10,6 +10,8 @@ export const useClienteStore = defineStore("cliente", () => {
   let email = ref("");
   let toolbar = ref(false);
   let cambiar = ref(false);
+  let errorvalidacion = ref("")
+  let estatus = ref()
 
 
   const agregarNuevoCliente = async (data) => {
@@ -19,9 +21,11 @@ export const useClienteStore = defineStore("cliente", () => {
         data
       );
       console.log("Respuesta del servidor al agregar nuevo cliente:", response);
+      estatus.value = response.status
       rows.value.push(response.data.cliente);
     } catch (error) {
       console.log("e", error);
+      errorvalidacion.value = error.response.data.error
     }
     toolbar.value = false;
   };
@@ -99,5 +103,7 @@ export const useClienteStore = defineStore("cliente", () => {
     desactivar,
     obtenerClientes,
     rows,
+    errorvalidacion,
+    estatus,
   };
 });
