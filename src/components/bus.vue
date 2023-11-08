@@ -4,37 +4,51 @@
       <h1 class="titulocli">BUSES</h1>
       <div class="linea"></div>
     </div>
-    <div class="botongregar"> <button type="button" class="button" @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span> </button> </div>
-    <q-dialog v-model="toolbar">
-      <q-card>
-        <q-toolbar>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
-          </q-avatar>
-          <q-toolbar-title>Buses</q-toolbar-title>
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-toolbar>
-        <q-card-section>
-          <label for="">Empresa: </label><br />
-          <input type="text" v-model="empresa" />
-          <br />
-          <label for="">Asiento: </label><br />
-          <input type="number" v-model="asiento" />
-          <br />
-          <label for="">Placa: </label><br />
-          <input type="text" v-model="placa" />
-          <br />
-          <label for="">Conductor: </label><br />
+    <div class="botongregar">  </div>
+
+    <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span> >
+</button>
+
+<!-- Modal -->
+<div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="form">
+        
+        <p class="title">Register </p>  
+        <p class="message">Signup now and get full access to our app. </p>
+          
+          
+        <label>
+            <input required="" placeholder="" type="text" class="input" v-model="empresa">
+            <span>Empresa</span>
+        </label> 
+        <label>
+            <input required="" placeholder="" type="number" class="input" v-model="asiento">
+            <span>Asientos</span>
+        </label>
+        <label>
+            <input required="" placeholder="" type="text" class="input" v-model="placa">
+            <span>Placa</span>
+        </label>
+        <label>
+            <input required="" placeholder="" type="text" class="input" v-model="placa">
+            <span>Placa</span>
+            <label for="">Conductor: </label><br />
           <select v-model="conductor" id="conductor">
             <option value="" disabled>Selecciona un conductor</option>
             <option v-for="c in conductores" :value="c._id" :key="c._id">{{ c.nombre }}</option>
           </select>
-          <br />
-          <br />
-          <button @click="useBus.agregarNuevoBus(data); toolbar = false">Enviar</button>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+        </label>
+        <button type="button" class="btn btn-secondary submit" data-bs-dismiss="modal"   @click="useBus.agregarNuevoBus(data); toolbar = false" >Enviar</button>
+      </form>
+      
+    </div>
+  </div>
+</div>
+
+      
+     
     <q-dialog v-model="toolbard">
       <q-card>
         <q-toolbar>
@@ -362,5 +376,138 @@ p {
 
 .button:active {
   border: 1px solid #1976d2 ;
+}
+
+/* FORMULARIO */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  position: relative;
+}
+
+.title {
+  font-size: 28px;
+  color: royalblue;
+  font-weight: 600;
+  letter-spacing: -1px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+}
+
+.title::before,.title::after {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  left: 0px;
+  background-color: royalblue;
+}
+
+.title::before {
+  width: 18px;
+  height: 18px;
+  background-color: royalblue;
+}
+
+.title::after {
+  width: 18px;
+  height: 18px;
+  animation: pulse 1s linear infinite;
+}
+
+.message, .signin {
+  color: rgba(88, 87, 87, 0.822);
+  font-size: 14px;
+}
+
+.signin {
+  text-align: center;
+}
+
+.signin a {
+  color: royalblue;
+}
+
+.signin a:hover {
+  text-decoration: underline royalblue;
+}
+
+.flex {
+  display: flex;
+  width: 150%;
+  gap: 6px;
+}
+
+.form label {
+  position: relative;
+}
+
+.form label .input {
+  width: 100%;
+  padding: 10px 10px 20px 10px;
+  outline: 0;
+  border: 1px solid rgba(105, 105, 105, 0.397);
+  border-radius: 10px;
+}
+
+.form label .input + span {
+  position: absolute;
+  left: 10px;
+  top: 15px;
+  color: grey;
+  font-size: 0.9em;
+  cursor: text;
+  transition: 0.3s ease;
+}
+
+.form label .input:placeholder-shown + span {
+  top: 15px;
+  font-size: 0.9em;
+}
+
+.form label .input:focus + span,.form label .input:valid + span {
+  top: 30px;
+  font-size: 0.7em;
+  font-weight: 600;
+}
+
+.form label .input:valid + span {
+  color: green;
+}
+
+.submit {
+  border: none;
+  outline: none;
+  background-color: royalblue;
+  padding: 10px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  transform: .3s ease;
+}
+
+.submit:hover {
+  background-color: rgb(56, 90, 194);
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
 }
 </style>
