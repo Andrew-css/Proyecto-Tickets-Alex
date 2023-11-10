@@ -16,16 +16,27 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <form class="form ">
+        <div class="cerrar">
+              <p class="title">Añadir ciudad</p>
+              <button type="button"  data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+            </div>
         
-        <p class="title">Register </p>  
-        <p class="message">Signup now and get full access to our app. </p>
-          
+        <p class="message">Signup now and get full access to our app. </p>  
+        <span v-if="nombreError " class="error-message">{{ nombreError  }}</span>
+            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }}</p>
+            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+              mensaje
+            }}</span>
+            <div v-if="loading" class="text-center">
+              <q-spinner-hourglass color="primary" size="50px" />
+              <p>Por favor, espere...</p>
+            </div>
         <label >
-            <input required="" placeholder="" type="text" class="input" v-model="nombre">
+            <input  placeholder="" type="text" class="input" v-model="nombre">
             <span>Nombre</span>
         </label>  
   
-        <button  type="button" class="btn btn-secondary submit" data-bs-dismiss="modal"   @click="useCiudad.agregarNuevaCiudad(data), toolbar = false">Enviar</button>
+        <button  type="button" class="btn btn-secondary submit"    @click="agregarNuevaCiudad">Enviar</button>
       </form> 
     </div>
   </div>
@@ -89,13 +100,30 @@ const useCiudad = useCiudadStore();
 let rows = ref([]);
 let ciudades = ref([]);
 
+const nombreError = ref(null);
 let id = ref("");
 let nombre = ref("");
-let toolbard = ref(false);
-let toolbar = ref(false);
+let loading = ref (false);
+let mensaje = ref("");
+let mensajeColor = ref(''); 
 const data = ref({
   nombre: nombre,
 });
+
+const mostrarMensajeExito = (message) => {
+  mensaje.value = message;
+  setTimeout(() => {
+    mensaje.value = '';
+  }, 3000);
+};
+
+const clearErrors = () => {
+
+setTimeout(() => {
+  nombreError.value = null;
+
+}, 2000);
+};  
 
 const editar = (row) => {
   console.log(row);
@@ -153,6 +181,58 @@ onMounted(async () => {
   desactivarCiudad();
   activarCiudad();
 });
+
+
+// VALIDACIONES 
+
+const agregarNuevaCiudad = async () => {
+  loading.value = true;
+  nombreError.value = null;
+  useCiudad.errorvalidacion = '';
+
+  if (!nombre.value) {
+    nombreError.value = 'El nombre es requerido';
+  } else if (nombre.value.length > 15) {
+    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
+  }
+
+  
+
+  if (!nombreError.value) {
+    const data = {
+      nombre: nombre.value,
+    };
+
+    try {
+      const response = await useCiudad.agregarNuevaCiudad(data);
+
+      if (useCiudad.estatus === 200) {
+        mensajeColor.value = 'success';
+        mensaje.value = 'Ciudad añadido correctamente (presione ❌ para cerrar)';
+        setTimeout(() => {
+          nombre.value = '';
+          useCiudad.errorvalidacion = '';
+          mensaje.value = '';
+        }, 3000);
+      } else {
+        mensajeColor.value = 'error';
+        setTimeout(() => {
+          useCiudad.errorvalidacion = '';
+        }, 3000);
+      }
+    } catch (error) {
+      console.log('Error al agregar el ciudad:', error);
+      mensajeColor.value = 'error';
+      setTimeout(() => {
+        useCiudad.errorvalidacion = '';
+      }, 3000);
+    }
+  }
+
+  loading.value = false;
+  clearErrors();
+};
+
 
 </script>
 
@@ -405,5 +485,36 @@ p {
     transform: scale(1.8);
     opacity: 0;
   }
+}
+.cerrar{
+  display: flex;
+  justify-content: space-between;
+  margin-right: 20px;
+
+}
+
+#botoncerrar{
+  width: 5px;
+  font-size: 25px;
+  border: none;
+  background-color: white;
+}
+
+.r{
+  display: flex;
+  margin-top: 20px;
+}
+
+/* VALIDACIONES MODAL */
+.success-message {
+  color: green;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  font-size: 20px;
 }
 </style>

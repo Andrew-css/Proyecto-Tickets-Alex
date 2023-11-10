@@ -10,6 +10,8 @@ export const useConductorStore = defineStore("conductor", () => {
   let email = ref("");
   let toolbar = ref(false);
   let cambiar = ref(false);
+  let errorvalidacion = ref ("");
+ let estatus = ref ();
   const columns = ref([
     {
       name: "Nombre",
@@ -47,8 +49,10 @@ export const useConductorStore = defineStore("conductor", () => {
       );
       console.log("Respuesta del servidor al agregar nuevo conductor:", response);
       rows.value.push(response.data.conductor);
+      estatus.value=response.status
     } catch (error) {
       console.log("Error al agregar nuevo conductor:", error);
+      errorvalidacion.value=error.response.data.error
     }
     toolbar.value = false;
   };
@@ -122,6 +126,8 @@ export const useConductorStore = defineStore("conductor", () => {
     activar,
     desactivar,
     obtenerConductores,
+    errorvalidacion,
+    estatus,
     rows,
   };
 });

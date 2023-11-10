@@ -17,9 +17,22 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <form class="form ">
+        <div class="cerrar">
+              <p class="title">Añadir conductor</p>
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+            </div>
         
-        <p class="title">Register </p>  
         <p class="message">Signup now and get full access to our app. </p>
+
+        <span v-if="nombreError " class="error-message">{{ nombreError  }}</span>
+            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useConductor.errorvalidacion }}</p>
+            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+              mensaje
+            }}</span>
+            <div v-if="loading" class="text-center">
+              <q-spinner-hourglass color="primary" size="50px" />
+              <p>Por favor, espere...</p>
+            </div>
           
         <label >
             <input required="" placeholder="" type="text" class="input" v-model="nombre">
@@ -32,7 +45,7 @@
       
         
       
-        <button  type="button" class="btn btn-secondary submit" data-bs-dismiss="modal"   @click="useConductor.agregarNuevoConductor(data), toolbar = false">Enviar</button>
+        <button  type="button" class="btn btn-secondary submit"    @click="agregarNuevoConductor">Enviar</button>
       </form> 
     </div>
   </div>
@@ -139,12 +152,34 @@ let id = ref("");
 let nombre = ref("");
 let cedula = ref("");
 let estado = ref(1);
-let toolbard = ref(false);
+let loading = ref (false);
+let mensaje = ref("");
+let mensajeColor = ref('');
+let nombreError = ref (null)
+let cedulaError = ref (null) 
 let cambiar = ref(false);
 const data = ref({
   nombre: nombre,
   cedula: cedula,
 });
+
+const mostrarMensajeExito = (message) => {
+  mensaje.value = message;
+  setTimeout(() => {
+    mensaje.value = '';
+  }, 3000);
+};
+
+
+const clearErrors = () => {
+
+setTimeout(() => {
+  nombreError.value = null;
+
+
+
+}, 2000);
+};  
 
 const editar = (row) => {
   console.log(row);
@@ -221,6 +256,68 @@ onMounted(async () => {
   desactivarConductor();
   activarConductor();
 });
+
+
+
+const agregarNuevoConductor = async () => {
+  loading.value = true;
+  nombreError.value = null;
+  cedulaError.value = null;
+  useConductor.errorvalidacion = '';
+
+  if (!nombre.value) {
+    nombreError.value = 'El nombre es requerido';
+  } else if (nombre.value.length > 15) {
+    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
+  }
+
+  if (!cedula.value) {
+    cedulaError.value = 'La cédula es requerida';
+  } else if (cedula.value.length !== 10) {
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
+  } else if (!soloNumeros(cedula.value)) {
+    cedulaError.value = 'La cédula debe contener solo números';
+  }
+
+ 
+  
+
+  if (!nombreError.value && !cedulaError.value ) {
+    const data = {
+      nombre: nombre.value,
+      cedula: cedula.value,
+    };
+
+    try {
+      const response = await useConductor.agregarNuevoConductor(data);
+
+      if (useConductor.estatus === 200) {
+        mensajeColor.value = 'success';
+        mensaje.value = 'Conductor añadido correctamente (presione ❌ para cerrar)';
+        setTimeout(() => {
+          nombre.value = '';
+          cedula.value = '';
+          useConductor.errorvalidacion = '';
+          mensaje.value = '';
+        }, 3000);
+      } else {
+        mensajeColor.value = 'error';
+        setTimeout(() => {
+          useConductor.errorvalidacion = '';
+        }, 3000);
+      }
+    } catch (error) {
+      console.log('Error al agregar el conductor:', error);
+      mensajeColor.value = 'error';
+      setTimeout(() => {
+        useConductor.errorvalidacion = '';
+      }, 3000);
+    }
+  }
+
+  loading.value = false;
+  clearErrors();
+};
 
 
 
@@ -480,5 +577,35 @@ p {
     transform: scale(1.8);
     opacity: 0;
   }
+}
+.cerrar{
+  display: flex;
+  justify-content: space-between;
+  margin-right: 20px;
+
+}
+#botoncerrar{
+  width: 5px;
+  font-size: 25px;
+  border: none;
+  background-color: white;
+}
+
+.r{
+  display: flex;
+  margin-top: 20px;
+}
+
+/* VALIDACIONES MODAL */
+.success-message {
+  color: green;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  font-size: 20px;
 }
 </style>

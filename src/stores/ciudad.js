@@ -7,6 +7,8 @@ export const useCiudadStore = defineStore("ciudad", () => {
   let id = ref("");
   let nombre = ref("");
   let toolbar = ref(false);
+  let errorvalidacion = ref("");
+  let estatus = ref()
   const columns = ref([
     {
       name: "Nombre",
@@ -28,9 +30,11 @@ export const useCiudadStore = defineStore("ciudad", () => {
         data
       );
       console.log("Respuesta del servidor al agregar nueva ciudad:", response);
+      estatus.value = response.status
       rows.value.push(response.data);
     } catch (error) {
       console.log("Error al agregar nueva ciudad:", error);
+      errorvalidacion.value = error.response.data.error
     }
     toolbar.value = false;
   };
@@ -101,5 +105,7 @@ export const useCiudadStore = defineStore("ciudad", () => {
     activar,
     desactivar,
     rows,
+    errorvalidacion,
+    estatus,
   };
 });
