@@ -61,6 +61,7 @@ export const useBusStore = defineStore("bus", () => {
       rows.value.push(response.data.busPopulate);
     } catch (error) {
       console.log("Error al agregar nuevo bus:", error);
+      errorvalidacion.value = error.response.data.error
     }
     toolbar.value = false;
   };

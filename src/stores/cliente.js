@@ -8,7 +8,7 @@ export const useClienteStore = defineStore("cliente", () => {
   let nombre = ref("");
   let cedula = ref("");
   let email = ref("");
-  let toolbar = ref(false);
+  
   let cambiar = ref(false);
   let errorvalidacion = ref("")
   let estatus = ref()
@@ -27,7 +27,7 @@ export const useClienteStore = defineStore("cliente", () => {
       console.log("e", error);
       errorvalidacion.value = error.response.data.error
     }
-    toolbar.value = false;
+
   };
 
 
@@ -46,7 +46,7 @@ export const useClienteStore = defineStore("cliente", () => {
       console.log("e", error);
     }
 
-    toolbar.value = false;
+  
   };
 
 
