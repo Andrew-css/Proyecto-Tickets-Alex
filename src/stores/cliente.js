@@ -25,7 +25,7 @@ export const useClienteStore = defineStore("cliente", () => {
       rows.value.push(response.data.cliente);
     } catch (error) {
       console.log("e", error);
-      
+      errorvalidacion.value = error.response.data.error
     }
     toolbar.value = false;
   };
