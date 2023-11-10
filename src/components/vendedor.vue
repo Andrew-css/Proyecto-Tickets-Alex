@@ -4,59 +4,80 @@
       <h1 class="titulocli">VENDEDORES</h1>
       <div class="linea"></div>
     </div>
-    <div class="botongregar">  </div>
-      <!-- Button trigger modal -->
-    
-  <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span> >
-</button>
+    <div class="botongregar"> </div>
+    <!-- Button trigger modal -->
 
-<!-- Modal -->
-<div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
-  <div class="modal-dialog">
-    <div class="modal-content">
+    <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+      @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg
+          xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
+          stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+          <line y2="19" y1="5" x2="12" x1="12"></line>
+          <line y2="12" y1="12" x2="19" x1="5"></line>
+        </svg></span> >
+    </button>
 
-      <form class="form">
-        
-        <p class="title">Register </p>  
-        <p class="message">Signup now and get full access to our app. </p>
-            <div class="flex">
-            <label>
-                <input required="" placeholder="" type="text" class="input" v-model="nombre">
-                <span>Nombre</span>
+    <div  class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form">
+            <div class="cerrar">
+              <p class="title">Añadir vendedor</p>
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+            </div>
+            <span v-if="nombreError || apellidoError || cedulaError || telefonoError || usuarioError || contrasenaError" class="error-message">{{nombreError || apellidoError || cedulaError || telefonoError || usuarioError ||
+                  contrasenaError }}</span>
+            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useVendedor.errorvalidacion }}</p>
+            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+              mensaje
+            }}</span>
+            <div v-if="loading" class="text-center">
+              <q-spinner-hourglass color="primary" size="50px" />
+              <p>Por favor, espere...</p>
+            </div>
+            <label for="nombre">
+              <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
+
             </label>
 
-            <label>
-                <input required="" placeholder="" type="text" class="input"  v-model="apellido">
-                <span>Apellido</span>
+            <label for="apellido">
+              <input  placeholder="Apellido" type="text" class="input" v-model="apellido">
+
             </label>
-        </div>  
-          
-        <label>
-            <input required="" placeholder="" type="number" class="input" v-model="cedula">
-            <span>Cedula</span>
-        </label> 
-      
-        <label>
-            <input required="" placeholder="" type="number" class="input" v-model="telefono">
-            <span>Telefono</span>
-        </label>
-        <label>
-            <input required="" placeholder="" type="text" class="input" v-model="usuario">
-            <span>Usuario</span>
-        </label>
-        <label>
-            <input required="" placeholder="" type="text" class="input" v-model="contrasena">
-            <span>contraseña</span>
-        </label>
-        <button  data-bs-dismiss="modal"  @click="useVendedor.agregarNuevoVendedor(data); toolbar = false" class="submit">Enviar</button>
-      </form>
-      
+
+            <label for="cedula">
+              <input  placeholder="Cedula" type="text" class="input" v-model="cedula">
+
+            </label>
+
+            <label for="telefono">
+              <input  placeholder="Telefono" type="text" class="input" v-model="telefono">
+
+            </label>
+
+            <label for="usuario">
+              <input  placeholder="Usuario" type="text" class="input" v-model="usuario">
+
+            </label>
+
+            <label for="contrasena">
+              <input  placeholder="Contrasena" type="text" class="input" v-model="contrasena">
+
+            </label>
+
+            <!-- Resto del contenido del formulario... -->
+
+            <button type="button"  @click="agregarNuevoVendedor" class="submit" >Enviar</button>
+          </form>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+
+
     
 
-    <q-dialog v-model="toolbard">
+
+    <!-- <q-dialog v-model="toolbard">
       <q-card>
         <q-toolbar>
           <q-avatar>
@@ -94,14 +115,9 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-
+ -->
     <div class="q-pa-xl">
-      <q-table
-        class="text-center"
-        :rows="rows"
-        :columns="columns"
-        row-key="id"
-      >
+      <q-table class="text-center" :rows="rows" :columns="columns" row-key="id">
         <template v-slot:top>
           <q-toolbar>
             <q-toolbar-title class="text-center">Vendedores</q-toolbar-title>
@@ -125,34 +141,20 @@
               <div class="text-center">{{ props.row.usuario }}</div>
             </q-td>
             <q-td auto-width>
-              <div
-                :class="{
-                  'text-center': true,
-                  activo: props.row.estado === 1,
-                  inactivo: props.row.estado === 0
-                }"
-              >
+              <div :class="{
+                'text-center': true,
+                activo: props.row.estado === 1,
+                inactivo: props.row.estado === 0
+              }">
                 {{ obtenerTextoEstado(props.row.estado) }}
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn
-                label="📋"
-                color="primary"
-                @click="editar(props.row)"
-              />
-              <q-btn
-                label="✅"
-                color="primary"
-                @click="useVendedor.activar(props.row._id)"
-                v-if="props.row.estado === 0"
-              />
-              <q-btn
-                label="❌"
-                color="primary"
-                @click="useVendedor.desactivar(props.row._id)"
-                v-if="props.row.estado === 1"
-              />
+              <q-btn label="📋" color="primary" @click="editar(props.row)" />
+              <q-btn label="✅" color="primary" @click="useVendedor.activar(props.row._id)"
+                v-if="props.row.estado === 0" />
+              <q-btn label="❌" color="primary" @click="useVendedor.desactivar(props.row._id)"
+                v-if="props.row.estado === 1" />
             </q-td>
           </q-tr>
         </template>
@@ -176,9 +178,16 @@ let telefono = ref("");
 let usuario = ref("");
 let contrasena = ref("");
 let estado = ref(1);
-let toolbard = ref(false);
-let toolbar = ref(false);
 let cambiar = ref(false);
+let loading = ref(false);
+let mensaje = ref("");
+let mensajeColor = ref("");
+let nombreError = ref(null);
+let apellidoError = ref(null);
+let cedulaError = ref(null);
+let telefonoError = ref(null);
+let usuarioError = ref(null);
+let contrasenaError = ref(null);
 const data = ref({
   nombre: nombre,
   apellido: apellido,
@@ -188,8 +197,12 @@ const data = ref({
   contrasena: contrasena,
 });
 
+const soloNumeros = (value) => {
+  const numeroRegex = /^[0-9]+$/;
+  return numeroRegex.test(value);
+};
+
 const editar = (row) => {
-  toolbard.value = true;
   id.value = row._id;
   cambiar.value = true;
   nombre.value = row.nombre;
@@ -247,7 +260,6 @@ const columns = ref([
 ]);
 
 const agregar = () => {
-  toolbar.value = true;
   nombre.value = "";
   apellido.value = "";
   cedula.value = "";
@@ -255,6 +267,100 @@ const agregar = () => {
   usuario.value = "";
   contrasena.value = "";
 };
+
+const clearErrors = () => {
+
+  setTimeout(() => {
+    nombreError.value = null;
+    apellidoError.value = null;
+    cedulaError.value = null;
+    telefonoError.value = null;
+    usuarioError.value = null;
+    contrasenaError.value = null;
+  }, 2000);
+};
+
+const agregarNuevoVendedor = async () => {
+  loading.value = true;
+  clearErrors()
+  useVendedor.errorvalidacion = '';
+
+  if (!nombre.value) {
+    nombreError.value = 'El nombre es requerido';
+  } else if (nombre.value.length > 15) {
+    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
+  }
+
+  if (!apellido.value) {
+    apellidoError.value = 'El apellido es requerido';
+  }
+
+  if (!cedula.value) {
+    cedulaError.value = 'La cédula es requerida';
+  } else if (cedula.value.length !== 10) {
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
+  } else if (!soloNumeros(cedula.value)) {
+    cedulaError.value = 'La cédula debe contener solo números';
+  }
+
+  if (!telefono.value) {
+    telefonoError.value = 'El telefono es requerido';
+  }
+
+  if (!usuario.value) {
+    usuarioError.value = 'El usuario es requerido';
+  }
+
+  if (!contrasena.value) {
+    contrasenaError.value = 'La contraseña es requerida';
+  }
+
+  if (!nombreError.value && !apellidoError.value && !cedulaError.value && !telefonoError.value && !usuarioError.value && !contrasenaError.value) {
+    const data = {
+      nombre: nombre.value,
+      apellido: apellido.value,
+      cedula: cedula.value,
+      telefono: telefono.value,
+      usuario: usuario.value,
+      contrasena: contrasena.value
+    };
+
+    try {
+      const response = await useVendedor.agregarNuevoVendedor(data);
+      console.log(response);
+
+      if (useVendedor.estatus === 200) {
+        mensajeColor.value = 'success';
+        mensaje.value = 'Vendedor añadido correctamente (presione ❌ para cerrar)';
+        setTimeout(() => {
+          nombre.value = '';
+          apellido.value = '';
+          cedula.value = '';
+          telefono.value = '';
+          usuario.value = '';
+          contrasena.value = '';
+          useVendedor.errorvalidacion = '';
+          mensaje.value = '';
+        }, 3000);
+      } else {
+        mensajeColor.value = 'error';
+        setTimeout(() => {
+          useVendedor.errorvalidacion = '';
+        }, 3000);
+      }
+    } catch (error) {
+      console.log('Error al agregar el vendedor:', error);
+      mensajeColor.value = 'error';
+      setTimeout(() => {
+        useVendedor.errorvalidacion = '';
+      }, 3000);
+    }
+  }
+
+  loading.value = false;
+  clearErrors();
+};
+
 
 async function obtenerVendedor() {
   try {
@@ -287,62 +393,68 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>
-.activo {
+<style scoped>.activo {
   color: green;
   font-weight: bold;
 }
+
 .inactivo {
   color: red;
   font-weight: bold;
 }
+
 p {
   display: flex;
 }
-.contenedor{
+
+.contenedor {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.linea{
+.linea {
   background-color: #1976d2;
   width: 50%;
   height: 5px;
 }
-.titulocli{
+
+.titulocli {
   font-size: 45px;
   font-family: "Roboto", "-apple-system", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-.botongregar{
+
+.botongregar {
   width: 100%;
   height: 50px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
-.butoagre{
+
+.butoagre {
   margin-right: 47px;
   margin-bottom: 0px;
   margin-top: 0px;
 }
-.q-pa-xl{
+
+.q-pa-xl {
   padding: 10px 48px 48px 48px;
 }
 
-.q-card{
+.q-card {
   width: 60%;
   height: 60%;
   display: grid;
   grid-template-rows: 10% 90%;
 }
 
-.q-card__section{
+.q-card__section {
   display: flex;
   flex-direction: column;
 }
 
-.butonenviar{
+.butonenviar {
   margin-top: 30px;
 }
 
@@ -358,7 +470,9 @@ p {
   margin-right: 50px;
 }
 
-.button, .button__icon, .button__text {
+.button,
+.button__icon,
+.button__text {
   transition: all 0.3s;
 }
 
@@ -402,11 +516,35 @@ p {
 }
 
 .button:active {
-  border: 1px solid #1976d2 ;
+  border: 1px solid #1976d2;
 }
 
+.error-message {
+  color: red;
+}
 
-/* FORMULARIO */
+#readonly{
+  background-color: #ffeee4;
+  cursor: not-allowed;
+  color: #505050;
+  border: 1px solid rgb(198, 198, 198);
+  outline: none;
+  height: 50px;
+  padding: 5px;
+  width: 100%;
+}
+
+.success-message {
+  color: green;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  font-size: 20px;
+}
 
 .form {
   display: flex;
@@ -430,7 +568,8 @@ p {
   padding-left: 30px;
 }
 
-.title::before,.title::after {
+.title::before,
+.title::after {
   position: absolute;
   content: "";
   height: 16px;
@@ -452,7 +591,8 @@ p {
   animation: pulse 1s linear infinite;
 }
 
-.message, .signin {
+.message,
+.signin {
   color: rgba(88, 87, 87, 0.822);
   font-size: 14px;
 }
@@ -487,7 +627,7 @@ p {
   border-radius: 10px;
 }
 
-.form label .input + span {
+.form label .input+span {
   position: absolute;
   left: 10px;
   top: 15px;
@@ -497,18 +637,19 @@ p {
   transition: 0.3s ease;
 }
 
-.form label .input:placeholder-shown + span {
+.form label .input:placeholder-shown+span {
   top: 15px;
   font-size: 0.9em;
 }
 
-.form label .input:focus + span,.form label .input:valid + span {
+.form label .input:focus+span,
+.form label .input:valid+span {
   top: 30px;
   font-size: 0.7em;
   font-weight: 600;
 }
 
-.form label .input:valid + span {
+.form label .input:valid+span {
   color: green;
 }
 
@@ -537,5 +678,25 @@ p {
     transform: scale(1.8);
     opacity: 0;
   }
+}
+
+.cerrar{
+  display: flex;
+  justify-content: space-between;
+  margin-right: 20px;
+
+}
+
+
+#botoncerrar{
+  width: 5px;
+  font-size: 25px;
+  border: none;
+  background-color: white;
+}
+
+.r{
+  display: flex;
+  margin-top: 20px;
 }
 </style>

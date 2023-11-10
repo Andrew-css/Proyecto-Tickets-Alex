@@ -14,7 +14,8 @@ export const useVendedorStore = defineStore("vendedor", () => {
   let estado = ref(1);
   let toolbar = ref(false);
   let cambiar = ref(false);
-  let errorvalidacion = ref("")
+  let errorvalidacion = ref("");
+  let estatus = ref()
   const columns = ref([
     {
       name: "Nombre",
@@ -63,9 +64,11 @@ export const useVendedorStore = defineStore("vendedor", () => {
         data
       );
       console.log("Respuesta del servidor al agregar nuevo vendedor:", response);
+      estatus.value = response.status
       rows.value.push(response.data.vendedor);
     } catch (error) {
       console.log("Error al agregar nuevo vendedor:", error);
+      errorvalidacion.value = error.response.data.error
     }
     toolbar.value = false;
   };
@@ -161,6 +164,7 @@ export const useVendedorStore = defineStore("vendedor", () => {
     obtenerVendedores,
     loginRequest,
     errorvalidacion,
+    estatus,
     rows,
   };
 });

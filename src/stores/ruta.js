@@ -9,6 +9,8 @@ export const useRutaStore = defineStore("ruta", () => {
   let hora_salida = ref("");
   let valor = ref("");
   let bus = ref("");
+  let errorvalidacion = ref("");
+  let estatus = ref()
   let estado = ref("");
   let toolbar = ref(false);
   let cambiar = ref(false);
@@ -62,6 +64,7 @@ export const useRutaStore = defineStore("ruta", () => {
       rows.value.push(response.data.rutasPopulate);
     } catch (error) {
       console.log("Error al agregar nueva ruta:", error);
+      errorvalidacion.value = error.response.data.error
     }
     toolbar.value = false;
   };

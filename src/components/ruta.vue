@@ -4,15 +4,78 @@
       <h1 class="titulocli">RUTAS</h1>
       <div class="linea"></div>
     </div>
-    <div class="botongregar"> <button type="button" class="button" @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span> </button> </div>
+    <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+      @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg
+          xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
+          stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+          <line y2="19" y1="5" x2="12" x1="12"></line>
+          <line y2="12" y1="12" x2="19" x1="5"></line>
+        </svg></span> >
+    </button>
+
+    <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+      data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form">
+            <div class="cerrar">
+              <p class="title">Añadir Ruta
+              </p>
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+                id="botoncerrar">❌</button>
+            </div>
+            <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
+              class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError
+              }}</span>
+            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
+            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+              mensaje
+            }}</span>
+            <div v-if="loading" class="text-center">
+              <q-spinner-hourglass color="primary" size="50px" />
+              <p>Por favor, espere...</p>
+            </div>
+            <label for="ciudad_origen">
+              <select v-model="ciudad_origen" id="ciudad_origen" class="input">
+                <option value="" disabled>Selecciona una ciudad de origen</option>
+                <option v-for="ciudad in ciudades" :value="ciudad.id" :key="ciudad.id">{{ ciudad.nombre }}</option>
+              </select>
+            </label>
+
+            <label for="ciudad_destino">
+              <select v-model="ciudad_destino" id="ciudad_destino" class="input">
+                <option value="" disabled>Selecciona una ciudad de detino</option>
+                <option v-for="ciudad in ciudades" :value="ciudad.id" :key="ciudad.id">{{ ciudad.nombre }}</option>
+              </select>
+            </label>
+
+            <label for="hora_salida">
+              <input placeholder="" type="time" class="input" v-model="hora_salida">
+              <span>Hora salida :</span>
+            </label>
+
+            <label for="valor">
+              <input placeholder="" type="number" class="input" v-model="valor">
+              <span>Valor :</span>
+            </label>
+
+            <label for="bus">
+              <select v-model="bus" id="bus" class="input">
+                <option value="" disabled>Selecciona un bus</option>
+                <option v-for="b in buses" :value="b.id" :key="b.id">{{ b.empresa }}</option>
+              </select>
+
+            </label>
+
+            <button type="button"  @click="agregarNuevaRuta"
+              class="submit">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
 
 
-
-     <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span> >
-     </button>
-
-<!-- Modal -->
-<div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
+    <!-- <div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
   <div class="modal-dialog">
     <div class="modal-content">
       <form class="form">
@@ -57,9 +120,9 @@
       
     </div>
   </div>
-</div>
+</div> -->
 
-      
+
     <q-dialog v-model="toolbard">
       <q-card>
         <q-toolbar>
@@ -85,7 +148,7 @@
           <label for="hora_salida">Hora Salida: </label><br />
           <input type="text" v-model="hora_salida" />
           <br />
-          <label for="valor">Valor: </label><br/>
+          <label for="valor">Valor: </label><br />
           <input type="number" v-model="valor" />
           <br />
           <label for="bus">Bus: </label><br />
@@ -94,9 +157,7 @@
             <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
           </select>
           <br />
-          <p
-            :class="{ 'text-right': true, activo: estado === 1, inactivo: estado === 0 }"
-          >
+          <p :class="{ 'text-right': true, activo: estado === 1, inactivo: estado === 0 }">
             {{ obtenerTextoEstado(estado) }}
           </p>
           <button @click="useRuta.actualizarRuta(id, data); toolbard = false">Enviar</button>
@@ -128,13 +189,11 @@
               <div class="text-center">{{ props.row.bus.placa }}</div>
             </q-td>
             <q-td auto-width>
-              <div
-                :class="{
-                  'text-center': true,
-                  activo: props.row.estado === 1,
-                  inactivo: props.row.estado === 0
-                }"
-              >
+              <div :class="{
+                'text-center': true,
+                activo: props.row.estado === 1,
+                inactivo: props.row.estado === 0
+              }">
                 {{ obtenerTextoEstado(props.row.estado) }}
               </div>
             </q-td>
@@ -172,9 +231,17 @@ let hora_salida = ref("");
 let valor = ref("");
 let bus = ref("");
 let estado = ref(1);
-let toolbard = ref(false);
-let toolbar = ref(false);
 let cambiar = ref(false);
+let loading = ref(false);
+
+let mensaje = ref("");
+let mensajeColor = ref("");
+
+let ciudadOrigenError = ref(null);
+let ciudadDestinoError = ref(null);
+let horaSalidaError = ref(null);
+let valorError = ref(null);
+let busError = ref(null);
 
 const data = ref({
   ciudad_origen: ciudad_origen,
@@ -241,6 +308,72 @@ const columns = ref([
   },
 ]);
 
+const agregarNuevaRuta = async () => {
+  loading.value = true;
+  clearErrors()
+  useRuta.errorvalidacion = '';
+
+  if (!ciudad_origen.value) {
+    ciudadOrigenError.value = 'La ciudad de origen es requerido';
+  } 
+
+  if (!ciudad_destino.value) {
+    ciudadDestinoError.value = 'La ciudad de destino es requerido';
+  }
+
+  if (!hora_salida.value) {
+    horaSalidaError.value = 'La hora de salida es requerida';
+  }
+
+  if (!valor.value) {
+    valorError.value = 'El valor es requerido';
+  }
+
+  if (!bus.value) {
+    busError.value = 'El bus es requerido';
+  }
+
+
+  if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value && !valorError.value && !busError.value) {
+    const data = {
+
+    };
+
+    try {
+      const response = await useRuta.agregarNuevaRuta(data);
+      console.log(response);
+
+      if (useRuta.estatus === 200) {
+        mensajeColor.value = 'success';
+        mensaje.value = 'Ruta añadida correctamente (presione ❌ para cerrar)';
+        setTimeout(() => {
+          ciudad_origen.value = '';
+          ciudad_destino.value = '';
+          hora_salida.value = '';
+          valor.value = '';
+          bus.value = '';
+          useRuta.errorvalidacion = '';
+          mensaje.value = '';
+        }, 3000);
+      } else {
+        mensajeColor.value = 'error';
+        setTimeout(() => {
+          useRuta.errorvalidacion = '';
+        }, 3000);
+      }
+    } catch (error) {
+      console.log('Error al agregar la ruta:', error);
+      mensajeColor.value = 'error';
+      setTimeout(() => {
+        useRuta.errorvalidacion = '';
+      }, 3000);
+    }
+  }
+
+  loading.value = false;
+  clearErrors();
+};
+
 async function obtenerRutas() {
   try {
     await useRuta.obtenerRutas();
@@ -299,57 +432,64 @@ onMounted(async () => {
   color: green;
   font-weight: bold;
 }
+
 .inactivo {
   color: red;
   font-weight: bold;
 }
+
 p {
   display: flex;
 }
-.contenedor{
+
+.contenedor {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.linea{
+.linea {
   background-color: #1976d2;
   width: 50%;
   height: 5px;
 }
-.titulocli{
+
+.titulocli {
   font-size: 45px;
   font-family: "Roboto", "-apple-system", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-.botongregar{
+
+.botongregar {
   width: 100%;
   height: 50px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
-.butoagre{
+
+.butoagre {
   margin-right: 47px;
   margin-bottom: 0px;
   margin-top: 0px;
 }
-.q-pa-xl{
+
+.q-pa-xl {
   padding: 10px 48px 48px 48px;
 }
 
-.q-card{
+.q-card {
   width: 60%;
   height: 60%;
   display: grid;
   grid-template-rows: 10% 90%;
 }
 
-.q-card__section{
+.q-card__section {
   display: flex;
   flex-direction: column;
 }
 
-.butonenviar{
+.butonenviar {
   margin-top: 30px;
 }
 
@@ -365,7 +505,9 @@ p {
   margin-right: 50px;
 }
 
-.button, .button__icon, .button__text {
+.button,
+.button__icon,
+.button__text {
   transition: all 0.3s;
 }
 
@@ -409,7 +551,7 @@ p {
 }
 
 .button:active {
-  border: 1px solid #1976d2 ;
+  border: 1px solid #1976d2;
 }
 
 /* FORMULARIO */
@@ -438,7 +580,8 @@ p {
   padding-left: 30px;
 }
 
-.title::before,.title::after {
+.title::before,
+.title::after {
   position: absolute;
   content: "";
   height: 16px;
@@ -460,7 +603,8 @@ p {
   animation: pulse 1s linear infinite;
 }
 
-.message, .signin {
+.message,
+.signin {
   color: rgba(88, 87, 87, 0.822);
   font-size: 14px;
 }
@@ -495,7 +639,7 @@ p {
   border-radius: 10px;
 }
 
-.form label .input + span {
+.form label .input+span {
   position: absolute;
   left: 10px;
   top: 15px;
@@ -505,18 +649,19 @@ p {
   transition: 0.3s ease;
 }
 
-.form label .input:placeholder-shown + span {
+.form label .input:placeholder-shown+span {
   top: 15px;
   font-size: 0.9em;
 }
 
-.form label .input:focus + span,.form label .input:valid + span {
+.form label .input:focus+span,
+.form label .input:valid+span {
   top: 30px;
   font-size: 0.7em;
   font-weight: 600;
 }
 
-.form label .input:valid + span {
+.form label .input:valid+span {
   color: green;
 }
 
@@ -545,5 +690,4 @@ p {
     transform: scale(1.8);
     opacity: 0;
   }
-}
-</style>
+}</style>
