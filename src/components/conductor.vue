@@ -39,7 +39,7 @@
             <span>Nombre</span>
         </label>  
         <label>
-            <input required="" placeholder="" type="number" class="input" v-model="cedula">
+            <input required="" placeholder="" type="text" class="input" v-model="cedula">
             <span>Cedula</span>
         </label> 
       
@@ -53,7 +53,7 @@
 
     
 
-    <q-dialog v-model="toolbard">
+    <!-- <q-dialog v-model="toolbard">
       <q-card>
         <q-toolbar>
           <q-avatar>
@@ -81,7 +81,7 @@
           <button @click="useConductor.actualizarConductor(id, data); toolbard = false">Enviar</button>
         </q-card-section>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
 
     <div class="q-pa-xl">
       <q-table
@@ -157,7 +157,6 @@ let mensaje = ref("");
 let mensajeColor = ref('');
 let nombreError = ref (null)
 let cedulaError = ref (null) 
-let cambiar = ref(false);
 const data = ref({
   nombre: nombre,
   cedula: cedula,
@@ -176,16 +175,12 @@ const clearErrors = () => {
 setTimeout(() => {
   nombreError.value = null;
 
-
-
 }, 2000);
 };  
 
 const editar = (row) => {
   console.log(row);
-  toolbard.value = true;
   id.value = row._id;
-  cambiar.value = true;
   nombre.value = row.nombre;
   cedula.value = row.cedula;
   estado.value = row.estado;
@@ -221,6 +216,11 @@ const columns = ref([
 const agregar = () => {
   nombre.value = "";
   cedula.value = "";
+};
+
+const soloNumeros = (value) => {
+  const numeroRegex = /^[0-9]+$/;
+  return numeroRegex.test(value);
 };
 
 async function obtenerConductor() {

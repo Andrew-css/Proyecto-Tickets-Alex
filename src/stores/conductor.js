@@ -8,7 +8,6 @@ export const useConductorStore = defineStore("conductor", () => {
   let nombre = ref("");
   let cedula = ref("");
   let email = ref("");
-  let toolbar = ref(false);
   let cambiar = ref(false);
   let errorvalidacion = ref ("");
  let estatus = ref ();
@@ -52,9 +51,8 @@ export const useConductorStore = defineStore("conductor", () => {
       estatus.value=response.status
     } catch (error) {
       console.log("Error al agregar nuevo conductor:", error);
-      errorvalidacion.value=error.response.data.error
+      errorvalidacion.value = error.response.data.error
     }
-    toolbar.value = false;
   };
 
   const actualizarConductor = async (id, data) => {
@@ -70,7 +68,6 @@ export const useConductorStore = defineStore("conductor", () => {
     } catch (error) {
       console.log("Error al actualizar conductor:", error);
     }
-    toolbar.value = false;
   };
 
   const obtenerConductores = async () => {

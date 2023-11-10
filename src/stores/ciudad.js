@@ -6,7 +6,7 @@ export const useCiudadStore = defineStore("ciudad", () => {
   const rows = ref([]);
   let id = ref("");
   let nombre = ref("");
-  let toolbar = ref(false);
+
   let errorvalidacion = ref("");
   let estatus = ref()
   const columns = ref([
@@ -36,7 +36,6 @@ export const useCiudadStore = defineStore("ciudad", () => {
       console.log("Error al agregar nueva ciudad:", error);
       errorvalidacion.value = error.response.data.error
     }
-    toolbar.value = false;
   };
 
   const actualizarCiudad = async (id, data) => {
@@ -52,8 +51,8 @@ export const useCiudadStore = defineStore("ciudad", () => {
       console.log("Respuesta del servidor al actualizar ciudad:", response);
     } catch (error) {
       console.log("Error al actualizar ciudad:", error);
-    }
-    toolbar.value = false;
+      errorvalidacion.value = error.response.data.error.keyValue.nombre
+    }   
   };
 
   const obtenerCiudades = async () => {

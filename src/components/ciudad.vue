@@ -23,7 +23,7 @@
         
         <p class="message">Signup now and get full access to our app. </p>  
         <span v-if="nombreError " class="error-message">{{ nombreError  }}</span>
-            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }}</p>
+            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }} </p>
             <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
               mensaje
             }}</span>
@@ -42,23 +42,37 @@
   </div>
 </div>
 
-    <q-dialog v-model="toolbard">
-      <q-card>
-        <q-toolbar>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
-          </q-avatar>
-          <q-toolbar-title>Editar Ciudad</q-toolbar-title>
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-toolbar>
-        <q-card-section>
-          <label for="">Nombre: </label><br />
-          <input type="text" v-model="nombre" />
-          <br />
-          <button @click="useCiudad.actualizarCiudad(id, data); toolbard = false">Enviar</button>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+ 
+
+
+    <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form">
+            <div class="cerrar">
+              <p class="title">Editar cliente</p>
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+            </div>
+            <span v-if="nombreError " class="error-message">{{ nombreError }}</span>
+            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }}</p>
+            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+              mensaje
+            }}</span>
+            <div v-if="loading" class="text-center">
+              <q-spinner-hourglass color="primary" size="50px" />
+              <p>Por favor, espere...</p>
+            </div>
+            <label for="nombre">
+              <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
+
+            </label>
+
+          
+            <button type="button"  @click="editarCiudad" class="submit">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <div class="q-pa-xl">
       <q-table class="text-center" :rows="rows" :columns="columns" row-key="id">
@@ -82,7 +96,7 @@
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn label="📋" color="primary" @click="editar(props.row)" />
+              <q-btn label="📋" color="primary" @click="editar(props.row) " data-bs-toggle="modal" data-bs-target="#editClientModal" />
               <q-btn label="✅" color="primary" @click="useCiudad.activar(props.row._id)" v-if="props.row.estado === 0" />
               <q-btn label="❌" color="primary" @click="useCiudad.desactivar(props.row._id)" v-if="props.row.estado === 1" />
             </q-td>
@@ -106,9 +120,7 @@ let nombre = ref("");
 let loading = ref (false);
 let mensaje = ref("");
 let mensajeColor = ref(''); 
-const data = ref({
-  nombre: nombre,
-});
+
 
 const mostrarMensajeExito = (message) => {
   mensaje.value = message;
@@ -127,7 +139,7 @@ setTimeout(() => {
 
 const editar = (row) => {
   console.log(row);
-  toolbard.value = true;
+
   id.value = row._id;
   nombre.value = row.nombre;
 };
@@ -148,7 +160,6 @@ const columns = ref([
 ]);
 
 const agregar = () => {
-  toolbar.value = true;
   nombre.value = "";
 };
 
@@ -164,23 +175,19 @@ async function obtenerCiudad() {
 
 async function desactivarCiudad(id) {
   await useCiudad.desactivar(id);
-  obtenerConductor();
+  obtenerCiudad();
 }
 
 async function activarCiudad(id) {
   await useCiudad.activar(id);
-  obtenerConductor();
+  obtenerCiudad();
 }
 
 const obtenerTextoEstado = (estado) => {
   return estado === 1 ? "Activo" : "Inactivo";
 };
 
-onMounted(async () => {
-  obtenerCiudad();
-  desactivarCiudad();
-  activarCiudad();
-});
+
 
 
 // VALIDACIONES 
@@ -233,6 +240,41 @@ const agregarNuevaCiudad = async () => {
   clearErrors();
 };
 
+const editarCiudad = async () => {
+  clearErrors();
+
+  // Validar los campos
+  if (!nombre.value) {
+    nombreError.value = 'El nombre es requerido';
+  } else if (nombre.value.length > 15) {
+    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
+  }
+
+  if (!nombreError.value) {
+    loading.value = true
+    const data = {
+      nombre: nombre.value,
+    };
+
+    try {
+      const response = await useCiudad.actualizarCiudad(id.value, data);
+      mostrarMensajeExito('Ciudad editado correctamente');
+      mensajeColor.value = 'success';
+      loading.value = false;
+      mensaje.value = "Ciudad editado correctamente (presione ❌ para cerrar)";
+    } catch (error) {
+      console.log('Error al agregar el cliente:', error);
+      mensajeColor.value = 'error';
+      mostrarMensajeExito('Error al editar el cliente');
+    }
+  }
+}
+
+onMounted(async () => {
+  obtenerCiudad();
+  desactivarCiudad();
+  activarCiudad();
+});
 
 </script>
 
