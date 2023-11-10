@@ -3,10 +3,61 @@
     <div class="contenedor">
       <h1 class="titulocli">CLIENTES</h1>
       <div class="linea"></div>
-    </div>    
-    <div class="botongregar"> <button type="button" class="button" @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span> </button> </div>
+    </div>
+    <div class="r">
+      <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+      @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg
+          xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
+          stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+          <line y2="19" y1="5" x2="12" x1="12"></line>
+          <line y2="12" y1="12" x2="19" x1="5"></line>
+        </svg></span> 
+    </button>
+    </div>
     
-    <q-dialog v-model="toolbar">
+    <div  class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form">
+            <div class="cerrar">
+              <p class="title">Añadir cliente</p>
+              <button  data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+            </div>
+            <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
+              emailError }}</span>
+            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
+            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+              mensaje
+            }}</span>
+            <div v-if="loading" class="text-center">
+              <q-spinner-hourglass color="primary" size="50px" />
+              <p>Por favor, espere...</p>
+            </div>
+            <label for="nombre">
+              <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
+
+            </label>
+
+            <label for="cedula">
+              <input  placeholder="Cedula" type="text" class="input" v-model="cedula">
+
+            </label>
+
+            <label for="email">
+              <input  placeholder="Email" type="text" class="input" v-model="email">
+
+            </label>
+
+            <!-- Resto del contenido del formulario... -->
+
+            <button  @click="agregarNuevoCliente" class="submit">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- <q-dialog v-model=" toolbar ">
       <q-card>
         <q-toolbar>
           <q-avatar>
@@ -20,19 +71,29 @@
 
         <q-card-section class="a">
           <label for="">Nombre: </label><br />
-          <input type="text-center" v-model="nombre" />
+          <input type="text" v-model=" nombre " />
           <br />
           <label for="">Cedula: </label><br />
-          <input type="number" v-model="cedula" />
+          <input type="text" v-model=" cedula " name="cedula" />
           <br />
           <label for="">Email: </label><br />
-          <input type="text" v-model="email" /><br />
-          <button class="butonenviar" @click="useCliente.agregarNuevoCliente(data), toolbar = false">Enviar</button>
+          <input type="text" v-model=" email " />
+          <br />
+          <div v-if=" loading " class="text-center">
+            <q-spinner-hourglass color="primary" size="50px" />
+            <p>Por favor, espere...</p>
+          </div>
+          <span v-if=" nombreError || cedulaError || emailError " class="error-message">{{ nombreError || cedulaError ||
+            emailError }}</span>
+          <p style="color: red; font-weight: bold;"> {{ useCliente.errorvalidacion }}</p>
+          <span v-if=" mensaje " :class=" [mensajeColor === 'success' ? 'success-message' : 'error-message'] ">{{ mensaje
+            }}</span>
+          <button class="butonenviar" @click=" agregarNuevoCliente ">Enviar</button>
         </q-card-section>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
 
-    <q-dialog v-model="toolbard">
+    <!-- <q-dialog v-model="toolbard">
       <q-card>
         <q-toolbar>
           <q-avatar>
@@ -47,7 +108,7 @@
         <q-card-section class="a">
           <label for="">Nombre: </label><br />
           <input type="text" v-model="nombre" />
-          <span v-if="nombreError" class="error-message">{{ nombreError }}</span>
+
           <br />
           <label for="">Cedula: </label><br />
           <input type="number" v-model="cedula" readonly class="readonly-input" />
@@ -55,20 +116,63 @@
           <label for="">Email: </label><br />
           <input type="text" v-model="email" readonly class="readonly-input" />
           <br />
+          <span v-if="nombreError" class="error-message">{{ nombreError }}</span>
           <div v-if="loading" class="text-center">
             <q-spinner-hourglass color="primary" size="50px" />
             <p>Por favor, espere...</p>
           </div>
           <div class="text-center">
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{ mensaje
-          }}</span>
+            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+              mensaje
+            }}</span>
           </div>
           <button class="butonenviar" @click="editarCliente" v-if="!loading">
             Editar Cliente
           </button>
         </q-card-section>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
+
+    <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="editClientModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form">
+            <div class="cerrar">
+              <p class="title">Editar cliente</p>
+              <button  data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+            </div>
+            <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
+              emailError }}</span>
+            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
+            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+              mensaje
+            }}</span>
+            <div v-if="loading" class="text-center">
+              <q-spinner-hourglass color="primary" size="50px" />
+              <p>Por favor, espere...</p>
+            </div>
+            <label for="nombre">
+              <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
+
+            </label>
+
+            <label for="cedula">
+              <input  placeholder="Cedula" type="text" class="input" v-model="cedula" readonly id="readonly">
+
+            </label>
+
+            <label for="email">
+              <input  placeholder="Email" type="text" class="input" v-model="email" readonly id="readonly">
+
+            </label>
+
+            <!-- Resto del contenido del formulario... -->
+
+            <button  @click="editarCliente" class="submit">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <div class="q-pa-xl">
       <q-table class="text-center" :rows="rows" :columns="columns" row-key="id">
@@ -90,16 +194,18 @@
             </q-td>
             <q-td auto-width>
               <div :class="{
-                'text-center': true,
-                activo: props.row.estado === 1,
-                inactivo: props.row.estado === 0
-              }">
+                  'text-center': true,
+                  activo: props.row.estado === 1,
+                  inactivo: props.row.estado === 0
+                }
+                ">
                 {{ obtenerTextoEstado(props.row.estado) }}
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn label="📋" color="primary" @click="editar(props.row)" />
-              <q-btn label="✅" color="primary" @click="useCliente.activar(props.row._id)" v-if="props.row.estado === 0" />
+              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal" data-bs-target="#editClientModal"/>
+              <q-btn label="✅" color="primary" @click="useCliente.activar(props.row._id)"
+                v-if="props.row.estado === 0" />
               <q-btn label="❌" color="primary" @click="useCliente.desactivar(props.row._id)"
                 v-if="props.row.estado === 1" />
             </q-td>
@@ -122,8 +228,6 @@ let nombre = ref("");
 let cedula = ref("");
 let email = ref("");
 let estado = ref(1);
-let toolbard = ref(false);
-let toolbar = ref(false);
 let cambiar = ref(false);
 const nombreError = ref(null);
 const cedulaError = ref(null);
@@ -152,7 +256,6 @@ const mostrarMensajeExito = (message) => {
 
 const editar = (row) => {
   console.log(row);
-  toolbard.value = true;
   id.value = row._id;
   cambiar.value = true;
   nombre.value = row.nombre;
@@ -196,7 +299,6 @@ const columns = ref([
 ]);
 
 const agregar = () => {
-  toolbar.value = true;
   nombre.value = "";
   cedula.value = "";
   email.value = "";
@@ -255,23 +357,26 @@ const agregarNuevoCliente = async () => {
 
       if (useCliente.estatus === 200) {
         mensajeColor.value = 'success';
-        mensaje.value = 'Cliente añadido correctamente';
+        mensaje.value = 'Cliente añadido correctamente (presione ❌ para cerrar)';
         setTimeout(() => {
-          toolbar.value = false;
           nombre.value = '';
           cedula.value = '';
           email.value = '';
-          useCliente.errorvalidacion = ''; 
+          useCliente.errorvalidacion = '';
           mensaje.value = '';
         }, 3000);
       } else {
         mensajeColor.value = 'error';
-        mostrarMensajeExito('Error al añadir el cliente');
+        setTimeout(() => {
+          useCliente.errorvalidacion = '';
+        }, 3000);
       }
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
-      mostrarMensajeExito('Error al añadir el cliente');
+      setTimeout(() => {
+        useCliente.errorvalidacion = '';
+      }, 3000);
     }
   }
 
@@ -279,7 +384,7 @@ const agregarNuevoCliente = async () => {
   clearErrors();
 };
 
-  
+
 
 const editarCliente = async () => {
   clearErrors();
@@ -304,10 +409,7 @@ const editarCliente = async () => {
       mostrarMensajeExito('Cliente editado correctamente');
       mensajeColor.value = 'success';
       loading.value = false;
-      mensaje.value = "Cliente editado correctamente";
-      setTimeout(() => {
-        toolbard.value = false; // Cierra el modal después de 3 segundos
-      }, 3000);
+      mensaje.value = "Cliente editado correctamente (presione ❌ para cerrar)";
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
@@ -339,7 +441,6 @@ async function activarCliente(id) {
 const obtenerTextoEstado = (estado) => {
   return estado === 1 ? "Activo" : "Inactivo";
 };
-
 
 
 onMounted(async () => {
@@ -480,12 +581,13 @@ p {
   color: red;
 }
 
-.readonly-input {
-  background-color: #f2f2f2;
+#readonly{
+  background-color: #ffeee4;
   cursor: not-allowed;
-  color: #666;
-  border: none;
+  color: #505050;
+  border: 1px solid rgb(198, 198, 198);
   outline: none;
+  height: 50px;
   padding: 5px;
   width: 100%;
 }
@@ -493,5 +595,168 @@ p {
 .success-message {
   color: green;
   font-weight: bold;
+  font-size: 20px;
 }
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  position: relative;
+}
+
+.title {
+  font-size: 28px;
+  color: royalblue;
+  font-weight: 600;
+  letter-spacing: -1px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+}
+
+.title::before,
+.title::after {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  left: 0px;
+  background-color: royalblue;
+}
+
+.title::before {
+  width: 18px;
+  height: 18px;
+  background-color: royalblue;
+}
+
+.title::after {
+  width: 18px;
+  height: 18px;
+  animation: pulse 1s linear infinite;
+}
+
+.message,
+.signin {
+  color: rgba(88, 87, 87, 0.822);
+  font-size: 14px;
+}
+
+.signin {
+  text-align: center;
+}
+
+.signin a {
+  color: royalblue;
+}
+
+.signin a:hover {
+  text-decoration: underline royalblue;
+}
+
+.flex {
+  display: flex;
+  width: 150%;
+  gap: 6px;
+}
+
+.form label {
+  position: relative;
+}
+
+.form label .input {
+  width: 100%;
+  padding: 10px 10px 20px 10px;
+  outline: 0;
+  border: 1px solid rgba(105, 105, 105, 0.397);
+  border-radius: 10px;
+}
+
+.form label .input+span {
+  position: absolute;
+  left: 10px;
+  top: 15px;
+  color: grey;
+  font-size: 0.9em;
+  cursor: text;
+  transition: 0.3s ease;
+}
+
+.form label .input:placeholder-shown+span {
+  top: 15px;
+  font-size: 0.9em;
+}
+
+.form label .input:focus+span,
+.form label .input:valid+span {
+  top: 30px;
+  font-size: 0.7em;
+  font-weight: 600;
+}
+
+.form label .input:valid+span {
+  color: green;
+}
+
+.submit {
+  border: none;
+  outline: none;
+  background-color: royalblue;
+  padding: 10px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  transform: .3s ease;
+}
+
+.submit:hover {
+  background-color: rgb(56, 90, 194);
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.cerrar{
+  display: flex;
+  justify-content: space-between;
+  margin-right: 20px;
+
+}
+
+
+#botoncerrar{
+  width: 5px;
+  font-size: 25px;
+  border: none;
+  background-color: white;
+}
+
+.r{
+  display: flex;
+  margin-top: 20px;
+}
+
 </style>
+

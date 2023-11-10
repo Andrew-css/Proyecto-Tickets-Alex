@@ -11,6 +11,9 @@ export const useBusStore = defineStore("bus", () => {
   let estado = ref("");
   let toolbar = ref(false);
   let cambiar = ref(false);
+  let errorvalidacion = ref("")
+  let estatus = ref()
+
   const columns = ref([
     {
       name: "Empresa",
@@ -54,6 +57,7 @@ export const useBusStore = defineStore("bus", () => {
       );
       console.log("Respuesta del servidor al agregar nuevo bus:", response);
       console.log("Datos del array", data)
+      estatus.value = response.status
       rows.value.push(response.data.busPopulate);
     } catch (error) {
       console.log("Error al agregar nuevo bus:", error);
@@ -72,6 +76,7 @@ export const useBusStore = defineStore("bus", () => {
       console.log("Respuesta del servidor al actualizar bus:", response);
     } catch (error) {
       console.log("Error al actualizar bus:", error);
+      errorvalidacion.value = error.response.data.error
     }
     toolbar.value = false;
   };
@@ -142,6 +147,8 @@ export const useBusStore = defineStore("bus", () => {
     desactivar,
     obtenerBuses,
     obtenerConductores,
+    errorvalidacion,
+    estatus,
     rows,
   };
 });
