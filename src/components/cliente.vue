@@ -22,7 +22,7 @@
           <form class="form">
             <div class="cerrar">
               <p class="title">Añadir cliente</p>
-              <button  data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
             </div>
             <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
               emailError }}</span>
@@ -51,7 +51,7 @@
 
             <!-- Resto del contenido del formulario... -->
 
-            <button  @click="agregarNuevoCliente" class="submit">Enviar</button>
+            <button type="button" @click="agregarNuevoCliente" class="submit">Enviar</button>
           </form>
         </div>
       </div>
@@ -139,7 +139,7 @@
           <form class="form">
             <div class="cerrar">
               <p class="title">Editar cliente</p>
-              <button  data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
             </div>
             <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
               emailError }}</span>
@@ -168,7 +168,7 @@
 
             <!-- Resto del contenido del formulario... -->
 
-            <button  @click="editarCliente" class="submit">Enviar</button>
+            <button type="button"  @click="editarCliente" class="submit">Enviar</button>
           </form>
         </div>
       </div>
@@ -228,7 +228,6 @@ let nombre = ref("");
 let cedula = ref("");
 let email = ref("");
 let estado = ref(1);
-let cambiar = ref(false);
 const nombreError = ref(null);
 const cedulaError = ref(null);
 const emailError = ref(null);
@@ -257,7 +256,6 @@ const mostrarMensajeExito = (message) => {
 const editar = (row) => {
   console.log(row);
   id.value = row._id;
-  cambiar.value = true;
   nombre.value = row.nombre;
   cedula.value = row.cedula;
   email.value = row.email;

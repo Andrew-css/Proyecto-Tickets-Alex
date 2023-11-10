@@ -16,7 +16,7 @@
           <form class="form">
             <div class="cerrar">
               <p class="title">Añadir Bus</p>
-              <button data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
                 id="botoncerrar">❌</button>
             </div>
             <span v-if="empresaError || asientoError || placaError || conductorError" class="error-message">{{
@@ -54,7 +54,7 @@
 
             <!-- Resto del contenido del formulario... -->
 
-            <button @click="agregarNuevoBus" class="submit">Enviar</button>
+            <button type="button" @click="agregarNuevoBus" class="submit">Enviar</button>
           </form>
         </div>
       </div>
@@ -67,7 +67,7 @@
           <form class="form">
             <div class="cerrar">
               <p class="title">Editar Bus</p>
-              <button data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
                 id="botoncerrar">❌</button>
             </div>
             <span v-if="empresaError || asientoError || placaError" class="error-message">{{ empresaError || asientoError
@@ -103,7 +103,7 @@
 
             <!-- Resto del contenido del formulario... -->
 
-            <button @click="editarBus" class="submit">Enviar</button>
+            <button type="button" @click="editarBus" class="submit">Enviar</button>
           </form>
         </div>
       </div>
