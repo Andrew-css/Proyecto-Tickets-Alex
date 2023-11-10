@@ -55,7 +55,7 @@
             </label>
 
             <label for="valor">
-              <input placeholder="" type="number" class="input" v-model="valor">
+              <input placeholder="" type="text" class="input" v-model="valor">
               <span>Valor :</span>
             </label>
 
@@ -122,7 +122,7 @@
   </div>
 </div> -->
 
-
+<!-- 
     <q-dialog v-model="toolbard">
       <q-card>
         <q-toolbar>
@@ -163,7 +163,7 @@
           <button @click="useRuta.actualizarRuta(id, data); toolbard = false">Enviar</button>
         </q-card-section>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
     <div class="q-pa-xl">
       <q-table class="text-center" :rows="rows" :columns="columns" row-key="id">
         <template v-slot:top>
@@ -251,6 +251,17 @@ const data = ref({
   bus: bus,
 });
 
+const clearErrors = () => {
+
+setTimeout(() => {
+  ciudadOrigenError.value = null;
+  ciudadDestinoError.value = null;
+  horaSalidaError.value = null;
+  valorError.value = null;
+  busError.value = null;
+}, 2000);
+};
+
 const editar = (row) => {
   toolbard.value = true;
   id.value = row._id;
@@ -336,7 +347,11 @@ const agregarNuevaRuta = async () => {
 
   if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value && !valorError.value && !busError.value) {
     const data = {
-
+      ciudad_origen: ciudad_origen.value,
+      ciudad_destino: ciudad_destino.value,
+      hora_salida: hora_salida.value,
+      valor: valor.value,
+      bus: bus.value,
     };
 
     try {
