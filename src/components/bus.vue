@@ -92,14 +92,16 @@
             </label>
 
             <label for="placa">
-              <input placeholder="Placa" type="text" class="input" v-model="placa">
+              <input placeholder="Placa" type="text" class="input" v-model="placa"  readonly id="readonly">
 
             </label>
 
-            <label for="conductor">
-              <input placeholder="Conductor" type="text" class="input" v-model="conductor" readonly id="readonly">
-
-            </label>
+            <label  class="select">
+              <select v-model="conductor" id="conductor" class="input">
+              <option value="" disabled>Selecciona un conductor</option>
+              <option v-for="c in conductores" :value="c._id" :key="c._id">{{ c.nombre }}</option>
+            </select>
+          </label>
 
             <!-- Resto del contenido del formulario... -->
 
@@ -263,7 +265,8 @@ const agregar = () => {
   empresa.value = "";
   asiento.value = "";
   placa.value = "";
-  estado.value = 1;
+  mensaje.value = "";
+  useVendedor.errorvalidacion = "";
 };
 
 const editar = (row) => {
@@ -272,7 +275,7 @@ const editar = (row) => {
   empresa.value = row.empresa;
   asiento.value = row.asiento;
   placa.value = row.placa;
-  conductor.value = row.conductor.nombre;
+  conductor.value = row.conductor._id;
   estado.value = row.estado;
 };
 
@@ -317,12 +320,7 @@ const columns = ref([
 
 console.log("Conductores", conductores)
 
-const mostrarMensajeExito = (message) => {
-  mensaje.value = message;
-  setTimeout(() => {
-    mensaje.value = '';
-  }, 3000);
-};
+
 
 const soloNumeros = (value) => {
   const numeroRegex = /^[0-9]+$/;
@@ -447,11 +445,9 @@ const editarBus = async () => {
     asientoError.value = 'El número de asiento no puede ser mayor a 40';
   }
 
-  if (!placa.value) {
-    placaError.value = 'El asiento es requerido';
-  } else if (placa.value.length > 7) {
-    placaError.value = 'la placa no puede tener más de 7 caracteres';
-  }
+  if (!conductor.value) {
+    placaError.value = 'El conductor es requerido';
+  } 
 
   if (!empresaError.value && !asientoError.value && !placaError.value) {
     loading.value = true
@@ -464,14 +460,14 @@ const editarBus = async () => {
 
     try {
       const response = await useBus.actualizarBus(id.value, data);
-      mostrarMensajeExito('Bus editado correctamente');
+
       mensajeColor.value = 'success';
       loading.value = false;
       mensaje.value = "Bus editado correctamente (presione ❌ para cerrar)";
     } catch (error) {
       console.log('Error al editar el bus:', error);
       mensajeColor.value = 'error';
-      mostrarMensajeExito('Error al editar el bus');
+  
     }
   }
 }

@@ -246,12 +246,6 @@ const soloNumeros = (value) => {
   return numeroRegex.test(value);
 };
 
-const mostrarMensajeExito = (message) => {
-  mensaje.value = message;
-  setTimeout(() => {
-    mensaje.value = '';
-  }, 3000);
-};
 
 const editar = (row) => {
   console.log(row);
@@ -300,6 +294,8 @@ const agregar = () => {
   nombre.value = "";
   cedula.value = "";
   email.value = "";
+  mensaje.value = "";
+  useVendedor.errorvalidacion = "";
 };
 
 
@@ -404,16 +400,16 @@ const editarCliente = async () => {
 
     try {
       const response = await useCliente.actualizarCliente(id.value, data);
-      mostrarMensajeExito('Cliente editado correctamente');
       mensajeColor.value = 'success';
       loading.value = false;
       mensaje.value = "Cliente editado correctamente (presione ❌ para cerrar)";
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
-      mostrarMensajeExito('Error al editar el cliente');
     }
   }
+  loading.value = false;
+  clearErrors();
 }
 
 async function obtenerCliente() {

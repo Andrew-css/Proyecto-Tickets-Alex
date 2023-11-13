@@ -4,14 +4,18 @@
       <h1 class="titulocli">RUTAS</h1>
       <div class="linea"></div>
     </div>
-    <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+    <div class="r">
+      <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
       @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg
           xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
           stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
           <line y2="19" y1="5" x2="12" x1="12"></line>
           <line y2="12" y1="12" x2="19" x1="5"></line>
-        </svg></span> >
+        </svg></span> 
     </button>
+    </div>
+
+     <!-- Modal agregar -->
 
     <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
       data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
@@ -38,20 +42,20 @@
             <label for="ciudad_origen">
               <select v-model="ciudad_origen" id="ciudad_origen" class="input">
                 <option value="" disabled>Selecciona una ciudad de origen</option>
-                <option v-for="ciudad in ciudades" :value="ciudad.id" :key="ciudad.id">{{ ciudad.nombre }}</option>
+                <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
               </select>
             </label>
 
             <label for="ciudad_destino">
               <select v-model="ciudad_destino" id="ciudad_destino" class="input">
                 <option value="" disabled>Selecciona una ciudad de detino</option>
-                <option v-for="ciudad in ciudades" :value="ciudad.id" :key="ciudad.id">{{ ciudad.nombre }}</option>
+                <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
               </select>
             </label>
 
             <label for="hora_salida">
-              <input placeholder="" type="time" class="input" v-model="hora_salida">
-              <span>Hora salida :</span>
+              <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
+              <span>Fecha y Hora de salida :</span>
             </label>
 
             <label for="valor">
@@ -62,7 +66,7 @@
             <label for="bus">
               <select v-model="bus" id="bus" class="input">
                 <option value="" disabled>Selecciona un bus</option>
-                <option v-for="b in buses" :value="b.id" :key="b.id">{{ b.empresa }}</option>
+                <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
               </select>
 
             </label>
@@ -74,53 +78,67 @@
       </div>
     </div>
 
+     <!-- Modal editar -->
 
-    <!-- <div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form class="form">
-        
-        <p class="title">Register </p>  
-        <p class="message">Signup now and get full access to our app. </p>
-           
-        <label  for="ciudad_origen">
-          <select v-model="ciudad_origen" id="ciudad_origen" class="input">
-            <option value="" disabled>Selecciona una ciudad de origen</option>
-            <option v-for="ciudad in ciudades" :value="ciudad.id" :key="ciudad.id">{{ ciudad.nombre }}</option>
-          </select>   
-        </label>
+    <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form">
+            <div class="cerrar">
+              <p class="title">Editar Ruta</p>
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+            </div>
+            <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
+              class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError
+              }}</span>
+            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
+            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+              mensaje
+            }}</span>
+            <div v-if="loading" class="text-center">
+              <q-spinner-hourglass color="primary" size="50px" />
+              <p>Por favor, espere...</p>
+            </div>
+            <label for="ciudad_origen">
+              <select v-model="ciudad_origen" id="ciudad_origen" class="input">
+                <option value="" disabled>Selecciona una ciudad de origen</option>
+                <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
+              </select>
+            </label>
 
-        <label for="ciudad_destino">
-           <select v-model="ciudad_destino" id="ciudad_destino" class="input">
-             <option value="" disabled>Selecciona una ciudad de detino</option>
-             <option v-for="ciudad in ciudades" :value="ciudad.id" :key="ciudad.id">{{ ciudad.nombre }}</option>
-           </select>
-        </label> 
-      
-        <label for="hora_salida">
-            <input required="" placeholder="" type="time" class="input" v-model="hora_salida" >
-            <span>Hora salida :</span>
-        </label>
+            <label for="ciudad_destino">
+              <select v-model="ciudad_destino" id="ciudad_destino" class="input">
+                <option value="" disabled>Selecciona una ciudad de detino</option>
+                <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
+              </select>
+            </label>
 
-        <label for="valor">
-            <input required="" placeholder="" type="number" class="input" v-model="valor" >
-            <span>Valor :</span>
-        </label>
+            <label for="hora_salida">
+              <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
+              <span>Fecha y Hora de salida :</span>
+            </label>
 
-        <label for="bus">
-            <select v-model="bus" id="bus" class="input">
-            <option value="" disabled>Selecciona un bus</option>
-            <option v-for="b in buses" :value="b.id" :key="b.id">{{ b.empresa }}</option>
-          </select>
-            
-        </label>
-      
-        <button data-bs-dismiss="modal"  @click="useCliente.agregarNuevoRuta(data); toolbar = false" class="submit">Enviar</button>
-      </form>
-      
+            <label for="valor">
+              <input placeholder="" type="text" class="input" v-model="valor">
+              <span>Valor :</span>
+            </label>
+
+            <label for="bus">
+              <select v-model="bus" id="bus" class="input">
+                <option value="" disabled>Selecciona un bus</option>
+                <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
+              </select>
+
+            </label>
+
+            <!-- Resto del contenido del formulario... -->
+
+            <button type="button"  @click="editarRuta" class="submit">Enviar</button>
+          </form>
+        </div>
+      </div>
     </div>
-  </div>
-</div> -->
+  
 
 <!-- 
     <q-dialog v-model="toolbard">
@@ -198,7 +216,7 @@
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn label="📋" color="primary" @click="editar(props.row)" />
+              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal" data-bs-target="#editClientModal"/>
               <q-btn label="✅" color="primary" @click="useRuta.activar(props.row._id)" v-if="props.row.estado === 0" />
               <q-btn label="❌" color="primary" @click="useRuta.desactivar(props.row._id)" v-if="props.row.estado === 1" />
             </q-td>
@@ -223,7 +241,6 @@ let rows = ref([]);
 let rutas = ref([]);
 let ciudades = ref([]);
 let buses = ref([]);
-
 let id = ref("");
 let ciudad_origen = ref("");
 let ciudad_destino = ref("");
@@ -231,9 +248,7 @@ let hora_salida = ref("");
 let valor = ref("");
 let bus = ref("");
 let estado = ref(1);
-let cambiar = ref(false);
 let loading = ref(false);
-
 let mensaje = ref("");
 let mensajeColor = ref("");
 
@@ -243,13 +258,16 @@ let horaSalidaError = ref(null);
 let valorError = ref(null);
 let busError = ref(null);
 
-const data = ref({
-  ciudad_origen: ciudad_origen,
-  ciudad_destino: ciudad_destino,
-  hora_salida: hora_salida,
-  valor: valor,
-  bus: bus,
-});
+
+const agregar = () => {
+  ciudad_origen.value = "";
+  ciudad_destino.value = "";
+  hora_salida.value = "";
+  valor.value = "";
+  bus.value = "";
+  mensaje.value = "";
+  useVendedor.errorvalidacion = "";
+};
 
 const clearErrors = () => {
 
@@ -263,14 +281,13 @@ setTimeout(() => {
 };
 
 const editar = (row) => {
-  toolbard.value = true;
+  console.log("Datos de la fila:", row);
   id.value = row._id;
-  cambiar.value = true;
-  ciudad_origen.value = row.ciudad_origen;
-  ciudad_destino.value = row.ciudad_destino;
+  ciudad_origen.value = row.ciudad_origen._id;
+  ciudad_destino.value = row.ciudad_destino._id;
   hora_salida.value = row.hora_salida;
   valor.value = row.valor;
-  bus.value = row.bus;
+  bus.value = row.bus._id;
   estado.value = row.estado;
 };
 
@@ -288,8 +305,8 @@ const columns = ref([
     field: (row) => row.ciudad_destino,
   },
   {
-    name: "Hora Salida",
-    label: "Hora Salida",
+    name: "Fecha y Hora Salida",
+    label: "Fecha y Hora Salida",
     align: "center",
     field: (row) => row.hora_salida,
   },
@@ -326,14 +343,16 @@ const agregarNuevaRuta = async () => {
 
   if (!ciudad_origen.value) {
     ciudadOrigenError.value = 'La ciudad de origen es requerido';
-  } 
+  } else if (ciudad_origen.value === ciudad_destino.value) {
+    ciudadDestinoError.value = 'La ciudad de destino no puede ser igual a la ciudad de origen';
+  }
 
   if (!ciudad_destino.value) {
     ciudadDestinoError.value = 'La ciudad de destino es requerido';
   }
 
   if (!hora_salida.value) {
-    horaSalidaError.value = 'La hora de salida es requerida';
+    horaSalidaError.value = 'La Fecha y hora de salida es requerida';
   }
 
   if (!valor.value) {
@@ -388,6 +407,60 @@ const agregarNuevaRuta = async () => {
   loading.value = false;
   clearErrors();
 };
+
+const editarRuta = async () => {
+  
+  clearErrors();
+
+  // Validar los campos
+  if (!ciudad_origen.value) {
+    ciudadOrigenError.value = 'La ciudad de origen es requerido';
+  } else if (ciudad_origen.value === ciudad_destino.value) {
+    ciudadDestinoError.value = 'La ciudad de destino no puede ser igual a la ciudad de origen';
+  }
+
+  if (!ciudad_destino.value) {
+    ciudadDestinoError.value = 'La ciudad de destino es requerido';
+  }
+
+  if (!hora_salida.value) {
+    horaSalidaError.value = 'La Fecha y hora de salida es requerida';
+  }
+
+  if (!valor.value) {
+    valorError.value = 'El valor es requerido';
+  }
+
+  if (!bus.value) {
+    busError.value = 'El bus es requerido';
+  }
+
+  if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value && !valorError.value && !busError.value) {
+    loading.value = true;
+    const data = {
+      ciudad_origen: ciudad_origen.value,
+      ciudad_destino: ciudad_destino.value,
+      hora_salida: hora_salida.value,
+      valor: valor.value,
+      bus: bus.value,
+    };
+
+    try {
+      const response = await useRuta.actualizarRuta(id.value, data);
+      mensajeColor.value = 'success';
+      loading.value = false;
+      mensaje.value = "Ruta editada correctamente (presione ❌ para cerrar)";
+    } catch (error) {
+      console.log('Error al editar la ruta:', error);
+      mensajeColor.value = 'error';
+      setTimeout(() => {
+        useRuta.errorvalidacion = '';
+      }, 3000);
+    }
+  }
+  loading.value = false;
+  clearErrors();
+}
 
 async function obtenerRutas() {
   try {
@@ -569,9 +642,32 @@ p {
   border: 1px solid #1976d2;
 }
 
-/* FORMULARIO */
+.error-message {
+  color: red;
+}
 
+#readonly{
+  background-color: #ffeee4;
+  cursor: not-allowed;
+  color: #505050;
+  border: 1px solid rgb(198, 198, 198);
+  outline: none;
+  height: 50px;
+  padding: 5px;
+  width: 100%;
+}
 
+.success-message {
+  color: green;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  font-size: 20px;
+}
 
 .form {
   display: flex;
@@ -705,4 +801,27 @@ p {
     transform: scale(1.8);
     opacity: 0;
   }
-}</style>
+}
+
+.cerrar{
+  display: flex;
+  justify-content: space-between;
+  margin-right: 20px;
+
+}
+
+
+#botoncerrar{
+  width: 5px;
+  font-size: 25px;
+  border: none;
+  background-color: white;
+}
+
+.r{
+  display: flex;
+  margin-top: 20px;
+}
+
+
+</style>

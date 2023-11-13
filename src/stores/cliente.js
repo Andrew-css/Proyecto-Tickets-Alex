@@ -44,6 +44,7 @@ export const useClienteStore = defineStore("cliente", () => {
       console.log("r", response);
     } catch (error) {
       console.log("e", error);
+      errorvalidacion.value = error.response.data.error
     }
 
   

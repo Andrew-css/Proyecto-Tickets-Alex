@@ -67,7 +67,6 @@ export const useRutaStore = defineStore("ruta", () => {
       console.log("Error al agregar nueva ruta:", error);
       errorvalidacion.value = error.response.data.error
     }
-    toolbar.value = false;
   };
 
   const actualizarRuta = async (id, data) => {
@@ -81,8 +80,8 @@ export const useRutaStore = defineStore("ruta", () => {
       console.log("Respuesta del servidor al actualizar ruta:", response);
     } catch (error) {
       console.log("Error al actualizar ruta:", error);
+      errorvalidacion.value = error.response.data.error
     }
-    toolbar.value = false;
   };
 
   const obtenerRutas = async () => {

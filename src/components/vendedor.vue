@@ -16,17 +16,19 @@
         </svg></span> >
     </button>
 
-    <div  class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
-  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
+    <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+      data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <form class="form">
             <div class="cerrar">
               <p class="title">Añadir vendedor</p>
-              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+                id="botoncerrar">❌</button>
             </div>
-            <span v-if="nombreError || apellidoError || cedulaError || telefonoError || usuarioError || contrasenaError" class="error-message">{{nombreError || apellidoError || cedulaError || telefonoError || usuarioError ||
-                  contrasenaError }}</span>
+            <span v-if="nombreError || apellidoError || cedulaError || telefonoError || usuarioError || contrasenaError"
+              class="error-message">{{ nombreError || apellidoError || cedulaError || telefonoError || usuarioError ||
+                contrasenaError }}</span>
             <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useVendedor.errorvalidacion }}</p>
             <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
               mensaje
@@ -36,45 +38,107 @@
               <p>Por favor, espere...</p>
             </div>
             <label for="nombre">
-              <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
+              <input placeholder="Nombre" type="text" class="input" v-model="nombre">
 
             </label>
 
             <label for="apellido">
-              <input  placeholder="Apellido" type="text" class="input" v-model="apellido">
+              <input placeholder="Apellido" type="text" class="input" v-model="apellido">
 
             </label>
 
             <label for="cedula">
-              <input  placeholder="Cedula" type="text" class="input" v-model="cedula">
+              <input placeholder="Cedula" type="text" class="input" v-model="cedula">
 
             </label>
 
             <label for="telefono">
-              <input  placeholder="Telefono" type="text" class="input" v-model="telefono">
+              <input placeholder="Telefono" type="text" class="input" v-model="telefono">
 
             </label>
 
             <label for="usuario">
-              <input  placeholder="Usuario" type="text" class="input" v-model="usuario">
+              <input placeholder="Usuario" type="text" class="input" v-model="usuario">
 
             </label>
 
             <label for="contrasena">
-              <input  placeholder="Contrasena" type="text" class="input" v-model="contrasena">
+              <input placeholder="Contrasena" type="text" class="input" v-model="contrasena">
 
             </label>
 
             <!-- Resto del contenido del formulario... -->
 
-            <button type="button"  @click="agregarNuevoVendedor" class="submit" >Enviar</button>
+            <button type="button" @click="agregarNuevoVendedor" class="submit">Enviar</button>
           </form>
         </div>
       </div>
     </div>
 
 
-    
+    <div class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static"
+      data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form">
+            <div class="cerrar">
+              <p class="title">Editar Vendedor</p>
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+                id="botoncerrar">❌</button>
+            </div>
+            <span v-if="nombreError || apellidoError || cedulaError || telefonoError || contrasenaError"
+              class="error-message">{{ nombreError || apellidoError || cedulaError || telefonoError || contrasenaError
+              }}</span>
+            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useVendedor.errorvalidacion }}</p>
+            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+              mensaje
+            }}</span>
+            <div v-if="loading" class="text-center">
+              <q-spinner-hourglass color="primary" size="50px" />
+              <p>Por favor, espere...</p>
+            </div>
+            <label for="nombre">
+              <input placeholder="Nombre" type="text" class="input" v-model="nombre">
+
+            </label>
+
+            <label for="apellido">
+              <input placeholder="Apellido" type="text" class="input" v-model="apellido">
+
+            </label>
+
+            <label for="cedula">
+              <input placeholder="Cedula" type="text" class="input" v-model="cedula" readonly id="readonly">
+
+            </label>
+
+            <label for="telefono">
+              <input placeholder="Telefono" type="text" class="input" v-model="telefono">
+
+            </label>
+
+            <label for="usuario">
+              <input placeholder="Usuario" type="text" class="input" v-model="usuario" readonly id="readonly">
+
+            </label>
+
+            <label for="contrasena" class="label-container">
+              <input placeholder="Contrasena" :type="mostrarContrasena ? 'text' : 'password'" class="input"
+                v-model="contrasena" />
+
+              <!-- Botón para mostrar/ocultar contraseña -->
+              <button type="button" @click="toggleMostrarContrasena" class="toggle-password-button">
+                {{ mostrarContrasena ? '🔒' : '🔓' }}
+              </button>
+            </label>
+
+            <!-- Resto del contenido del formulario... -->
+
+            <button type="button" @click="editarVendedor" class="submit">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
 
 
     <!-- <q-dialog v-model="toolbard">
@@ -150,7 +214,8 @@
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn label="📋" color="primary" @click="editar(props.row)" />
+              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal"
+                data-bs-target="#editClientModal" />
               <q-btn label="✅" color="primary" @click="useVendedor.activar(props.row._id)"
                 v-if="props.row.estado === 0" />
               <q-btn label="❌" color="primary" @click="useVendedor.desactivar(props.row._id)"
@@ -200,6 +265,12 @@ const data = ref({
 const soloNumeros = (value) => {
   const numeroRegex = /^[0-9]+$/;
   return numeroRegex.test(value);
+};
+
+let mostrarContrasena = ref(false);
+
+const toggleMostrarContrasena = () => {
+  mostrarContrasena.value = !mostrarContrasena.value;
 };
 
 const editar = (row) => {
@@ -266,6 +337,8 @@ const agregar = () => {
   telefono.value = "";
   usuario.value = "";
   contrasena.value = "";
+  mensaje.value = "";
+  useVendedor.errorvalidacion = "";
 };
 
 const clearErrors = () => {
@@ -304,7 +377,9 @@ const agregarNuevoVendedor = async () => {
   }
 
   if (!telefono.value) {
-    telefonoError.value = 'El telefono es requerido';
+    telefonoError.value = 'El teléfono es requerido';
+  } else if (telefono.value.length !== 10) {
+    telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres';
   }
 
   if (!usuario.value) {
@@ -313,9 +388,13 @@ const agregarNuevoVendedor = async () => {
 
   if (!contrasena.value) {
     contrasenaError.value = 'La contraseña es requerida';
+  } else if (contrasena.value.length < 8) {
+    contrasenaError.value = 'La contraseña debe tener al menos 8 caracteres';
   }
 
+
   if (!nombreError.value && !apellidoError.value && !cedulaError.value && !telefonoError.value && !usuarioError.value && !contrasenaError.value) {
+    loading.value = true
     const data = {
       nombre: nombre.value,
       apellido: apellido.value,
@@ -361,6 +440,67 @@ const agregarNuevoVendedor = async () => {
   clearErrors();
 };
 
+const editarVendedor = async () => {
+  clearErrors();
+
+  // Validar los campos
+  if (!nombre.value) {
+    nombreError.value = 'El nombre es requerido';
+  } else if (nombre.value.length > 15) {
+    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
+  }
+
+  if (!apellido.value) {
+    apellidoError.value = 'El apellido es requerido';
+  }
+
+  if (!cedula.value) {
+    cedulaError.value = 'La cédula es requerida';
+  } else if (cedula.value.length !== 10) {
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
+  } else if (!soloNumeros(cedula.value)) {
+    cedulaError.value = 'La cédula debe contener solo números';
+  }
+
+  if (!telefono.value) {
+    telefonoError.value = 'El teléfono es requerido';
+  } else if (telefono.value.length !== 10) {
+    telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres';
+  }
+
+  if (!contrasena.value) {
+    contrasenaError.value = 'La contraseña es requerida';
+  } else if (contrasena.value.length < 8) {
+    contrasenaError.value = 'La contraseña debe tener al menos 8 caracteres';
+  }
+
+  if (!nombreError.value && !apellidoError.value && !cedulaError.value && !telefonoError.value && !contrasenaError.value) {
+    loading.value = true;
+    const data = {
+      nombre: nombre.value,
+      apellido: apellido.value,
+      cedula: cedula.value,
+      telefono: telefono.value,
+      usuario: usuario.value,
+      contrasena: contrasena.value
+    };
+
+    try {
+      const response = await useVendedor.actualizarVendedor(id.value, data);
+      mensajeColor.value = 'success';
+      loading.value = false;
+      mensaje.value = "Vendedor editado correctamente (presione ❌ para cerrar)";
+    } catch (error) {
+      console.log('Error al editar el vendedor:', error);
+      mensajeColor.value = 'error';
+      setTimeout(() => {
+        useVendedor.errorvalidacion = '';
+      }, 3000);
+    }
+  }
+  loading.value = false;
+  clearErrors();
+}
 
 async function obtenerVendedor() {
   try {
@@ -393,7 +533,8 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>.activo {
+<style scoped>
+.activo {
   color: green;
   font-weight: bold;
 }
@@ -523,7 +664,7 @@ p {
   color: red;
 }
 
-#readonly{
+#readonly {
   background-color: #ffeee4;
   cursor: not-allowed;
   color: #505050;
@@ -680,7 +821,7 @@ p {
   }
 }
 
-.cerrar{
+.cerrar {
   display: flex;
   justify-content: space-between;
   margin-right: 20px;
@@ -688,15 +829,35 @@ p {
 }
 
 
-#botoncerrar{
+#botoncerrar {
   width: 5px;
   font-size: 25px;
   border: none;
   background-color: white;
 }
 
-.r{
+.r {
   display: flex;
   margin-top: 20px;
+}
+
+.toggle-password-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333; /* Cambia el color según tu preferencia */
+  padding: 5px;
+  margin-left: 5px; /* Ajusta el margen según tu diseño */
+  transition: color 0.3s;
+  width: 10px;
+}
+
+.toggle-password-button:hover {
+  color: #555; /* Cambia el color al pasar el ratón sobre el botón */
+}
+
+.label-container{
+  display: flex;
 }
 </style>
