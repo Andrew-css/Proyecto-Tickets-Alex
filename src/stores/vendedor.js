@@ -83,10 +83,10 @@ export const useVendedorStore = defineStore("vendedor", () => {
       if (index !== -1) {
         rows.value.splice(index, 1, response.data.vendedor);
       }
-      toolbar.value = false;
       console.log("Respuesta del servidor al actualizar vendedor:", response);
     } catch (error) {
       console.log("Error al actualizar vendedor:", error);
+      errorvalidacion.value = error.response.data.error
     }
   };
 
