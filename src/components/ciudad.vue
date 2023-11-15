@@ -50,7 +50,7 @@
         <div class="modal-content">
           <form class="form">
             <div class="cerrar">
-              <p class="title">Editar cliente</p>
+              <p class="title">Editar ciudad</p>
               <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
             </div>
             <span v-if="nombreError " class="error-message">{{ nombreError }}</span>
@@ -133,8 +133,9 @@ const clearErrors = () => {
 
 setTimeout(() => {
   nombreError.value = null;
-
-}, 2000);
+  useCiudad.errorvalidacion = '';
+  mensaje.value = '';
+}, 4500);
 };  
 
 const editar = (row) => {
@@ -258,16 +259,26 @@ const editarCiudad = async () => {
 
     try {
       const response = await useCiudad.actualizarCiudad(id.value, data);
-      mostrarMensajeExito('Ciudad editado correctamente');
-      mensajeColor.value = 'success';
-      loading.value = false;
-      mensaje.value = "Ciudad editado correctamente (presione ❌ para cerrar)";
+      if (useCiudad.estatus === 200) {
+        mensajeColor.value = 'success';
+        mensaje.value = 'Ciudad editado correctamente (presione ❌ para cerrar)';
+        setTimeout(() => {
+          nombre.value = '';
+          useCiudad.errorvalidacion = '';
+          mensaje.value = '';
+        }, 3000);
+      } else {
+        mensajeColor.value = 'error';
+        loading.value = false
+      }
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
-      mostrarMensajeExito('Error al editar el cliente');
+      loading.value = false
     }
   }
+  clearErrors();
+  loading.value = false
 }
 
 onMounted(async () => {

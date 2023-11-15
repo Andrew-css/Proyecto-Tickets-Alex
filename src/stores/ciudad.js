@@ -44,6 +44,7 @@ export const useCiudadStore = defineStore("ciudad", () => {
         `https://transporte-el2a.onrender.com/api/ciudad/editar/${id}`,
         data
       );
+      estatus.value = response.status
       const index = rows.value.findIndex((c) => c._id === id);
       if (index !== -1) {
         rows.value[index] = response.data;
@@ -51,7 +52,7 @@ export const useCiudadStore = defineStore("ciudad", () => {
       console.log("Respuesta del servidor al actualizar ciudad:", response);
     } catch (error) {
       console.log("Error al actualizar ciudad:", error);
-      errorvalidacion.value = error.response.data.error.keyValue.nombre
+      errorvalidacion.value = error.response.data.error.keyValue.nombre + " Ya existe";
     }   
   };
 

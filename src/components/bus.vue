@@ -43,14 +43,32 @@
 
             </label>
             
-            <label  class="select">
+            <!-- <label  class="select">
               <select v-model="conductor" id="conductor" class="input">
               <option value="" disabled>Selecciona un conductor</option>
               <option v-for="c in conductores" :value="c._id" :key="c._id">{{ c.nombre }}</option>
             </select>
-          </label>
+          </label> -->
           
-            
+          <q-select
+    class="input"
+    filled
+    v-model="conductor"
+    use-input
+    hide-selected
+    input-debounce="0"
+    label="Selecciona un conductor"
+    :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
+    @filter="filtrarConductores"
+  >
+    <template v-slot:no-option>
+      <q-item>
+        <q-item-section class="text-grey">
+          No encontrado
+        </q-item-section>
+      </q-item>
+    </template>
+  </q-select>
 
             <!-- Resto del contenido del formulario... -->
 
@@ -96,12 +114,25 @@
 
             </label>
 
-            <label  class="select">
-              <select v-model="conductor" id="conductor" class="input">
-              <option value="" disabled>Selecciona un conductor</option>
-              <option v-for="c in conductores" :value="c._id" :key="c._id">{{ c.nombre }}</option>
-            </select>
-          </label>
+            <q-select
+    class="input"
+    filled
+    v-model="conductor"
+    use-input
+    hide-selected
+    input-debounce="0"
+    label="Selecciona un conductor"
+    :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
+    @filter="filtrarConductores"
+  >
+    <template v-slot:no-option>
+      <q-item>
+        <q-item-section class="text-grey">
+          No encontrado
+        </q-item-section>
+      </q-item>
+    </template>
+  </q-select>
 
             <!-- Resto del contenido del formulario... -->
 
@@ -250,14 +281,10 @@ let asiento = ref("");
 let placa = ref("");
 let conductor = ref("");
 let estado = ref(1);
-const data = ref({
-  empresa: empresa,
-  asiento: asiento,
-  placa: placa,
-  conductor: conductor,
-});
+
 
 console.log("Conductores lista: ", conductor)
+
 
 
 
@@ -266,7 +293,6 @@ const agregar = () => {
   asiento.value = "";
   placa.value = "";
   mensaje.value = "";
-  useVendedor.errorvalidacion = "";
 };
 
 const editar = (row) => {
@@ -501,6 +527,24 @@ onMounted(async () => {
   desactivarBus()
   activarBus()
 });
+
+const conductoresList = ref([])
+
+const filtrarConductores = (val, update) => {
+  if (val === '') {
+    // Restablecer las opciones a la lista original de conductores cuando el input está vacío
+    update(() => {
+      conductores.value = useConductor.rows;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    conductores.value = useConductor.rows.filter(c => c.nombre.toLowerCase().includes(needle));
+  });
+}
+
 
 </script>
 

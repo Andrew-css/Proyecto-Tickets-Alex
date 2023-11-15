@@ -295,7 +295,6 @@ const agregar = () => {
   cedula.value = "";
   email.value = "";
   mensaje.value = "";
-  useVendedor.errorvalidacion = "";
 };
 
 
@@ -306,7 +305,9 @@ const clearErrors = () => {
     nombreError.value = null;
     cedulaError.value = null;
     emailError.value = null;
-  }, 2000);
+    mensaje.value = '';
+    useCliente.errorvalidacion = '';
+  }, 4500);
 };
 
 const agregarNuevoCliente = async () => {
@@ -358,19 +359,19 @@ const agregarNuevoCliente = async () => {
           email.value = '';
           useCliente.errorvalidacion = '';
           mensaje.value = '';
-        }, 3000);
+        }, 4500);
       } else {
         mensajeColor.value = 'error';
         setTimeout(() => {
           useCliente.errorvalidacion = '';
-        }, 3000);
+        }, 4500);
       }
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
       setTimeout(() => {
         useCliente.errorvalidacion = '';
-      }, 3000);
+      }, 4500);
     }
   }
 
@@ -403,9 +404,11 @@ const editarCliente = async () => {
       mensajeColor.value = 'success';
       loading.value = false;
       mensaje.value = "Cliente editado correctamente (presione ❌ para cerrar)";
+      clearErrors();
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
+      clearErrors();
     }
   }
   loading.value = false;
