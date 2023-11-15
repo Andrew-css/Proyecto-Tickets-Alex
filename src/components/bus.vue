@@ -51,24 +51,27 @@
           </label> -->
           
           <q-select
-    class="input"
-    filled
-    v-model="conductor"
-    use-input
-    hide-selected
-    input-debounce="0"
-    label="Selecciona un conductor"
-    :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
-    @filter="filtrarConductores"
-  >
-    <template v-slot:no-option>
-      <q-item>
-        <q-item-section class="text-grey">
-          No encontrado
-        </q-item-section>
-      </q-item>
-    </template>
-  </q-select>
+        filled
+        v-model="conductor"
+        clearable
+        use-input
+        hide-selected
+        fill-input
+        input-debounce="0"
+        label="Focus after filtering"
+        :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
+        @filter="filtrarConductores"
+        @filter-abort="abortFilterFn"
+        style="width: 400px"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+             No se encontraron resultados
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
 
             <!-- Resto del contenido del formulario... -->
 
@@ -114,26 +117,29 @@
 
             </label>
 
-            <q-select
-    class="input"
-    filled
-    v-model="conductor"
-    use-input
-    hide-selected
-    input-debounce="0"
-    label="Selecciona un conductor"
-    :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
-    @filter="filtrarConductores"
-  >
-    <template v-slot:no-option>
-      <q-item>
-        <q-item-section class="text-grey">
-          No encontrado
-        </q-item-section>
-      </q-item>
-    </template>
-  </q-select>
-
+         <q-select
+         
+        filled
+        v-model="conductor"
+        clearable
+        use-input
+        hide-selected
+        fill-input
+        input-debounce="0"
+        label="Focus after filtering"
+        :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
+        @filter="filtrarConductores"
+        @filter-abort="abortFilterFn"
+        style="width: 400px"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+             No se encontraron resultados
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
             <!-- Resto del contenido del formulario... -->
 
             <button type="button" @click="editarBus" class="submit">Enviar</button>
@@ -301,7 +307,7 @@ const editar = (row) => {
   empresa.value = row.empresa;
   asiento.value = row.asiento;
   placa.value = row.placa;
-  conductor.value = row.conductor._id;
+  conductor.value = row.conductor.nombre;
   estado.value = row.estado;
 };
 
@@ -414,7 +420,7 @@ const agregarNuevoBus = async () => {
       empresa: empresa.value,
       asiento: asiento.value,
       placa: placa.value,
-      conductor: conductor.value,
+      conductor: conductor.value.value,
     };
 
     try {
@@ -481,7 +487,7 @@ const editarBus = async () => {
       empresa: empresa.value,
       asiento: asiento.value,
       placa: placa.value,
-      conductor: conductor.value,
+      conductor: conductor.value.value,
     };
 
     try {
