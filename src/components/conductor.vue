@@ -19,6 +19,8 @@
     </button>
 
     <!-- Modal -->
+    <q-dialog v-model="mostrarModalAgregar" position="top">
+
     <div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
       data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -55,41 +57,47 @@
         </div>
       </div>
     </div>
-  
-    <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="editClientModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form class="form">
-            <div class="cerrar">
-              <p class="title">Editar conductor</p>
-              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
-            </div>
-            <span v-if="nombreError || cedulaError " class="error-message">{{ nombreError || cedulaError }}</span>
-            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useConductor.errorvalidacion }}</p>
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-              mensaje
-            }}</span>
-            <div v-if="loading" class="text-center">
-              <q-spinner-hourglass color="primary" size="50px" />
-              <p>Por favor, espere...</p>
-            </div>
-            <label for="nombre">
-              <input  placeholder="Nombre" type="text" class="input" v-model="nombre" @keydown="handleKeydown">
+  </q-dialog>
 
-            </label>
+  <!-- MODAL DE EDITAR  -->
 
-            <label for="cedula">
-              <input  placeholder="Cedula" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
+  <q-dialog v-model="mostrarModalEditar" position="top">
+      <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="editClientModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div class="cerrar">
+                <p class="title">Editar conductor</p>
+                <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+              </div>
+              <span v-if="nombreError || cedulaError" class="error-message">{{ nombreError || cedulaError }}</span>
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useConductor.errorvalidacion }}</p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                mensaje
+              }}</span>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
+              <label for="nombre">
+                <input  placeholder="Nombre" type="text" class="input" v-model="nombre" @keydown="handleKeydown">
 
-            </label>
+              </label>
 
-            <!-- Resto del contenido del formulario... -->
+              <label for="cedula">
+                <input  placeholder="Cedula" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
 
-            <button type="button"  @click="editarConductor" class="submit">Enviar</button>
-          </form>
+              </label>
+
+              <!-- Resto del contenido del formulario... -->
+
+              <button type="button"  @click="editarConductor" class="submit">Enviar</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </q-dialog>
+
 
 
     <div class="q-pa-xl">
@@ -146,6 +154,8 @@ let mensaje = ref("");
 let mensajeColor = ref('');
 let nombreError = ref(null)
 let cedulaError = ref(null)
+const mostrarModalAgregar = ref (false);
+const mostrarModalEditar = ref  (false);
 
 
 const mostrarMensajeExito = (message) => {
@@ -171,6 +181,7 @@ const editar = (row) => {
   nombre.value = row.nombre;
   cedula.value = row.cedula;
   estado.value = row.estado;
+  mostrarModalEditar.value = true
   clearErrors();
 };
 
@@ -204,6 +215,7 @@ const columns = ref([
 const agregar = () => {
   nombre.value = "";
   cedula.value = "";
+  mostrarModalAgregar.value = true
 };
 
 

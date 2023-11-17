@@ -17,69 +17,73 @@
 
      <!-- Modal agregar -->
 
-    <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
-      data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form class="form">
-            <div class="cerrar">
-              <p class="title">Añadir Ruta
-              </p>
-              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
-                id="botoncerrar">❌</button>
+     <q-dialog v-model="mostrarModalAgregar" position="top">
+        <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+          data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form class="form">
+                <div class="cerrar">
+                  <p class="title">Añadir Ruta
+                  </p>
+                  <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+                    id="botoncerrar">❌</button>
+                </div>
+                <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
+                  class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError
+                  }}</span>
+                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
+                <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                  mensaje
+                }}</span>
+                <div v-if="loading" class="text-center">
+                  <q-spinner-hourglass color="primary" size="50px" />
+                  <p>Por favor, espere...</p>
+                </div>
+                <label for="ciudad_origen">
+                  <select v-model="ciudad_origen" id="ciudad_origen" class="input">
+                    <option value="" disabled>Selecciona una ciudad de origen</option>
+                    <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
+                  </select>
+                </label>
+
+                <label for="ciudad_destino">
+                  <select v-model="ciudad_destino" id="ciudad_destino" class="input">
+                    <option value="" disabled>Selecciona una ciudad de detino</option>
+                    <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
+                  </select>
+                </label>
+
+                <label for="hora_salida">
+                  <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
+                  <span>Fecha y Hora de salida :</span>
+                </label>
+
+                <label for="valor">
+                  <input placeholder="" type="text" class="input" v-model="valor">
+                  <span>Valor :</span>
+                </label>
+
+                <label for="bus">
+                  <select v-model="bus" id="bus" class="input">
+                    <option value="" disabled>Selecciona un bus</option>
+                    <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
+                  </select>
+
+                </label>
+                
+
+                <button type="button"  @click="agregarNuevaRuta"
+                  class="submit">Enviar</button>
+              </form>
             </div>
-            <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
-              class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError
-              }}</span>
-            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-              mensaje
-            }}</span>
-            <div v-if="loading" class="text-center">
-              <q-spinner-hourglass color="primary" size="50px" />
-              <p>Por favor, espere...</p>
-            </div>
-            <label for="ciudad_origen">
-              <select v-model="ciudad_origen" id="ciudad_origen" class="input">
-                <option value="" disabled>Selecciona una ciudad de origen</option>
-                <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
-              </select>
-            </label>
-
-            <label for="ciudad_destino">
-              <select v-model="ciudad_destino" id="ciudad_destino" class="input">
-                <option value="" disabled>Selecciona una ciudad de detino</option>
-                <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
-              </select>
-            </label>
-
-            <label for="hora_salida">
-              <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
-              <span>Fecha y Hora de salida :</span>
-            </label>
-
-            <label for="valor">
-              <input placeholder="" type="text" class="input" v-model="valor">
-              <span>Valor :</span>
-            </label>
-
-            <label for="bus">
-              <select v-model="bus" id="bus" class="input">
-                <option value="" disabled>Selecciona un bus</option>
-                <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
-              </select>
-
-            </label>
-
-            <button type="button"  @click="agregarNuevaRuta"
-              class="submit">Enviar</button>
-          </form>
+          </div>
         </div>
-      </div>
-    </div>
+    </q-dialog>
 
      <!-- Modal editar -->
 
+ <q-dialog v-model="mostrarModalEditar" position="top">
     <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -138,50 +142,11 @@
         </div>
       </div>
     </div>
+</q-dialog>
+
   
 
-<!-- 
-    <q-dialog v-model="toolbard">
-      <q-card>
-        <q-toolbar>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
-          </q-avatar>
-          <q-toolbar-title>Editar Ruta</q-toolbar-title>
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-toolbar>
-        <q-card-section>
-          <label for="ciudad_origen">Ciudad Origen: </label><br />
-          <select v-model="ciudad_origen" id="ciudad_origen">
-            <option value="" disabled>Selecciona una ciudad</option>
-            <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
-          </select>
-          <br />
-          <label for="ciudad_destino">Ciudad Destino: </label><br />
-          <select v-model="ciudad_destino" id="ciudad_destino">
-            <option value="" disabled>Selecciona una ciudad</option>
-            <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
-          </select>
-          <br />
-          <label for="hora_salida">Hora Salida: </label><br />
-          <input type="text" v-model="hora_salida" />
-          <br />
-          <label for="valor">Valor: </label><br />
-          <input type="number" v-model="valor" />
-          <br />
-          <label for="bus">Bus: </label><br />
-          <select v-model="bus" id="bus">
-            <option value="" disabled>Selecciona un bus</option>
-            <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
-          </select>
-          <br />
-          <p :class="{ 'text-right': true, activo: estado === 1, inactivo: estado === 0 }">
-            {{ obtenerTextoEstado(estado) }}
-          </p>
-          <button @click="useRuta.actualizarRuta(id, data); toolbard = false">Enviar</button>
-        </q-card-section>
-      </q-card>
-    </q-dialog> -->
+
     <div class="q-pa-xl">
       <q-table class="text-center" :rows="rows" :columns="columns" row-key="id">
         <template v-slot:top>
@@ -236,6 +201,8 @@ import { onMounted, ref } from "vue";
 const useRuta = useRutaStore();
 const useCiudad = useCiudadStore();
 const useBus = useBusStore();
+const mostrarModalAgregar = ref (false);
+const mostrarModalEditar = ref (false);
 
 let rows = ref([]);
 let rutas = ref([]);
@@ -260,6 +227,7 @@ let busError = ref(null);
 
 
 const agregar = () => {
+  mostrarModalAgregar.value=true
   ciudad_origen.value = "";
   ciudad_destino.value = "";
   hora_salida.value = "";
@@ -289,6 +257,7 @@ const editar = (row) => {
   valor.value = row.valor;
   bus.value = row.bus._id;
   estado.value = row.estado;
+  mostrarModalEditar.value = true
 };
 
 const columns = ref([

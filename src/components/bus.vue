@@ -8,7 +8,10 @@
       <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span> >
      </button>
     </div>
+    
+     <!-- MODAL DE AÑADIR CON QUASART -->
 
+    <q-dialog v-model="mostrarModalAgregar" position="top">
     <div  class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
       data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
       <div class="modal-dialog">
@@ -43,35 +46,29 @@
 
             </label>
             
-            <!-- <label  class="select">
-              <select v-model="conductor" id="conductor" class="input">
-              <option value="" disabled>Selecciona un conductor</option>
-              <option v-for="c in conductores" :value="c._id" :key="c._id">{{ c.nombre }}</option>
-            </select>
-          </label> -->
-          
+   
           <q-select
-        filled
-        v-model="conductor"
-        clearable
-        use-input
-        hide-selected
-        fill-input
-        input-debounce="0"
-        label="Focus after filtering"
-        :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
-        @filter="filtrarConductores"
-        @filter-abort="abortFilterFn"
-        style="width: 400px"
-      >
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-             No se encontraron resultados
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
+              filled
+              v-model="conductor"
+              clearable
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
+              label="Focus after filtering"
+              :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
+              @filter="filtrarConductores"
+              @filter-abort="abortFilterFn"
+              style="width: 400px"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                   No se encontraron resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
 
             <!-- Resto del contenido del formulario... -->
 
@@ -80,6 +77,12 @@
         </div>
       </div>
     </div>
+
+  </q-dialog>
+
+    <!-- MODAL DE EDITAR CON QUASART -->
+
+    <q-dialog v-model="mostrarModalEditar" position="top">
 
     <div class="modal fade" style="margin-top: 12%;" id="editBusModal" data-bs-backdrop="static"
       data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
@@ -148,79 +151,11 @@
       </div>
     </div>
 
-    <!-- <q-dialog v-model="toolbard">
-      <q-card>
-        <q-toolbar>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
-          </q-avatar>
-
-          <q-toolbar-title>Editar Bus</q-toolbar-title>
-
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-toolbar>
-
-        <q-card-section>
-          <label for="">Empresa: </label><br />
-          <input type="text" v-model="empresa" />
-          <br />
-          <label for="">Asiento: </label><br />
-          <input type="number" v-model="asiento" />
-          <br />
-          <label for="">Placa: </label><br />
-          <input type="text" v-model="placa" />
-          <br />
-          <label for="">Conductor: </label><br />
-          <select v-model="conductor" id="conductor">
-            <option value="" disabled>Selecciona un conductor</option>
-            <option v-for="c in conductores" :value="c._id" :key="c._id">{{ c.nombre }}</option>
-          </select>
-          <br />
-          <p :class="{ 'text-right': true, activo: estado === 1, inactivo: estado === 0 }">
-            {{ obtenerTextoEstado(estado) }}
-          </p>
-          <button @click="useBus.actualizarBus(id, data); toolbard = false">Enviar</button>
-        </q-card-section>
-      </q-card>
-    </q-dialog> -->
-
-      <!-- <div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
-      data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form class="form">
-
-            <p class="title">Register </p>
+  </q-dialog>
 
 
-            <label>
-              <input required="" placeholder="" type="text" class="input" v-model="empresa">
-              <span>Empresa</span>
-            </label>
-            <label>
-              <input required="" placeholder="" type="number" class="input" v-model="asiento">
-              <span>Asientos</span>
-            </label>
-            <label>
-              <input required="" placeholder="" type="text" class="input" v-model="placa">
-              <span>Placa</span>
-            </label>
-            <label>
-              <input required="" placeholder="" type="text" class="input" v-model="placa">
-              <span>Placa</span>
-              <label for="">Conductor: </label><br />
-              <select v-model="conductor" id="conductor">
-                <option value="" disabled>Selecciona un conductor</option>
-                <option v-for="c in conductores" :value="c._id" :key="c._id">{{ c.nombre }}</option>
-              </select>
-            </label>
-            <button type="button" class="btn btn-secondary submit" data-bs-dismiss="modal"
-              @click="useBus.agregarNuevoBus(data); toolbar = false">Enviar</button>
-          </form>
+    <!-- TABLA DE DATOS  -->
 
-        </div>
-      </div>
-    </div> -->
 
     <div class="q-pa-xl">
       <q-table class="text-center" :rows="rows" :columns="columns" row-key="id">
@@ -281,6 +216,11 @@ const empresaError = ref(null);
 const asientoError = ref(null);
 const placaError = ref(null);
 const conductorError = ref(null);
+
+const mostrarModalAgregar = ref(false);
+const mostrarModalEditar = ref(false);
+
+
 let id = ref("");
 let empresa = ref("");
 let asiento = ref("");
@@ -299,6 +239,9 @@ const agregar = () => {
   asiento.value = "";
   placa.value = "";
   mensaje.value = "";
+  // Lógica para preparar el modal de agregar
+  mostrarModalAgregar.value = true;
+
 };
 
 const editar = (row) => {
@@ -309,6 +252,8 @@ const editar = (row) => {
   placa.value = row.placa;
   conductor.value = row.conductor.nombre;
   estado.value = row.estado;
+  mostrarModalEditar.value = true;
+
 };
 
 const columns = ref([

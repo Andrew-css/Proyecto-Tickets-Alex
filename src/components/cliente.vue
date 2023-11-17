@@ -14,124 +14,58 @@
         </svg></span> 
     </button>
     </div>
-    
-    <div  class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
-  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form class="form">
-            <div class="cerrar">
-              <p class="title">Añadir cliente</p>
-              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+
+    <!-- MODAL AGREGAR -->
+  <q-dialog v-model="mostrarModalAgregar" position="top">
+
+        <div  class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+          data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form class="form">
+                <div class="cerrar">
+                  <p class="title">Añadir cliente</p>
+                  <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+                </div>
+                <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
+                  emailError }}</span>
+                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
+                <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                  mensaje
+                }}</span>
+                <div v-if="loading" class="text-center">
+                  <q-spinner-hourglass color="primary" size="50px" />
+                  <p>Por favor, espere...</p>
+                </div>
+                <label for="nombre">
+                  <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
+
+                </label>
+
+                <label for="cedula">
+                  <input  placeholder="Cedula" type="text" class="input" v-model="cedula">
+
+                </label>
+
+                <label for="email">
+                  <input  placeholder="Email" type="text" class="input" v-model="email">
+
+                </label>
+
+                <!-- Resto del contenido del formulario... -->
+
+                <button type="button" @click="agregarNuevoCliente" class="submit">Enviar</button>
+              </form>
             </div>
-            <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
-              emailError }}</span>
-            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-              mensaje
-            }}</span>
-            <div v-if="loading" class="text-center">
-              <q-spinner-hourglass color="primary" size="50px" />
-              <p>Por favor, espere...</p>
-            </div>
-            <label for="nombre">
-              <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
-
-            </label>
-
-            <label for="cedula">
-              <input  placeholder="Cedula" type="text" class="input" v-model="cedula">
-
-            </label>
-
-            <label for="email">
-              <input  placeholder="Email" type="text" class="input" v-model="email">
-
-            </label>
-
-            <!-- Resto del contenido del formulario... -->
-
-            <button type="button" @click="agregarNuevoCliente" class="submit">Enviar</button>
-          </form>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- <q-dialog v-model=" toolbar ">
-      <q-card>
-        <q-toolbar>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
-          </q-avatar>
+    </q-dialog>
 
-          <q-toolbar-title>Cliente</q-toolbar-title>
+    <!-- MODAL EDITAR  -->
 
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-toolbar>
+    <q-dialog v-model="mostrarModalEditar" position="top">
 
-        <q-card-section class="a">
-          <label for="">Nombre: </label><br />
-          <input type="text" v-model=" nombre " />
-          <br />
-          <label for="">Cedula: </label><br />
-          <input type="text" v-model=" cedula " name="cedula" />
-          <br />
-          <label for="">Email: </label><br />
-          <input type="text" v-model=" email " />
-          <br />
-          <div v-if=" loading " class="text-center">
-            <q-spinner-hourglass color="primary" size="50px" />
-            <p>Por favor, espere...</p>
-          </div>
-          <span v-if=" nombreError || cedulaError || emailError " class="error-message">{{ nombreError || cedulaError ||
-            emailError }}</span>
-          <p style="color: red; font-weight: bold;"> {{ useCliente.errorvalidacion }}</p>
-          <span v-if=" mensaje " :class=" [mensajeColor === 'success' ? 'success-message' : 'error-message'] ">{{ mensaje
-            }}</span>
-          <button class="butonenviar" @click=" agregarNuevoCliente ">Enviar</button>
-        </q-card-section>
-      </q-card>
-    </q-dialog> -->
-
-    <!-- <q-dialog v-model="toolbard">
-      <q-card>
-        <q-toolbar>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
-          </q-avatar>
-
-          <q-toolbar-title>Editar Cliente</q-toolbar-title>
-
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-toolbar>
-
-        <q-card-section class="a">
-          <label for="">Nombre: </label><br />
-          <input type="text" v-model="nombre" />
-
-          <br />
-          <label for="">Cedula: </label><br />
-          <input type="number" v-model="cedula" readonly class="readonly-input" />
-          <br />
-          <label for="">Email: </label><br />
-          <input type="text" v-model="email" readonly class="readonly-input" />
-          <br />
-          <span v-if="nombreError" class="error-message">{{ nombreError }}</span>
-          <div v-if="loading" class="text-center">
-            <q-spinner-hourglass color="primary" size="50px" />
-            <p>Por favor, espere...</p>
-          </div>
-          <div class="text-center">
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-              mensaje
-            }}</span>
-          </div>
-          <button class="butonenviar" @click="editarCliente" v-if="!loading">
-            Editar Cliente
-          </button>
-        </q-card-section>
-      </q-card>
-    </q-dialog> -->
 
     <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="editClientModal">
       <div class="modal-dialog">
@@ -173,6 +107,8 @@
         </div>
       </div>
     </div>
+</q-dialog>
+
 
     <div class="q-pa-xl">
       <q-table class="text-center" :rows="rows" :columns="columns" row-key="id">
@@ -228,13 +164,15 @@ let nombre = ref("");
 let cedula = ref("");
 let email = ref("");
 let estado = ref(1);
-const nombreError = ref(null);
-const cedulaError = ref(null);
-const emailError = ref(null);
 let loading = ref(false);
 let mensaje = ref('');
 let mensajeColor = ref(''); // Variable para el color del mensaje
+const nombreError = ref(null);
+const cedulaError = ref(null);
+const emailError = ref(null);
 
+const mostrarModalAgregar = ref (false);
+const mostrarModalEditar = ref (false);
 const data = ref({
   nombre: nombre,
   cedula: cedula,
@@ -254,6 +192,7 @@ const editar = (row) => {
   cedula.value = row.cedula;
   email.value = row.email;
   estado.value = row.estado;
+  mostrarModalEditar.value = true;
   clearErrors();
 };
 
@@ -295,6 +234,8 @@ const agregar = () => {
   cedula.value = "";
   email.value = "";
   mensaje.value = "";
+  mostrarModalAgregar.value= true 
+
 };
 
 

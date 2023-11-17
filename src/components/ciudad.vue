@@ -12,37 +12,42 @@
 </button>
 
 <!-- Modal -->
-<div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form class="form ">
-        <div class="cerrar">
-              <p class="title">Añadir ciudad</p>
-              <button type="button"  data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
-            </div>
+
+  <q-dialog v-model="mostrarModalAgregar" position="top">
+
+      <div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form ">
+              <div class="cerrar">
+                    <p class="title">Añadir ciudad</p>
+                    <button type="button"  data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+                  </div>
         
-        <p class="message">Signup now and get full access to our app. </p>  
-        <span v-if="nombreError " class="error-message">{{ nombreError  }}</span>
-            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }} </p>
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-              mensaje
-            }}</span>
-            <div v-if="loading" class="text-center">
-              <q-spinner-hourglass color="primary" size="50px" />
-              <p>Por favor, espere...</p>
-            </div>
-        <label >
-            <input  placeholder="" type="text" class="input" v-model="nombre">
-            <span>Nombre</span>
-        </label>  
+              <p class="message">Signup now and get full access to our app. </p>  
+              <span v-if="nombreError" class="error-message">{{ nombreError }}</span>
+                  <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }} </p>
+                  <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                    mensaje
+                  }}</span>
+                  <div v-if="loading" class="text-center">
+                    <q-spinner-hourglass color="primary" size="50px" />
+                    <p>Por favor, espere...</p>
+                  </div>
+              <label >
+                  <input  placeholder="" type="text" class="input" v-model="nombre">
+                  <span>Nombre</span>
+              </label>  
   
-        <button  type="button" class="btn btn-secondary submit"    @click="agregarNuevaCiudad">Enviar</button>
-      </form> 
-    </div>
-  </div>
-</div>
+              <button  type="button" class="btn btn-secondary submit"    @click="agregarNuevaCiudad">Enviar</button>
+            </form> 
+          </div>
+        </div>
+      </div>
+  </q-dialog>
 
  
+  <q-dialog v-model="mostrarModalEditar" position="top">
 
 
     <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" >
@@ -73,6 +78,8 @@
         </div>
       </div>
     </div>
+  </q-dialog>
+
 
     <div class="q-pa-xl">
       <q-table class="text-center" :rows="rows" :columns="columns" row-key="id">
@@ -119,7 +126,10 @@ let id = ref("");
 let nombre = ref("");
 let loading = ref (false);
 let mensaje = ref("");
-let mensajeColor = ref(''); 
+let mensajeColor = ref('');
+const mostrarModalAgregar = ref (false);
+const mostrarModalEditar = ref (false); 
+
 
 
 const mostrarMensajeExito = (message) => {
@@ -143,6 +153,7 @@ const editar = (row) => {
 
   id.value = row._id;
   nombre.value = row.nombre;
+  mostrarModalEditar.value = true
 };
 
 const columns = ref([
@@ -162,6 +173,7 @@ const columns = ref([
 
 const agregar = () => {
   nombre.value = "";
+  mostrarModalAgregar.value = true
 };
 
 async function obtenerCiudad() {

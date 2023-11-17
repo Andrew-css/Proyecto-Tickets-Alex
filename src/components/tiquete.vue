@@ -11,31 +11,42 @@
       </button>
     </div>
     
-    <q-dialog v-model="toolbar">
-      <q-card>
-        <q-toolbar>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
-          </q-avatar>
+    <div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+      data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form ">
+            <div class="cerrar">
+              <p class="title">Añadir conductor</p>
+              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+                id="botoncerrar">❌</button>
+            </div>
+            <span v-if="nombreError || cedulaError" class="error-message">{{ nombreError || cedulaError }}</span>
+            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useConductor.errorvalidacion }}</p>
+            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+              mensaje
+            }}</span>
+            <div v-if="loading" class="text-center">
+              <q-spinner-hourglass color="primary" size="50px" />
+              <p>Por favor, espere...</p>
+            </div>
 
-          <q-toolbar-title>Cliente</q-toolbar-title>
+            <label>
+              <input required="" placeholder="" type="text" class="input" v-model="nombre" @keydown="handleKeydown">
+              <span>Nombre</span>
+            </label>
+            <label>
+              <input required="" placeholder="" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
+              <span>Cedula</span>
+            </label>
 
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-toolbar>
 
-        <q-card-section class="a">
-          <label for="">Nombre: </label><br />
-          <input type="text-center" v-model="nombre" />
-          <br />
-          <label for="">Cedula: </label><br />
-          <input type="number" v-model="cedula" />
-          <br />
-          <label for="">Email: </label><br />
-          <input type="text" v-model="email" /><br />
-          <button class="butonenviar" @click="useCliente.agregarNuevoCliente(data), toolbar = false">Enviar</button>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+
+            <button type="button" class="btn btn-secondary submit" @click="agregarNuevoConductor">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <q-dialog v-model="toolbard">
       <q-card>
