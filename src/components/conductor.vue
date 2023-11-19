@@ -28,7 +28,7 @@
           <form class="form ">
             <div class="cerrar">
               <p class="title">Añadir conductor</p>
-              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+              <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
                 id="botoncerrar">❌</button>
             </div>
             <span v-if="nombreError || cedulaError" class="error-message">{{ nombreError || cedulaError }}</span>
@@ -42,7 +42,7 @@
             </div>
 
             <label>
-              <input required="" placeholder="" type="text" class="input" v-model="nombre" @keydown="handleKeydown">
+              <input required="" placeholder="" type="text" class="input" v-model="nombre">
               <span>Nombre</span>
             </label>
             <label>
@@ -68,7 +68,7 @@
             <form class="form">
               <div class="cerrar">
                 <p class="title">Editar conductor</p>
-                <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+                <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
               <span v-if="nombreError || cedulaError" class="error-message">{{ nombreError || cedulaError }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useConductor.errorvalidacion }}</p>
@@ -80,13 +80,12 @@
                 <p>Por favor, espere...</p>
               </div>
               <label for="nombre">
-                <input  placeholder="Nombre" type="text" class="input" v-model="nombre" @keydown="handleKeydown">
+                <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
 
               </label>
 
               <label for="cedula">
                 <input  placeholder="Cedula" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
-
               </label>
 
               <!-- Resto del contenido del formulario... -->
@@ -175,6 +174,12 @@ const clearErrors = () => {
   }, 4500);
 };
 
+const agregar = () => {
+  nombre.value = "";
+  cedula.value = "";
+  mostrarModalAgregar.value = true
+};
+
 const editar = (row) => {
   console.log(row);
   id.value = row._id;
@@ -185,6 +190,17 @@ const editar = (row) => {
   clearErrors();
 };
 
+const cerrar = () => {
+  nombre.value = "";
+  cedula.value = "";
+  mostrarModalAgregar.value = false
+};
+
+const cerrarEditar = () => {
+  nombre.value = "";
+  cedula.value = "";
+  mostrarModalEditar.value = false
+};
 const columns = ref([
   {
     name: "Nombre",
@@ -212,11 +228,7 @@ const columns = ref([
   },
 ]);
 
-const agregar = () => {
-  nombre.value = "";
-  cedula.value = "";
-  mostrarModalAgregar.value = true
-};
+
 
 
 const soloNumeros = (value) => {
@@ -266,8 +278,14 @@ const agregarNuevoConductor = async () => {
   cedulaError.value = null;
   useConductor.errorvalidacion = '';
 
-  if (nombre.value.trim()==='') {
+  if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
+  } else if (!nombre.value.trim()){
+    nombreError.value = 'Nombre no valido'
+  } else if(/^\d+$/.test(nombre.value)){
+    nombreError.value = 'El nombre debe ser una cadena de texto válida'
+  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+    nombreError.value = 'El nombre debe ser una cadena de texto válida'
   } else if (nombre.value.length > 15) {
     nombreError.value = 'El nombre no debe tener más de 15 caracteres';
   }
@@ -324,8 +342,14 @@ const editarConductor= async () => {
   clearErrors();
 
   // Validar los campos
-  if(nombre.value.trim()===''){
-    nombreError.value = 'Nombre incorrecto'
+  if (!nombre.value) {
+    nombreError.value = 'El nombre es requerido';
+  } else if (!nombre.value.trim()){
+    nombreError.value = 'Nombre no valido'
+  } else if(/^\d+$/.test(nombre.value)){
+    nombreError.value = 'El nombre debe ser una cadena de texto válida'
+  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+    nombreError.value = 'El nombre debe ser una cadena de texto válida'
   } else if (nombre.value.length > 15) {
     nombreError.value = 'El nombre no debe tener más de 15 caracteres';
   }
@@ -342,6 +366,7 @@ const editarConductor= async () => {
       mensajeColor.value = 'success';
       loading.value = false;
       mensaje.value = "Conductor editado correctamente (presione ❌ para cerrar)";
+      clearErrors();
     } catch (error) {
       console.log('Error al agregar el conductor:', error);
       mensajeColor.value = 'error';
@@ -494,7 +519,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 500px;
+  width: 500px;
   background-color: #fff;
   padding: 20px;
   border-radius: 20px;
@@ -647,6 +672,7 @@ p {
   font-size: 25px;
   border: none;
   background-color: white;
+  cursor: pointer;
 }
 
 .r {

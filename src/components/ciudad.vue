@@ -21,10 +21,8 @@
             <form class="form ">
               <div class="cerrar">
                     <p class="title">Añadir ciudad</p>
-                    <button type="button"  data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+                    <button type="button"  data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center" id="botoncerrar">❌</button>
                   </div>
-        
-              <p class="message">Signup now and get full access to our app. </p>  
               <span v-if="nombreError" class="error-message">{{ nombreError }}</span>
                   <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }} </p>
                   <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
@@ -48,15 +46,13 @@
 
  
   <q-dialog v-model="mostrarModalEditar" position="top">
-
-
     <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" >
       <div class="modal-dialog">
         <div class="modal-content">
           <form class="form">
             <div class="cerrar">
               <p class="title">Editar ciudad</p>
-              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+              <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center" id="botoncerrar">❌</button>
             </div>
             <span v-if="nombreError " class="error-message">{{ nombreError }}</span>
             <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }}</p>
@@ -136,7 +132,7 @@ const mostrarMensajeExito = (message) => {
   mensaje.value = message;
   setTimeout(() => {
     mensaje.value = '';
-  }, 3000);
+  }, 4500);
 };
 
 const clearErrors = () => {
@@ -176,6 +172,16 @@ const agregar = () => {
   mostrarModalAgregar.value = true
 };
 
+const cerrar = () => {
+  nombre.value = "";
+  mostrarModalAgregar.value = false
+};
+
+const cerrarEditar = () => {
+  nombre.value = "";
+  mostrarModalEditar.value = false
+};
+
 async function obtenerCiudad() {
   try {
     await useCiudad.obtenerCiudades();
@@ -212,8 +218,12 @@ const agregarNuevaCiudad = async () => {
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } else if (nombre.value.length > 15) {
-    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
+  } else if (!nombre.value.trim()){
+    nombreError.value = 'Nombre no valido'
+  } else if(/^\d+$/.test(nombre.value)){
+    nombreError.value = 'El nombre debe ser una cadena de texto válida'
+  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+    nombreError.value = 'El nombre debe ser una cadena de texto válida'
   }
 
   
@@ -228,24 +238,24 @@ const agregarNuevaCiudad = async () => {
 
       if (useCiudad.estatus === 200) {
         mensajeColor.value = 'success';
-        mensaje.value = 'Ciudad añadido correctamente (presione ❌ para cerrar)';
+        mensaje.value = 'Ciudad añadida correctamente (presione ❌ para cerrar)';
         setTimeout(() => {
           nombre.value = '';
           useCiudad.errorvalidacion = '';
           mensaje.value = '';
-        }, 3000);
+        }, 4500);
       } else {
         mensajeColor.value = 'error';
         setTimeout(() => {
           useCiudad.errorvalidacion = '';
-        }, 3000);
+        }, 4500);
       }
     } catch (error) {
       console.log('Error al agregar el ciudad:', error);
       mensajeColor.value = 'error';
       setTimeout(() => {
         useCiudad.errorvalidacion = '';
-      }, 3000);
+      }, 4500);
     }
   }
 
@@ -259,8 +269,12 @@ const editarCiudad = async () => {
   // Validar los campos
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } else if (nombre.value.length > 15) {
-    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
+  } else if (!nombre.value.trim()){
+    nombreError.value = 'Nombre no valido'
+  } else if(/^\d+$/.test(nombre.value)){
+    nombreError.value = 'El nombre debe ser una cadena de texto válida'
+  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+    nombreError.value = 'El nombre debe ser una cadena de texto válida'
   }
 
   if (!nombreError.value) {
@@ -273,12 +287,11 @@ const editarCiudad = async () => {
       const response = await useCiudad.actualizarCiudad(id.value, data);
       if (useCiudad.estatus === 200) {
         mensajeColor.value = 'success';
-        mensaje.value = 'Ciudad editado correctamente (presione ❌ para cerrar)';
+        mensaje.value = 'Ciudad editada correctamente (presione ❌ para cerrar)';
         setTimeout(() => {
-          nombre.value = '';
           useCiudad.errorvalidacion = '';
           mensaje.value = '';
-        }, 3000);
+        }, 4500);
       } else {
         mensajeColor.value = 'error';
         loading.value = false
@@ -425,7 +438,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 500px;
+  width: 400px;
   background-color: #fff;
   padding: 20px;
   border-radius: 20px;
@@ -563,6 +576,7 @@ p {
   font-size: 25px;
   border: none;
   background-color: white;
+  cursor: pointer;
 }
 
 .r{
@@ -582,4 +596,6 @@ p {
   font-weight: bold;
   font-size: 20px;
 }
+
+
 </style>

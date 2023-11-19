@@ -52,7 +52,7 @@ export const useCiudadStore = defineStore("ciudad", () => {
       console.log("Respuesta del servidor al actualizar ciudad:", response);
     } catch (error) {
       console.log("Error al actualizar ciudad:", error);
-      errorvalidacion.value = error.response.data.error.keyValue.nombre + " Ya existe";
+errorvalidacion.value = error.response.data.error.keyValue.nombre + " ya está registrada en la base de datos";      
     }   
   };
 

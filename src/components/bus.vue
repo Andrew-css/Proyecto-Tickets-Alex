@@ -19,7 +19,7 @@
           <form class="form">
             <div class="cerrar">
               <p class="title">Añadir Bus</p>
-              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+              <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
                 id="botoncerrar">❌</button>
             </div>
             <span v-if="empresaError || asientoError || placaError || conductorError" class="error-message">{{
@@ -37,12 +37,12 @@
             </label>
 
             <label for="asiento">
-              <input placeholder="Asiento" type="text" class="input" v-model="asiento">
+              <input placeholder="Asiento" type="text" class="input" v-model="asiento" @keydown="handleKeydown">
 
             </label>
 
             <label for="placa">
-              <input placeholder="Placa" type="text" class="input" v-model="placa">
+              <input placeholder="Placa" type="text" class="input" v-model="placa" @keydown="handleKeydown">
 
             </label>
             
@@ -58,7 +58,6 @@
               label="Focus after filtering"
               :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
               @filter="filtrarConductores"
-              @filter-abort="abortFilterFn"
               style="width: 400px"
             >
               <template v-slot:no-option>
@@ -91,7 +90,7 @@
           <form class="form">
             <div class="cerrar">
               <p class="title">Editar Bus</p>
-              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+              <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center"
                 id="botoncerrar">❌</button>
             </div>
             <span v-if="empresaError || asientoError || placaError" class="error-message">{{ empresaError || asientoError
@@ -111,7 +110,7 @@
             </label>
 
             <label for="asiento">
-              <input placeholder="Asiento" type="text" class="input" v-model="asiento">
+              <input placeholder="Asiento" type="text" class="input" v-model="asiento" @keydown="handleKeydown" >
 
             </label>
 
@@ -216,11 +215,8 @@ const empresaError = ref(null);
 const asientoError = ref(null);
 const placaError = ref(null);
 const conductorError = ref(null);
-
 const mostrarModalAgregar = ref(false);
 const mostrarModalEditar = ref(false);
-
-
 let id = ref("");
 let empresa = ref("");
 let asiento = ref("");
@@ -241,6 +237,26 @@ const agregar = () => {
   mensaje.value = "";
   // Lógica para preparar el modal de agregar
   mostrarModalAgregar.value = true;
+};
+
+
+const cerrarEditar = () => {
+  empresa.value = "";
+  asiento.value = "";
+  placa.value = "";
+  mensaje.value = "";
+  // Lógica para preparar el modal de agregar
+  mostrarModalEditar.value = false;
+};
+
+
+const cerrar = () => {
+  empresa.value = "";
+  asiento.value = "";
+  placa.value = "";
+  mensaje.value = "";
+  // Lógica para preparar el modal de agregar
+  mostrarModalAgregar.value = false;
 
 };
 
@@ -253,7 +269,6 @@ const editar = (row) => {
   conductor.value = row.conductor.nombre;
   estado.value = row.estado;
   mostrarModalEditar.value = true;
-
 };
 
 const columns = ref([
@@ -311,7 +326,7 @@ setTimeout(() => {
   asientoError.value = null;
   placaError.value = null;
   conductorError.value = null;
-}, 2000);
+}, 4500);
 };
 
 
@@ -336,10 +351,12 @@ const agregarNuevoBus = async () => {
 
   if (!empresa.value) {
     empresaError.value = 'La empresa es requerida';
+  } else if (!empresa.value.trim()){
+    empresaError.value = 'Empresa no valida'
+  } else if(!/^[a-zA-Z\s]+$/.test(empresa.value)){
+    empresaError.value = 'El nombre de la empresa debe ser una cadena de texto válida'
   }
-  /* } else if (empresa.value.length > 15) {
-    empresaError.value = 'La empresa no debe tener más de 15 caracteres';
-  } */
+
 
   if (!asiento.value) {
     asientoError.value = 'El asiento es requerido';
@@ -381,19 +398,19 @@ const agregarNuevoBus = async () => {
           conductor.value = '';
           useBus.errorvalidacion = '';
           mensaje.value = '';
-        }, 3000);
+        }, 4500);
       } else {
         mensajeColor.value = 'error';
         setTimeout(() => {
           useBus.errorvalidacion = '';
-        }, 3000);
+        }, 4500);
       }
     } catch (error) {
       console.log('Error al agregar  bus:', error);
       mensajeColor.value = 'error';
       setTimeout(() => {
         useBus.errorvalidacion = '';
-      }, 3000);
+      }, 4500);
     }
   }
 
@@ -409,10 +426,12 @@ const editarBus = async () => {
   // Validar los campos
   if (!empresa.value) {
     empresaError.value = 'La empresa es requerida';
+  } else if (!empresa.value.trim()){
+    empresaError.value = 'Empresa no valida'
+  } else if(!/^[a-zA-Z\s]+$/.test(empresa.value)){
+    empresaError.value = 'El nombre de la empresa debe ser una cadena de texto válida'
   }
-  /* } else if (empresa.value.length > 15) {
-    empresaError.value = 'La empresa no debe tener más de 15 caracteres';
-  } */
+
 
   if (!asiento.value) {
     asientoError.value = 'El asiento es requerido';
@@ -441,6 +460,11 @@ const editarBus = async () => {
       mensajeColor.value = 'success';
       loading.value = false;
       mensaje.value = "Bus editado correctamente (presione ❌ para cerrar)";
+      setTimeout(() => {
+          useBus.errorvalidacion = '';
+          mensaje.value = '';
+        }, 4500);
+
     } catch (error) {
       console.log('Error al editar el bus:', error);
       mensajeColor.value = 'error';
@@ -496,6 +520,11 @@ const filtrarConductores = (val, update) => {
   });
 }
 
+const handleKeydown = (event) => {
+  if (event.key === ' ') {
+    event.preventDefault();
+  }
+};
 
 </script>
 
@@ -800,6 +829,7 @@ p {
   font-size: 25px;
   border: none;
   background-color: white;
+  cursor: pointer;
 }
 
 .r {

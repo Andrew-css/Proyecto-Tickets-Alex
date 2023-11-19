@@ -25,7 +25,7 @@
               <form class="form">
                 <div class="cerrar">
                   <p class="title">Añadir cliente</p>
-                  <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+                  <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center" id="botoncerrar">❌</button>
                 </div>
                 <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
                   emailError }}</span>
@@ -73,7 +73,7 @@
           <form class="form">
             <div class="cerrar">
               <p class="title">Editar cliente</p>
-              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+              <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center" id="botoncerrar">❌</button>
             </div>
             <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
               emailError }}</span>
@@ -238,7 +238,22 @@ const agregar = () => {
 
 };
 
+const cerrar = () => {
+  nombre.value = "";
+  cedula.value = "";
+  email.value = "";
+  mensaje.value = "";
+  mostrarModalAgregar.value= false
+};
 
+const cerrarEditar = () => {
+  nombre.value = "";
+  cedula.value = "";
+  email.value = "";
+  mensaje.value = "";
+  mostrarModalEditar.value= false 
+
+};
 
 const clearErrors = () => {
 
@@ -260,8 +275,12 @@ const agregarNuevoCliente = async () => {
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
+  } else if (!nombre.value.trim()){
+    nombreError.value = 'Nombre no valido'
   } else if (nombre.value.length > 15) {
     nombreError.value = 'El nombre no debe tener más de 15 caracteres';
+  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+    nombreError.value = 'El nombre debe ser una cadena de texto válida'
   }
 
   if (!cedula.value) {
@@ -328,8 +347,12 @@ const editarCliente = async () => {
   // Validar los campos
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
+  } else if (!nombre.value.trim()){
+    nombreError.value = 'Nombre no valido'
   } else if (nombre.value.length > 15) {
     nombreError.value = 'El nombre no debe tener más de 15 caracteres';
+  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+    nombreError.value = 'El nombre debe ser una cadena de texto válida'
   }
 
   if (!nombreError.value) {
@@ -546,7 +569,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 500px;
+  width: 500px;
   background-color: #fff;
   padding: 20px;
   border-radius: 20px;
@@ -689,6 +712,7 @@ p {
   font-size: 25px;
   border: none;
   background-color: white;
+  cursor: pointer;
 }
 
 .r{

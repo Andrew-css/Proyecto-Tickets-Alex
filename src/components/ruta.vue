@@ -26,7 +26,7 @@
                 <div class="cerrar">
                   <p class="title">Añadir Ruta
                   </p>
-                  <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+                  <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
                     id="botoncerrar">❌</button>
                 </div>
                 <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
@@ -40,19 +40,63 @@
                   <q-spinner-hourglass color="primary" size="50px" />
                   <p>Por favor, espere...</p>
                 </div>
-                <label for="ciudad_origen">
+                <!-- <label for="ciudad_origen">
                   <select v-model="ciudad_origen" id="ciudad_origen" class="input">
                     <option value="" disabled>Selecciona una ciudad de origen</option>
                     <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
                   </select>
-                </label>
+                </label> -->
 
-                <label for="ciudad_destino">
+                <q-select
+              filled
+              v-model="ciudad_origen"
+              clearable
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
+              label="Seleccione ciudad origen"
+              :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
+              @filter="filtrarCiudades"
+              style="width: 400px"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                   No se encontraron resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+
+            <q-select
+              filled
+              v-model="ciudad_destino"
+              clearable
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
+              label="Seleccione ciudad destino"
+              :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
+              @filter="filtrarCiudades"
+              style="width: 400px"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                   No se encontraron resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+
+                <!-- <label for="ciudad_destino">
                   <select v-model="ciudad_destino" id="ciudad_destino" class="input">
                     <option value="" disabled>Selecciona una ciudad de detino</option>
                     <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
                   </select>
-                </label>
+                </label> -->
 
                 <label for="hora_salida">
                   <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
@@ -64,13 +108,35 @@
                   <span>Valor :</span>
                 </label>
 
-                <label for="bus">
+                <q-select
+              filled
+              v-model="bus"
+              clearable
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
+              label="Seleccione bus"
+              :options="buses.map(c => ({ label: c.placa, value: c._id }))"
+              @filter="filtrarBuses"
+              style="width: 400px"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                   No se encontraron resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+
+                <!-- <label for="bus">
                   <select v-model="bus" id="bus" class="input">
                     <option value="" disabled>Selecciona un bus</option>
                     <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
                   </select>
 
-                </label>
+                </label> -->
                 
 
                 <button type="button"  @click="agregarNuevaRuta"
@@ -90,7 +156,7 @@
           <form class="form">
             <div class="cerrar">
               <p class="title">Editar Ruta</p>
-              <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+              <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center" id="botoncerrar">❌</button>
             </div>
             <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
               class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError
@@ -103,37 +169,103 @@
               <q-spinner-hourglass color="primary" size="50px" />
               <p>Por favor, espere...</p>
             </div>
-            <label for="ciudad_origen">
-              <select v-model="ciudad_origen" id="ciudad_origen" class="input">
-                <option value="" disabled>Selecciona una ciudad de origen</option>
-                <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
-              </select>
-            </label>
+              <!-- <label for="ciudad_origen">
+                  <select v-model="ciudad_origen" id="ciudad_origen" class="input">
+                    <option value="" disabled>Selecciona una ciudad de origen</option>
+                    <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
+                  </select>
+                </label> -->
 
-            <label for="ciudad_destino">
-              <select v-model="ciudad_destino" id="ciudad_destino" class="input">
-                <option value="" disabled>Selecciona una ciudad de detino</option>
-                <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
-              </select>
-            </label>
+                <q-select
+              filled
+              v-model="ciudad_origen"
+              clearable
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
+              label="Seleccione ciudad origen"
+              :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
+              @filter="filtrarCiudades"
+              style="width: 400px"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                   No se encontraron resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
 
-            <label for="hora_salida">
-              <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
-              <span>Fecha y Hora de salida :</span>
-            </label>
+            <q-select
+              filled
+              v-model="ciudad_destino"
+              clearable
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
+              label="Seleccione ciudad destino"
+              :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
+              @filter="filtrarCiudades"
+              style="width: 400px"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                   No se encontraron resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
 
-            <label for="valor">
-              <input placeholder="" type="text" class="input" v-model="valor">
-              <span>Valor :</span>
-            </label>
+                <!-- <label for="ciudad_destino">
+                  <select v-model="ciudad_destino" id="ciudad_destino" class="input">
+                    <option value="" disabled>Selecciona una ciudad de detino</option>
+                    <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
+                  </select>
+                </label> -->
 
-            <label for="bus">
-              <select v-model="bus" id="bus" class="input">
-                <option value="" disabled>Selecciona un bus</option>
-                <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
-              </select>
+                <label for="hora_salida">
+                  <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
+                  <span>Fecha y Hora de salida :</span>
+                </label>
 
-            </label>
+                <label for="valor">
+                  <input placeholder="" type="text" class="input" v-model="valor">
+                  <span>Valor :</span>
+                </label>
+
+                <q-select
+              filled
+              v-model="bus"
+              clearable
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
+              label="Seleccione bus"
+              :options="buses.map(c => ({ label: c.placa, value: c._id }))"
+              @filter="filtrarBuses"
+              style="width: 400px"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                   No se encontraron resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+
+                <!-- <label for="bus">
+                  <select v-model="bus" id="bus" class="input">
+                    <option value="" disabled>Selecciona un bus</option>
+                    <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
+                  </select>
+
+                </label> -->
 
             <!-- Resto del contenido del formulario... -->
 
@@ -237,6 +369,33 @@ const agregar = () => {
   useVendedor.errorvalidacion = "";
 };
 
+const cerrar = () => {
+  mostrarModalAgregar.value = false
+  ciudad_origen.value = "";
+  ciudad_destino.value = "";
+  hora_salida.value = "";
+  valor.value = "";
+  bus.value = "";
+  mensaje.value = "";
+  useVendedor.errorvalidacion = "";
+};
+
+const cerrarEditar = () => {
+  mostrarModalEditar.value = false
+  ciudad_origen.value = "";
+  ciudad_destino.value = "";
+  hora_salida.value = "";
+  valor.value = "";
+  bus.value = "";
+  mensaje.value = "";
+  useVendedor.errorvalidacion = "";
+};
+
+const soloNumeros = (value) => {
+  const numeroRegex = /^[0-9]+$/;
+  return numeroRegex.test(value);
+};
+
 const clearErrors = () => {
 
 setTimeout(() => {
@@ -245,17 +404,19 @@ setTimeout(() => {
   horaSalidaError.value = null;
   valorError.value = null;
   busError.value = null;
-}, 2000);
+  mensaje.value = '';
+  useRuta.errorvalidacion = '';
+}, 4500);
 };
 
 const editar = (row) => {
   console.log("Datos de la fila:", row);
   id.value = row._id;
-  ciudad_origen.value = row.ciudad_origen._id;
-  ciudad_destino.value = row.ciudad_destino._id;
+  ciudad_origen.value = row.ciudad_origen.nombre;
+  ciudad_destino.value = row.ciudad_destino.nombre;
   hora_salida.value = row.hora_salida;
   valor.value = row.valor;
-  bus.value = row.bus._id;
+  bus.value = row.bus.placa;
   estado.value = row.estado;
   mostrarModalEditar.value = true
 };
@@ -326,6 +487,8 @@ const agregarNuevaRuta = async () => {
 
   if (!valor.value) {
     valorError.value = 'El valor es requerido';
+  }  else if (!soloNumeros(valor.value)) {
+    valorError.value = 'El valor debe contener solo números';
   }
 
   if (!bus.value) {
@@ -335,11 +498,11 @@ const agregarNuevaRuta = async () => {
 
   if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value && !valorError.value && !busError.value) {
     const data = {
-      ciudad_origen: ciudad_origen.value,
-      ciudad_destino: ciudad_destino.value,
+      ciudad_origen: ciudad_origen.value.value,
+      ciudad_destino: ciudad_destino.value.value,
       hora_salida: hora_salida.value,
       valor: valor.value,
-      bus: bus.value,
+      bus: bus.value.value,
     };
 
     try {
@@ -357,7 +520,7 @@ const agregarNuevaRuta = async () => {
           bus.value = '';
           useRuta.errorvalidacion = '';
           mensaje.value = '';
-        }, 3000);
+        }, 4500);
       } else {
         mensajeColor.value = 'error';
         setTimeout(() => {
@@ -369,7 +532,7 @@ const agregarNuevaRuta = async () => {
       mensajeColor.value = 'error';
       setTimeout(() => {
         useRuta.errorvalidacion = '';
-      }, 3000);
+      }, 4500);
     }
   }
 
@@ -398,6 +561,8 @@ const editarRuta = async () => {
 
   if (!valor.value) {
     valorError.value = 'El valor es requerido';
+  } else if (!soloNumeros(valor.value)) {
+    valorError.value = 'El valor debe contener solo números';
   }
 
   if (!bus.value) {
@@ -407,11 +572,11 @@ const editarRuta = async () => {
   if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value && !valorError.value && !busError.value) {
     loading.value = true;
     const data = {
-      ciudad_origen: ciudad_origen.value,
-      ciudad_destino: ciudad_destino.value,
+      ciudad_origen: ciudad_origen.value.value,
+      ciudad_destino: ciudad_destino.value.value,
       hora_salida: hora_salida.value,
       valor: valor.value,
-      bus: bus.value,
+      bus: bus.value.value,
     };
 
     try {
@@ -419,12 +584,13 @@ const editarRuta = async () => {
       mensajeColor.value = 'success';
       loading.value = false;
       mensaje.value = "Ruta editada correctamente (presione ❌ para cerrar)";
+      clearErrors()
     } catch (error) {
       console.log('Error al editar la ruta:', error);
       mensajeColor.value = 'error';
       setTimeout(() => {
         useRuta.errorvalidacion = '';
-      }, 3000);
+      }, 4500);
     }
   }
   loading.value = false;
@@ -473,7 +639,35 @@ const obtenerTextoEstado = (estado) => {
   return estado === 1 ? "Activo" : "Inactivo";
 };
 
+const filtrarCiudades = (val, update) => {
+  if (val === '') {
+    // Restablecer las opciones a la lista original de conductores cuando el input está vacío
+    update(() => {
+      ciudades.value = useCiudad.rows;
+    });
+    return;
+  }
 
+  update(() => {
+    const needle = val.toLowerCase();
+    ciudades.value = useCiudad.rows.filter(c => c.nombre.toLowerCase().includes(needle));
+  });
+}
+
+const filtrarBuses = (val, update) => {
+  if (val === '') {
+    // Restablecer las opciones a la lista original de conductores cuando el input está vacío
+    update(() => {
+      buses.value = useBus.rows;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    buses.value = useBus.rows.filter(c => c.placa.toLowerCase().includes(needle));
+  });
+}
 
 onMounted(async () => {
   obtenerRutas();
@@ -785,6 +979,7 @@ p {
   font-size: 25px;
   border: none;
   background-color: white;
+  cursor: pointer;
 }
 
 .r{

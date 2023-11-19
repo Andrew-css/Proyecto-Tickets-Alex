@@ -23,7 +23,7 @@
               <form class="form">
                 <div class="cerrar">
                   <p class="title">Añadir vendedor</p>
-                  <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+                  <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
                     id="botoncerrar">❌</button>
                 </div>
                 <span v-if="nombreError || apellidoError || cedulaError || telefonoError || usuarioError || contrasenaError"
@@ -84,7 +84,7 @@
                   <form class="form">
                     <div class="cerrar">
                       <p class="title">Editar Vendedor</p>
-                      <button type="button" data-bs-dismiss="modal" @click="agregar()" class="row justify-center items-center"
+                      <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center"
                         id="botoncerrar">❌</button>
                     </div>
                     <span v-if="nombreError || apellidoError || cedulaError || telefonoError || contrasenaError"
@@ -109,7 +109,7 @@
                     </label>
 
                     <label for="cedula">
-                      <input placeholder="Cedula" type="text" class="input" v-model="cedula" readonly id="readonly">
+                      <input placeholder="Cedula" type="text" class="input" v-model="cedula">
 
                     </label>
 
@@ -118,7 +118,7 @@
 
                     </label>
 
-                    <label for="usuario">
+<!--                     <label for="usuario">
                       <input placeholder="Usuario" type="text" class="input" v-model="usuario" readonly id="readonly">
 
                     </label>
@@ -127,11 +127,11 @@
                       <input placeholder="Contrasena" :type="mostrarContrasena ? 'text' : 'password'" class="input"
                         v-model="contrasena" />
 
-                      <!-- Botón para mostrar/ocultar contraseña -->
+                       Botón para mostrar/ocultar contraseña 
                       <button type="button" @click="toggleMostrarContrasena" class="toggle-password-button">
                         {{ mostrarContrasena ? '🔒' : '🔓' }}
-                      </button>
-                    </label>
+                      </button> 
+                    </label> -->
 
                     <!-- Resto del contenido del formulario... -->
 
@@ -218,18 +218,10 @@ let cedulaError = ref(null);
 let telefonoError = ref(null);
 let usuarioError = ref(null);
 let contrasenaError = ref(null);
-
 const mostrarModalAgregar = ref (false);
 const mostrarModalEditar = ref  (false);
 
-const data = ref({
-  nombre: nombre,
-  apellido: apellido,
-  cedula: cedula,
-  telefono: telefono,
-  usuario: usuario,
-  contrasena: contrasena,
-});
+
 
 const soloNumeros = (value) => {
   const numeroRegex = /^[0-9]+$/;
@@ -238,8 +230,20 @@ const soloNumeros = (value) => {
 
 let mostrarContrasena = ref(false);
 
-const toggleMostrarContrasena = () => {
+/* const toggleMostrarContrasena = () => {
   mostrarContrasena.value = !mostrarContrasena.value;
+}; */
+
+const agregar = () => {
+  nombre.value = "";
+  apellido.value = "";
+  cedula.value = "";
+  telefono.value = "";
+  usuario.value = "";
+  contrasena.value = "";
+  mensaje.value = "";
+  useVendedor.errorvalidacion = "";
+  mostrarModalAgregar.value= true
 };
 
 const editar = (row) => {
@@ -253,6 +257,30 @@ const editar = (row) => {
   contrasena.value = row.contrasena;
   estado.value = row.estado;
   mostrarModalEditar.value= true
+};
+
+const cerrar = () => {
+  nombre.value = "";
+  apellido.value = "";
+  cedula.value = "";
+  telefono.value = "";
+  usuario.value = "";
+  contrasena.value = "";
+  mensaje.value = "";
+  useVendedor.errorvalidacion = "";
+  mostrarModalAgregar.value= false
+};
+
+const cerrarEditar = () => {
+  nombre.value = "";
+  apellido.value = "";
+  cedula.value = "";
+  telefono.value = "";
+  usuario.value = "";
+  contrasena.value = "";
+  mensaje.value = "";
+  useVendedor.errorvalidacion = "";
+  mostrarModalEditar.value= false
 };
 
 const columns = ref([
@@ -300,17 +328,7 @@ const columns = ref([
   },
 ]);
 
-const agregar = () => {
-  nombre.value = "";
-  apellido.value = "";
-  cedula.value = "";
-  telefono.value = "";
-  usuario.value = "";
-  contrasena.value = "";
-  mensaje.value = "";
-  useVendedor.errorvalidacion = "";
-  mostrarModalAgregar.value= true
-};
+
 
 const clearErrors = () => {
 
@@ -321,7 +339,7 @@ const clearErrors = () => {
     telefonoError.value = null;
     usuarioError.value = null;
     contrasenaError.value = null;
-  }, 2000);
+  }, 4500);
 };
 
 const agregarNuevoVendedor = async () => {
@@ -458,15 +476,27 @@ const editarVendedor = async () => {
 
     try {
       const response = await useVendedor.actualizarVendedor(id.value, data);
-      mensajeColor.value = 'success';
-      loading.value = false;
-      mensaje.value = "Vendedor editado correctamente (presione ❌ para cerrar)";
+      if (useVendedor.estatus === 200) {
+        mensajeColor.value = 'success';
+        mensaje.value = 'Vendedor editado correctamente (presione ❌ para cerrar)';
+        setTimeout(() => {
+          useVendedor.errorvalidacion = '';
+          mensaje.value = '';
+        }, 4500);
+      } else {
+        mensajeColor.value = 'error';
+        setTimeout(() => {
+          useVendedor.errorvalidacion = '';
+          loading.value = false
+        }, 4500);
+      }
     } catch (error) {
       console.log('Error al editar el vendedor:', error);
       mensajeColor.value = 'error';
       setTimeout(() => {
         useVendedor.errorvalidacion = '';
-      }, 3000);
+        loading.value = false
+      }, 4500);
     }
   }
   loading.value = false;
@@ -662,7 +692,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 500px;
+  width: 500px;
   background-color: #fff;
   padding: 20px;
   border-radius: 20px;
@@ -805,6 +835,7 @@ p {
   font-size: 25px;
   border: none;
   background-color: white;
+  cursor: pointer;
 }
 
 .r {

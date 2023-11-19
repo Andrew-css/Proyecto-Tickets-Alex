@@ -79,6 +79,7 @@ export const useVendedorStore = defineStore("vendedor", () => {
         `https://transporte-el2a.onrender.com/api/vendedor/editar/${id}`,
         data
       );
+      estatus.value = response.status
       const index = rows.value.findIndex((v) => v._id === id);
       if (index !== -1) {
         rows.value.splice(index, 1, response.data.vendedor);
@@ -86,7 +87,7 @@ export const useVendedorStore = defineStore("vendedor", () => {
       console.log("Respuesta del servidor al actualizar vendedor:", response);
     } catch (error) {
       console.log("Error al actualizar vendedor:", error);
-      errorvalidacion.value = error.response.data.error
+      errorvalidacion.value = error.response.data.error.keyValue.cedula + " ya está registrada esta cédula en la base de datos";
     }
   };
 
