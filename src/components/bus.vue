@@ -55,7 +55,7 @@
               hide-selected
               fill-input
               input-debounce="0"
-              label="Focus after filtering"
+              label="Seleccione un conductor"
               :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
               @filter="filtrarConductores"
               style="width: 400px"
@@ -128,10 +128,9 @@
         hide-selected
         fill-input
         input-debounce="0"
-        label="Focus after filtering"
+        label="Seleccione un conductor"
         :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
         @filter="filtrarConductores"
-        @filter-abort="abortFilterFn"
         style="width: 400px"
       >
         <template v-slot:no-option>
@@ -235,7 +234,7 @@ const agregar = () => {
   asiento.value = "";
   placa.value = "";
   mensaje.value = "";
-  // Lógica para preparar el modal de agregar
+  conductor.value = "";
   mostrarModalAgregar.value = true;
 };
 
@@ -245,7 +244,7 @@ const cerrarEditar = () => {
   asiento.value = "";
   placa.value = "";
   mensaje.value = "";
-  // Lógica para preparar el modal de agregar
+  conductor.value = "";
   mostrarModalEditar.value = false;
 };
 
@@ -255,7 +254,7 @@ const cerrar = () => {
   asiento.value = "";
   placa.value = "";
   mensaje.value = "";
-  // Lógica para preparar el modal de agregar
+  conductor.value = "";
   mostrarModalAgregar.value = false;
 
 };

@@ -366,7 +366,7 @@ const agregar = () => {
   valor.value = "";
   bus.value = "";
   mensaje.value = "";
-  useVendedor.errorvalidacion = "";
+  useRuta.errorvalidacion = "";
 };
 
 const cerrar = () => {
@@ -377,7 +377,7 @@ const cerrar = () => {
   valor.value = "";
   bus.value = "";
   mensaje.value = "";
-  useVendedor.errorvalidacion = "";
+  useRuta.errorvalidacion = "";
 };
 
 const cerrarEditar = () => {
@@ -388,7 +388,7 @@ const cerrarEditar = () => {
   valor.value = "";
   bus.value = "";
   mensaje.value = "";
-  useVendedor.errorvalidacion = "";
+  useRuta.errorvalidacion = "";
 };
 
 const soloNumeros = (value) => {
