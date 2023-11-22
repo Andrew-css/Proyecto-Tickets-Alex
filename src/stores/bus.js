@@ -140,6 +140,19 @@ export const useBusStore = defineStore("bus", () => {
       console.log("Error al desactivar bus:", error);
     }
   };
+  
+  const obtener = async () => {
+    try {
+      const x = insertarToken()
+      if(!x) return null
+
+      const response = await x.get(`https://transporte-el2a.onrender.com/api/bus/all`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return error.response.data;
+    }
+  };
 
   return {
     agregarNuevoBus,
@@ -151,5 +164,6 @@ export const useBusStore = defineStore("bus", () => {
     errorvalidacion,
     estatus,
     rows,
+    obtener,
   };
 });

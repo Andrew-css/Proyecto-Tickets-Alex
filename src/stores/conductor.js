@@ -117,6 +117,19 @@ export const useConductorStore = defineStore("conductor", () => {
     }
   };
 
+  const obtener = async () => {
+    try {
+      const x = insertarToken()
+      if(!x) return null
+
+      const response = await x.get(`https://transporte-el2a.onrender.com/api/conductor/all`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return error.response.data;
+    }
+  };
+
   return {
     agregarNuevoConductor,
     actualizarConductor,
@@ -126,5 +139,6 @@ export const useConductorStore = defineStore("conductor", () => {
     errorvalidacion,
     estatus,
     rows,
+    obtener,
   };
 });

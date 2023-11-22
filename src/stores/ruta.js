@@ -130,6 +130,19 @@ export const useRutaStore = defineStore("ruta", () => {
     }
   };
 
+  const obtener = async () => {
+    try {
+      const x = insertarToken()
+      if(!x) return null
+
+      const response = await x.get(`https://transporte-el2a.onrender.com/api/ruta/all`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return error.response.data;
+    }
+  };
+
   return {
     agregarNuevaRuta,
     actualizarRuta,
@@ -139,5 +152,6 @@ export const useRutaStore = defineStore("ruta", () => {
     errorvalidacion,
     estatus,
     rows,
+    obtener,
   };
 });

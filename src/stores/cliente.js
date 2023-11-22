@@ -97,6 +97,19 @@ export const useClienteStore = defineStore("cliente", () => {
     }
   };
 
+  const obtener = async () => {
+    try {
+      const x = insertarToken()
+      if(!x) return null
+
+      const response = await x.get(`https://transporte-el2a.onrender.com/api/cliente/all`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return error.response.data;
+    }
+  };
+
   return {
     agregarNuevoCliente,
     actualizarCliente,
@@ -106,5 +119,6 @@ export const useClienteStore = defineStore("cliente", () => {
     rows,
     errorvalidacion,
     estatus,
+    obtener,
   };
 });

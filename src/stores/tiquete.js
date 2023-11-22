@@ -97,6 +97,19 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
         console.log("e", error);
       }
     };
+
+    const obtener = async () => {
+      try {
+        const x = insertarToken()
+        if(!x) return null
+  
+        const response = await x.get(`https://transporte-el2a.onrender.com/api/tiquete/all`);
+        return response.data;
+      } catch (error) {
+        console.error(error);
+        return error.response.data;
+      }
+    };
   
     return {
       agregarNuevoTiquete,
@@ -105,6 +118,7 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
       desactivar,
       obtenerTiquetes,
       rows,
+      obtener,
     };
 
 

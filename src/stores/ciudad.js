@@ -98,6 +98,33 @@ errorvalidacion.value = error.response.data.error.keyValue.nombre + " ya está r
     }
   };
 
+  function insertarToken(){
+    const token = localStorage.getItem("x-token");
+
+    if(!token) return false
+
+    const axiosInstance = axios.create({
+      headers: {
+        'x-token': token
+      }
+    });
+
+    return axiosInstance
+  }
+
+  const obtener = async () => {
+    try {
+      const x = insertarToken()
+      if(!x) return null
+
+      const response = await x.get(`https://transporte-el2a.onrender.com/api/ciudad/all`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return error.response.data;
+    }
+  };
+
   return {
     agregarNuevaCiudad,
     actualizarCiudad,
@@ -107,5 +134,6 @@ errorvalidacion.value = error.response.data.error.keyValue.nombre + " ya está r
     rows,
     errorvalidacion,
     estatus,
+    obtener,
   };
 });

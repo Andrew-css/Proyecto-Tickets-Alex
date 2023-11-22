@@ -144,6 +144,7 @@ export const useVendedorStore = defineStore("vendedor", () => {
           user: response.data.vendedor,
           token: response.data.token,
         };
+        
       }
      
     } catch (error) {
@@ -156,6 +157,32 @@ export const useVendedorStore = defineStore("vendedor", () => {
     }
   };
   
+  function insertarToken(){
+    const token = localStorage.getItem("x-token");
+
+    if(!token) return false
+
+    const axiosInstance = axios.create({
+      headers: {
+        'x-token': token
+      }
+    });
+
+    return axiosInstance
+  }
+
+  const obtener = async () => {
+    try {
+      const x = insertarToken()
+      if(!x) return null
+
+      const response = await x.get(`https://transporte-el2a.onrender.com/api/vendedor/all`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return error.response.data;
+    }
+  };
 
   return {
     agregarNuevoVendedor,
@@ -167,5 +194,6 @@ export const useVendedorStore = defineStore("vendedor", () => {
     errorvalidacion,
     estatus,
     rows,
+    obtener,
   };
 });

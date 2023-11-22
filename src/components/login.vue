@@ -59,7 +59,8 @@
      // o realiza cualquier acción necesaria.
      loading.value = false;
      router.push("/home");
- 
+     console.log("Hola soy vendedor", response)
+     localStorage.setItem("x-token", response.token)
    } else {
      console.log("Error de inicio de sesión");
      // Muestra el mensaje de error y luego desaparece después de 2 segundos
