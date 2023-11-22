@@ -1,300 +1,158 @@
 <template>
   <div>
     <div class="contenedor">
-      <h1 class="titulocli">Tiquete</h1>
+      <h1 class="titulocli">TIQUETES</h1>
       <div class="linea"></div>
     </div>
-    <div class="r">
-      <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop" @click="abrir()"> <span class="button__text">Añadir</span> <span
-          class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2"
-            stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
-            <line y2="19" y1="5" x2="12" x1="12"></line>
-            <line y2="12" y1="12" x2="19" x1="5"></line>
-          </svg></span>
-      </button>
+
+    <div class="q-pa-xl">
+      <q-table class="text-center" :rows="rows" :columns="columns" row-key="id">
+        <template v-slot:top>
+          <q-toolbar>
+            <q-toolbar-title class="text-center">Tiquetes</q-toolbar-title>
+          </q-toolbar>
+        </template>
+        <template v-slot:body="props">
+          <q-tr :props="props">
+            <q-td auto-width>
+              <div class="q-ma-xs text-center">{{ props.row.vendedor.nombre }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-center">{{ props.row.ruta }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-center">{{ props.row.cliente.nombre }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-center">{{ props.row.fecha_salida }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-center">{{ props.row.num_asiento }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div :class="{
+                  'text-center': true,
+                  activo: props.row.estado === 1,
+                  inactivo: props.row.estado === 0
+                }
+                ">
+                {{ obtenerTextoEstado(props.row.estado) }}
+              </div>
+            </q-td>
+            <q-td auto-width>
+              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal" data-bs-target="#editClientModal"/>
+              <q-btn label="✅" color="primary" @click="useTiquete.activar(props.row._id)"
+                v-if="props.row.estado === 0" />
+              <q-btn label="❌" color="primary" @click="useTiquete.desactivar(props.row._id)"
+                v-if="props.row.estado === 1" />
+            </q-td>
+          </q-tr>
+        </template>
+      </q-table>
     </div>
-
-    <!-- Modal agregar -->
-
-    <q-dialog v-model="mostrarModalAgregar" position="top">
-      <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
-        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <form class="form">
-              <div class="cerrar">
-                <p class="title">Seleccione
-                </p>
-                <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
-                  id="botoncerrar">❌</button>
-              </div>
-              <!--  <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
-                  class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError
-                  }}</span>
-                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
-                <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-                  mensaje
-                }}</span>
-                <div v-if="loading" class="text-center">
-                  <q-spinner-hourglass color="primary" size="50px" />
-                  <p>Por favor, espere...</p>
-                </div> -->
-              <!-- <label for="ciudad_origen">
-                  <select v-model="ciudad_origen" id="ciudad_origen" class="input">
-                    <option value="" disabled>Selecciona una ciudad de origen</option>
-                    <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
-                  </select>
-                </label> -->
-              <div v-if="loading" class="text-center">
-                <q-spinner-hourglass color="primary" size="50px" />
-                <p>Cargando rutas, por favor espere...</p>
-              </div>
-
-              <q-select filled v-model="ruta" clearable use-input hide-selected fill-input input-debounce="0"
-                label="Seleccione una ruta"
-                :options="rutas.map(c => ({ label: `${c.ciudad_origen.nombre} / ${c.ciudad_destino.nombre}`, value: c }))"
-                @filter="filtrarRutas" style="width: 400px">
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No se encontraron resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-
-              <!-- Inputs adicionales para mostrar la Hora_Salida y el Bus -->
-              <q-input filled v-model="horaSalida" label="Hora de Salida" readonly />
-              <q-input filled v-model="bus" label="Bus" readonly />
-
-
-
-
-
-              <!--  <q-select
-              filled
-              v-model="ciudad_destino"
-              clearable
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              label="Seleccione ciudad destino"
-              :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
-              @filter="filtrarCiudades"
-              style="width: 400px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                   No se encontraron resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select> -->
-
-              <!-- <label for="ciudad_destino">
-                  <select v-model="ciudad_destino" id="ciudad_destino" class="input">
-                    <option value="" disabled>Selecciona una ciudad de detino</option>
-                    <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
-                  </select>
-                </label> -->
-
-
-
-              <!-- <label for="valor">
-                  <input placeholder="" type="text" class="input" v-model="valor">
-                  <span>Valor :</span>
-                </label>
-
-                <q-select
-              filled
-              v-model="bus"
-              clearable
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              label="Seleccione bus"
-              :options="buses.map(c => ({ label: c.placa, value: c._id }))"
-              @filter="filtrarBuses"
-              style="width: 400px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                   No se encontraron resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select> -->
-
-              <!-- <label for="bus">
-                  <select v-model="bus" id="bus" class="input">
-                    <option value="" disabled>Selecciona un bus</option>
-                    <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
-                  </select>
-
-                </label> -->
-
-              <button type="button" @click="agregarNuevaRuta" class="submit">Enviar</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </q-dialog>
-
-    <!-- Puedes agregar esto donde desees mostrar la cantidad de asientos del bus -->
-    <div v-if="mostrarasientos">
-  <p>Asientos del Bus:</p>
-  <div class="asientos-container">
-    <button
-      v-for="asiento in Array(asientosBus).fill().map((_, index) => index + 1)"
-      :key="asiento"
-      @click="seleccionarAsiento(asiento)"
-      :class="{ 'asiento-seleccionado': asientoSeleccionado === asiento, 'asiento': true }"
-    >
-    <img src="../assets/silla.png" alt="Asiento {{ asiento }}" />
-    </button>
-  </div>
-</div>
-
-
   </div>
 </template>
 
 <script setup>
 import { useTiqueteStore } from "../stores/tiquete.js";
-import { onMounted, ref, watch } from "vue";
-import { useRutaStore } from "../stores/ruta.js";
+import { onMounted, ref } from "vue";
 
-const mostrarModalAgregar = ref(false)
-const rutas = ref([])
-const ruta = ref('')
-const useRuta = useRutaStore()
-const horaSalida = ref('');
-const bus = ref([]);
-const asientosBus = ref('');
-const loading = ref(false);
-const mostrarasientos = ref(false)
+const useTiquete = useTiqueteStore();
+let rows = ref([]);
+let tiquetes = ref([]);
+let id = ref("");
+let nombre = ref("");
+let cedula = ref("");
+let email = ref("");
+let estado = ref(1);
+let loading = ref(false);
+let mensaje = ref('');
+let mensajeColor = ref(''); // Variable para el color del mensaje
 
-const asientoSeleccionado = ref(null);
-
-const seleccionarAsiento = (asiento) => {
-  if (asientoSeleccionado.value === asiento) {
-    // Deseleccionar el asiento si ya estaba seleccionado
-    asientoSeleccionado.value = null;
-  } else {
-    // Seleccionar el nuevo asiento
-    asientoSeleccionado.value = asiento;
-  }
+const editar = (row) => {
+  console.log(row);
+  id.value = row._id;
+  nombre.value = row.nombre;
+  cedula.value = row.cedula;
+  email.value = row.email;
+  estado.value = row.estado;
 };
 
+const columns = ref([
+  {
+    name: "Vendedor",
+    label: "Vendedor",
+    align: "center",
+    field: (row) => row.vendedor.nombre,
+  },
+  {
+    name: "Ruta",
+    label: "Ruta",
+    align: "center",
+    field: (row) => `${row.ruta.ciudad_origen.nombre} - ${row.ruta.ciudad_destino.nombre}`,
+  },
+  {
+    name: "Cliente",
+    label: "Cliente",
+    align: "center",
+    field: (row) => row.cliente.nombre,
+  },
+  {
+    name: "Fecha Salida",
+    label: "Fecha Salida",
+    align: "center",
+    field: (row) => row.fecha_salida,
+  },
+  {
+    name: "Num Asiento",
+    label: "Num Asiento",
+    align: "center",
+    field: (row) => row.num_asiento,
+  },
+  {
+    name: "d",
+    label: "Opciones",
+    field: "actions",
+    align: "center",
+  },
+]);
 
 
-watch(ruta, (nuevaRuta) => {
-  mostrarasientos.value = true
-  console.log(nuevaRuta)
-  // Verifica si nuevaRuta está definido y tiene las propiedades Hora_Salida y Bus
-  if (nuevaRuta && nuevaRuta.value && nuevaRuta.value.hora_salida) {
-    // Asigna el valor de Hora_Salida
-    horaSalida.value = nuevaRuta.value.hora_salida;
-  } else {
-    // En caso contrario, asigna un valor predeterminado o vacío según tu lógica
-    horaSalida.value = ''; // o algún valor predeterminado
-  }
-
-  // Verifica si nuevaRuta está definido y tiene la propiedad Bus
-  if (nuevaRuta && nuevaRuta.value && nuevaRuta.value.bus.placa) {
-    // Asigna el valor de Bus
-    bus.value = nuevaRuta.value.bus.placa;
-  } else {
-    // En caso contrario, asigna un valor predeterminado o vacío según tu lógica
-    bus.value = ''; // o algún valor predeterminado
-  }
-
-  if (nuevaRuta && nuevaRuta.value && nuevaRuta.value.bus.asiento) {
-    // Asigna el valor de asientosBus
-    asientosBus.value = nuevaRuta.value.bus.asiento;
-  } else {
-    // En caso contrario, asigna un valor predeterminado o vacío según tu lógica
-    asientosBus.value = ''; // o algún valor predeterminado
-  }
-});
 
 
-
-
-
-
-
-console.log(rutas.value)
-const abrir = () => {
-  mostrarModalAgregar.value = true
-};
-const cerrar = () => {
-  mostrarModalAgregar.value = false
-};
-
-
-const obtenerRutas = async () => {
+async function obtenerTiquete() {
   try {
-    loading.value = true; // Indicar que la carga está en progreso
-    await useRuta.obtenerRutas();
-    rutas.value = useRuta.rows;
+    await useTiquete.obtenerTiquetes();
+    tiquetes.value = useTiquete.rows;
+    rows.value = useTiquete.rows;
   } catch (error) {
     console.log(error);
-  } finally {
-    loading.value = false; // Indicar que la carga ha terminado (independientemente del resultado)
   }
-};
+}
 
+async function desactivarTiquete(id) {
+  await useTiquete.desactivar(id);
+  obtenerTiquete();
+}
 
-const filtrarRutas = (val, update) => {
-  if (val === '') {
-    update(() => {
-      rutas.value = useRuta.rows;
-    });
-    return;
-  }
+async function activarTiquete(id) {
+  await useTiquete.activar(id);
+  obtenerTiquete();
+}
 
-  update(() => {
-    const needle = val.toLowerCase();
-    rutas.value = useRuta.rows.filter(c => `${c.ciudad_origen.nombre} / ${c.ciudad_destino.nombre}`.toLowerCase().includes(needle));
-  });
+const obtenerTextoEstado = (estado) => {
+  return estado === 1 ? "Activo" : "Inactivo";
 };
 
 
 onMounted(async () => {
-  obtenerRutas()
+  obtenerTiquete();
+  desactivarTiquete();
+  activarTiquete();
 });
-
 </script>
 
 <style scoped>
-
-.asientos-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Crear 4 columnas */
-  gap: 10px; /* Espacio entre los botones */
-}
-
-.asiento {
-  /* Estilos del botón de asiento */
-  width: 50px;
-  height: 50px;
-  /* Otros estilos... */
-}
-
-.asientos-container button img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Ajusta la imagen para que cubra completamente el área del botón */
-}
-
-
-
 .activo {
   color: green;
   font-weight: bold;
@@ -425,7 +283,7 @@ p {
   color: red;
 }
 
-#readonly {
+#readonly{
   background-color: #ffeee4;
   cursor: not-allowed;
   color: #505050;
@@ -452,7 +310,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 500px;
+  width: 500px;
   background-color: #fff;
   padding: 20px;
   border-radius: 20px;
@@ -582,7 +440,7 @@ p {
   }
 }
 
-.cerrar {
+.cerrar{
   display: flex;
   justify-content: space-between;
   margin-right: 20px;
@@ -590,7 +448,7 @@ p {
 }
 
 
-#botoncerrar {
+#botoncerrar{
   width: 5px;
   font-size: 25px;
   border: none;
@@ -598,8 +456,10 @@ p {
   cursor: pointer;
 }
 
-.r {
+.r{
   display: flex;
   margin-top: 20px;
 }
+
 </style>
+

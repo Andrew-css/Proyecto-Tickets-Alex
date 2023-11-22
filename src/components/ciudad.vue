@@ -160,6 +160,12 @@ const columns = ref([
     field: (row) => row.nombre,
   },
   {
+    name: "Estado",
+    label: "Estado",
+    align: "center",
+    field: (row) => row.estado,
+  },
+  {
     name: "Opciones",
     label: "Opciones",
     align: "center",
