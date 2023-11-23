@@ -59,7 +59,9 @@ export const useVendedorStore = defineStore("vendedor", () => {
 
   const agregarNuevoVendedor = async (data) => {
     try {
-      const response = await axios.post(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.post(
         "https://transporte-el2a.onrender.com/api/vendedor/guardar",
         data
       );
@@ -75,7 +77,9 @@ export const useVendedorStore = defineStore("vendedor", () => {
 
   const actualizarVendedor = async (id, data) => {
     try {
-      const response = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.put(
         `https://transporte-el2a.onrender.com/api/vendedor/editar/${id}`,
         data
       );
@@ -87,13 +91,16 @@ export const useVendedorStore = defineStore("vendedor", () => {
       console.log("Respuesta del servidor al actualizar vendedor:", response);
     } catch (error) {
       console.log("Error al actualizar vendedor:", error);
-      errorvalidacion.value = error.response.data.error.keyValue.cedula + " ya está registrada esta cédula en la base de datos";
+      errorvalidacion.value = error.response.data.error;
     }
   };
 
   const obtenerVendedores = async () => {
     try {
-      const response = await axios.get("https://transporte-el2a.onrender.com/api/vendedor/all");
+      const x = insertarToken();
+      if (!x) return null;
+
+      const response = await x.get("https://transporte-el2a.onrender.com/api/vendedor/all");
       rows.value = response.data.vendedor;
       console.log(response)
     } catch (error) {
@@ -103,7 +110,10 @@ export const useVendedorStore = defineStore("vendedor", () => {
 
   const activar = async (id) => {
     try {
-      const response = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+
+      const response = await x.put(
         `https://transporte-el2a.onrender.com/api/vendedor/activar/${id}`
       );
       const index = rows.value.findIndex((v) => v._id === id);
@@ -118,7 +128,9 @@ export const useVendedorStore = defineStore("vendedor", () => {
 
   const desactivar = async (id) => {
     try {
-      const response = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.put(
         `https://transporte-el2a.onrender.com/api/vendedor/inactivar/${id}`
       );
       const index = rows.value.findIndex((v) => v._id === id);

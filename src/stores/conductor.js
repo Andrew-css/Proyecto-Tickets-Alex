@@ -42,7 +42,9 @@ export const useConductorStore = defineStore("conductor", () => {
 
   const agregarNuevoConductor = async (data) => {
     try {
-      const response = await axios.post(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.post(
         "https://transporte-el2a.onrender.com/api/conductor/guardar",
         data
       );
@@ -57,8 +59,10 @@ export const useConductorStore = defineStore("conductor", () => {
 
   const actualizarConductor = async (id, data) => {
     console.log("Hola soy data", data);
+    const x = insertarToken();
+    if (!x) return null;
     try {
-      const response = await axios.put(
+      const response = await x.put(
         `https://transporte-el2a.onrender.com/api/conductor/editar/${id}`,
         data
       );
@@ -72,7 +76,9 @@ export const useConductorStore = defineStore("conductor", () => {
 
   const obtenerConductores = async () => {
     try {
-      const conductoresData = await axios.get(
+      const x = insertarToken();
+      if (!x) return null;
+      const conductoresData = await x.get(
         "https://transporte-el2a.onrender.com/api/conductor/all"
       );
       rows.value = conductoresData.data.conductor;
@@ -86,7 +92,9 @@ export const useConductorStore = defineStore("conductor", () => {
 
   const activar = async (id) => {
     try {
-      const conductor = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const conductor = await x.put(
         `https://transporte-el2a.onrender.com/api/conductor/activar/${id}`
       );
       if (conductor) {
@@ -102,7 +110,9 @@ export const useConductorStore = defineStore("conductor", () => {
 
   const desactivar = async (id) => {
     try {
-      const conductor = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const conductor = await x.put(
         `https://transporte-el2a.onrender.com/api/conductor/inactivar/${id}`
       );
       if (conductor) {
@@ -116,6 +126,21 @@ export const useConductorStore = defineStore("conductor", () => {
       console.log("Error al desactivar conductor:", error);
     }
   };
+
+  function insertarToken(){
+    const token = localStorage.getItem("x-token");
+
+    if(!token) return false
+
+    const axiosInstance = axios.create({
+      headers: {
+        'x-token': token
+      }
+    });
+
+    return axiosInstance
+  }
+
 
   const obtener = async () => {
     try {

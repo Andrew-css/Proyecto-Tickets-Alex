@@ -25,7 +25,9 @@ export const useCiudadStore = defineStore("ciudad", () => {
 
   const agregarNuevaCiudad = async (data) => {
     try {
-      const response = await axios.post(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.post(
         "https://transporte-el2a.onrender.com/api/ciudad/guardar",
         data
       );
@@ -40,7 +42,9 @@ export const useCiudadStore = defineStore("ciudad", () => {
 
   const actualizarCiudad = async (id, data) => {
     try {
-      const response = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.put(
         `https://transporte-el2a.onrender.com/api/ciudad/editar/${id}`,
         data
       );
@@ -58,7 +62,9 @@ errorvalidacion.value = error.response.data.error.keyValue.nombre + " ya está r
 
   const obtenerCiudades = async () => {
     try {
-      const ciudadesData = await axios.get(
+      const x = insertarToken();
+      if (!x) return null;
+      const ciudadesData = await x.get(
         "https://transporte-el2a.onrender.com/api/ciudad/all"
       );
       rows.value = ciudadesData.data;
@@ -70,7 +76,9 @@ errorvalidacion.value = error.response.data.error.keyValue.nombre + " ya está r
 
   const activar = async (id) => {
     try {
-      const response = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.put(
         `https://transporte-el2a.onrender.com/api/ciudad/activar/${id}`
       );
       const index = rows.value.findIndex((c) => c._id === id);
@@ -85,7 +93,9 @@ errorvalidacion.value = error.response.data.error.keyValue.nombre + " ya está r
 
   const desactivar = async (id) => {
     try {
-      const response = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.put(
         `https://transporte-el2a.onrender.com/api/ciudad/inactivar/${id}`
       );
       const index = rows.value.findIndex((c) => c._id === id);

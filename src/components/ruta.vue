@@ -5,170 +5,42 @@
       <div class="linea"></div>
     </div>
     <div class="r">
-      <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-      @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg
-          xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
-          stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
-          <line y2="19" y1="5" x2="12" x1="12"></line>
-          <line y2="12" y1="12" x2="19" x1="5"></line>
-        </svg></span> 
-    </button>
+      <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop" @click="agregar()"> <span class="button__text">Añadir</span> <span
+          class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2"
+            stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+            <line y2="19" y1="5" x2="12" x1="12"></line>
+            <line y2="12" y1="12" x2="19" x1="5"></line>
+          </svg></span>
+      </button>
     </div>
 
-     <!-- Modal agregar -->
+    <!-- Modal agregar -->
 
-     <q-dialog v-model="mostrarModalAgregar" position="top">
-        <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
-          data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <form class="form">
-                <div class="cerrar">
-                  <p class="title">Añadir Ruta
-                  </p>
-                  <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
-                    id="botoncerrar">❌</button>
-                </div>
-                <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
-                  class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError
-                  }}</span>
-                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
-                <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-                  mensaje
+    <q-dialog v-model="mostrarModalAgregar" position="top">
+      <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div class="cerrar">
+                <p class="title">Añadir Ruta
+                </p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
+                  id="botoncerrar">❌</button>
+              </div>
+              <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
+                class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError ||
+                  busError
                 }}</span>
-                <div v-if="loading" class="text-center">
-                  <q-spinner-hourglass color="primary" size="50px" />
-                  <p>Por favor, espere...</p>
-                </div>
-                <!-- <label for="ciudad_origen">
-                  <select v-model="ciudad_origen" id="ciudad_origen" class="input">
-                    <option value="" disabled>Selecciona una ciudad de origen</option>
-                    <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
-                  </select>
-                </label> -->
-
-                <q-select
-              filled
-              v-model="ciudad_origen"
-              clearable
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              label="Seleccione ciudad origen"
-              :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
-              @filter="filtrarCiudades"
-              style="width: 400px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                   No se encontraron resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-
-            <q-select
-              filled
-              v-model="ciudad_destino"
-              clearable
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              label="Seleccione ciudad destino"
-              :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
-              @filter="filtrarCiudades"
-              style="width: 400px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                   No se encontraron resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-
-                <!-- <label for="ciudad_destino">
-                  <select v-model="ciudad_destino" id="ciudad_destino" class="input">
-                    <option value="" disabled>Selecciona una ciudad de detino</option>
-                    <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
-                  </select>
-                </label> -->
-
-                <label for="hora_salida">
-                  <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
-                  <span>Fecha y Hora de salida :</span>
-                </label>
-
-                <label for="valor">
-                  <input placeholder="" type="text" class="input" v-model="valor">
-                  <span>Valor :</span>
-                </label>
-
-                <q-select
-              filled
-              v-model="bus"
-              clearable
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              label="Seleccione bus"
-              :options="buses.map(c => ({ label: c.placa, value: c._id }))"
-              @filter="filtrarBuses"
-              style="width: 400px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                   No se encontraron resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-
-                <!-- <label for="bus">
-                  <select v-model="bus" id="bus" class="input">
-                    <option value="" disabled>Selecciona un bus</option>
-                    <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
-                  </select>
-
-                </label> -->
-                
-
-                <button type="button"  @click="agregarNuevaRuta"
-                  class="submit">Enviar</button>
-              </form>
-            </div>
-          </div>
-        </div>
-    </q-dialog>
-
-     <!-- Modal editar -->
-
- <q-dialog v-model="mostrarModalEditar" position="top">
-    <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form class="form">
-            <div class="cerrar">
-              <p class="title">Editar Ruta</p>
-              <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center" id="botoncerrar">❌</button>
-            </div>
-            <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
-              class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                mensaje
               }}</span>
-            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-              mensaje
-            }}</span>
-            <div v-if="loading" class="text-center">
-              <q-spinner-hourglass color="primary" size="50px" />
-              <p>Por favor, espere...</p>
-            </div>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
               <!-- <label for="ciudad_origen">
                   <select v-model="ciudad_origen" id="ciudad_origen" class="input">
                     <option value="" disabled>Selecciona una ciudad de origen</option>
@@ -176,90 +48,60 @@
                   </select>
                 </label> -->
 
-                <q-select
-              filled
-              v-model="ciudad_origen"
-              clearable
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              label="Seleccione ciudad origen"
-              :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
-              @filter="filtrarCiudades"
-              style="width: 400px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                   No se encontraron resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+              <q-select filled v-model="ciudad_origen" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione ciudad origen" :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
+                @filter="filtrarCiudades" style="width: 400px">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
 
-            <q-select
-              filled
-              v-model="ciudad_destino"
-              clearable
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              label="Seleccione ciudad destino"
-              :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
-              @filter="filtrarCiudades"
-              style="width: 400px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                   No se encontraron resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+              <q-select filled v-model="ciudad_destino" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione ciudad destino" :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
+                @filter="filtrarCiudades" style="width: 400px">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
 
-                <!-- <label for="ciudad_destino">
+              <!-- <label for="ciudad_destino">
                   <select v-model="ciudad_destino" id="ciudad_destino" class="input">
                     <option value="" disabled>Selecciona una ciudad de detino</option>
                     <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
                   </select>
                 </label> -->
 
-                <label for="hora_salida">
-                  <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
-                  <span>Fecha y Hora de salida :</span>
-                </label>
+              <label for="hora_salida">
+                <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
+                <span>Fecha y Hora de salida :</span>
+              </label>
 
-                <label for="valor">
-                  <input placeholder="" type="text" class="input" v-model="valor">
-                  <span>Valor :</span>
-                </label>
+              <label for="valor">
+                <input placeholder="" type="text" class="input" v-model="valor">
+                <span>Valor :</span>
+              </label>
 
-                <q-select
-              filled
-              v-model="bus"
-              clearable
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              label="Seleccione bus"
-              :options="buses.map(c => ({ label: c.placa, value: c._id }))"
-              @filter="filtrarBuses"
-              style="width: 400px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                   No se encontraron resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+              <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione bus" :options="buses.map(c => ({ label: c.placa, value: c._id }))"
+                @filter="filtrarBuses" style="width: 400px">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
 
-                <!-- <label for="bus">
+              <!-- <label for="bus">
                   <select v-model="bus" id="bus" class="input">
                     <option value="" disabled>Selecciona un bus</option>
                     <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
@@ -267,16 +109,117 @@
 
                 </label> -->
 
-            <!-- Resto del contenido del formulario... -->
 
-            <button type="button"  @click="editarRuta" class="submit">Enviar</button>
-          </form>
+              <button type="button" @click="agregarNuevaRuta" class="submit">Enviar</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-</q-dialog>
+    </q-dialog>
 
-  
+    <!-- Modal editar -->
+
+    <q-dialog v-model="mostrarModalEditar" position="top">
+      <div class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div class="cerrar">
+                <p class="title">Editar Ruta</p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
+                  class="row justify-center items-center" id="botoncerrar">❌</button>
+              </div>
+              <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
+                class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError ||
+                  busError
+                }}</span>
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                mensaje
+              }}</span>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
+              <!-- <label for="ciudad_origen">
+                  <select v-model="ciudad_origen" id="ciudad_origen" class="input">
+                    <option value="" disabled>Selecciona una ciudad de origen</option>
+                    <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
+                  </select>
+                </label> -->
+
+              <q-select filled v-model="ciudad_origen" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione ciudad origen" :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
+                @filter="filtrarCiudades" style="width: 400px">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+
+              <q-select filled v-model="ciudad_destino" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione ciudad destino" :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
+                @filter="filtrarCiudades" style="width: 400px">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+
+              <!-- <label for="ciudad_destino">
+                  <select v-model="ciudad_destino" id="ciudad_destino" class="input">
+                    <option value="" disabled>Selecciona una ciudad de detino</option>
+                    <option v-for="ciudad in ciudades" :value="ciudad._id" :key="ciudad._id">{{ ciudad.nombre }}</option>
+                  </select>
+                </label> -->
+
+              <label for="hora_salida">
+                <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
+                <span>Fecha y Hora de salida :</span>
+              </label>
+
+              <label for="valor">
+                <input placeholder="" type="text" class="input" v-model="valor">
+                <span>Valor :</span>
+              </label>
+
+              <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione bus" :options="buses.map(c => ({ label: c.placa, value: c._id }))"
+                @filter="filtrarBuses" style="width: 400px">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+
+              <!-- <label for="bus">
+                  <select v-model="bus" id="bus" class="input">
+                    <option value="" disabled>Selecciona un bus</option>
+                    <option v-for="b in buses" :value="b._id" :key="b._id">{{ b.placa }}</option>
+                  </select>
+
+                </label> -->
+
+              <!-- Resto del contenido del formulario... -->
+
+              <button type="button" @click="editarRuta" class="submit">Enviar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </q-dialog>
+
+
 
 
     <div class="q-pa-xl">
@@ -295,7 +238,7 @@
               <div class="text-center">{{ props.row.ciudad_destino.nombre }}</div>
             </q-td>
             <q-td auto-width>
-              <div class="text-center">{{ props.row.hora_salida }}</div>
+              <div class="text-center">{{ formatDate(props.row.hora_salida) }}</div>
             </q-td>
             <q-td auto-width>
               <div class="text-center">{{ props.row.valor }}</div>
@@ -313,7 +256,8 @@
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal" data-bs-target="#editClientModal"/>
+              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal"
+                data-bs-target="#editClientModal" />
               <q-btn label="✅" color="primary" @click="useRuta.activar(props.row._id)" v-if="props.row.estado === 0" />
               <q-btn label="❌" color="primary" @click="useRuta.desactivar(props.row._id)" v-if="props.row.estado === 1" />
             </q-td>
@@ -329,12 +273,13 @@ import { useRutaStore } from "../stores/ruta.js";
 import { useCiudadStore } from "../stores/ciudad.js";
 import { useBusStore } from "../stores/bus.js";
 import { onMounted, ref } from "vue";
+import { format } from 'date-fns';
 
 const useRuta = useRutaStore();
 const useCiudad = useCiudadStore();
 const useBus = useBusStore();
-const mostrarModalAgregar = ref (false);
-const mostrarModalEditar = ref (false);
+const mostrarModalAgregar = ref(false);
+const mostrarModalEditar = ref(false);
 
 let rows = ref([]);
 let rutas = ref([]);
@@ -357,9 +302,14 @@ let horaSalidaError = ref(null);
 let valorError = ref(null);
 let busError = ref(null);
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  // Formatear la fecha según tus preferencias, por ejemplo, 'yyyy-MM-dd HH:mm:ss'
+  return format(date, 'yyyy-MM-dd HH:mm:ss');
+};
 
 const agregar = () => {
-  mostrarModalAgregar.value=true
+  mostrarModalAgregar.value = true
   ciudad_origen.value = "";
   ciudad_destino.value = "";
   hora_salida.value = "";
@@ -398,15 +348,15 @@ const soloNumeros = (value) => {
 
 const clearErrors = () => {
 
-setTimeout(() => {
-  ciudadOrigenError.value = null;
-  ciudadDestinoError.value = null;
-  horaSalidaError.value = null;
-  valorError.value = null;
-  busError.value = null;
-  mensaje.value = '';
-  useRuta.errorvalidacion = '';
-}, 4500);
+  setTimeout(() => {
+    ciudadOrigenError.value = null;
+    ciudadDestinoError.value = null;
+    horaSalidaError.value = null;
+    valorError.value = null;
+    busError.value = null;
+    mensaje.value = '';
+    useRuta.errorvalidacion = '';
+  }, 4500);
 };
 
 const editar = (row) => {
@@ -414,11 +364,11 @@ const editar = (row) => {
   id.value = row._id;
   ciudad_origen.value = row.ciudad_origen.nombre;
   ciudad_destino.value = row.ciudad_destino.nombre;
-  hora_salida.value = row.hora_salida;
+  hora_salida.value = format(new Date(row.hora_salida), "yyyy-MM-dd'T'HH:mm");
   valor.value = row.valor;
   bus.value = row.bus.placa;
   estado.value = row.estado;
-  mostrarModalEditar.value = true
+  mostrarModalEditar.value = true;
 };
 
 const columns = ref([
@@ -487,7 +437,7 @@ const agregarNuevaRuta = async () => {
 
   if (!valor.value) {
     valorError.value = 'El valor es requerido';
-  }  else if (!soloNumeros(valor.value)) {
+  } else if (!soloNumeros(valor.value)) {
     valorError.value = 'El valor debe contener solo números';
   }
 
@@ -541,7 +491,7 @@ const agregarNuevaRuta = async () => {
 };
 
 const editarRuta = async () => {
-  
+
   clearErrors();
 
   // Validar los campos
@@ -809,7 +759,7 @@ p {
   color: red;
 }
 
-#readonly{
+#readonly {
   background-color: #ffeee4;
   cursor: not-allowed;
   color: #505050;
@@ -966,7 +916,7 @@ p {
   }
 }
 
-.cerrar{
+.cerrar {
   display: flex;
   justify-content: space-between;
   margin-right: 20px;
@@ -974,7 +924,7 @@ p {
 }
 
 
-#botoncerrar{
+#botoncerrar {
   width: 5px;
   font-size: 25px;
   border: none;
@@ -982,10 +932,8 @@ p {
   cursor: pointer;
 }
 
-.r{
+.r {
   display: flex;
   margin-top: 20px;
 }
-
-
 </style>

@@ -108,17 +108,17 @@
 
                     </label>
 
-                    <label for="cedula">
-                      <input placeholder="Cedula" type="text" class="input" v-model="cedula">
-
-                    </label>
-
                     <label for="telefono">
                       <input placeholder="Telefono" type="text" class="input" v-model="telefono">
 
                     </label>
 
-<!--                     <label for="usuario">
+                    <label for="cedula">
+                      <input placeholder="Cedula" type="text" class="input" v-model="cedula">
+
+                    </label>
+
+                    <label for="usuario">
                       <input placeholder="Usuario" type="text" class="input" v-model="usuario" readonly id="readonly">
 
                     </label>
@@ -131,7 +131,7 @@
                       <button type="button" @click="toggleMostrarContrasena" class="toggle-password-button">
                         {{ mostrarContrasena ? '🔒' : '🔓' }}
                       </button> 
-                    </label> -->
+                    </label> 
 
                     <!-- Resto del contenido del formulario... -->
 
@@ -389,7 +389,6 @@ const agregarNuevoVendedor = async () => {
       apellido: apellido.value,
       cedula: cedula.value,
       telefono: telefono.value,
-      usuario: usuario.value,
       contrasena: contrasena.value
     };
 
@@ -468,10 +467,10 @@ const editarVendedor = async () => {
     const data = {
       nombre: nombre.value,
       apellido: apellido.value,
-      cedula: cedula.value,
       telefono: telefono.value,
+      contrasena: contrasena.value,
+      cedula: cedula.value,
       usuario: usuario.value,
-      contrasena: contrasena.value
     };
 
     try {

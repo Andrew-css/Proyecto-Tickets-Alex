@@ -50,8 +50,10 @@ export const useBusStore = defineStore("bus", () => {
 
   const agregarNuevoBus = async (data) => {
     try {
+      const x = insertarToken();
+      if (!x) return null;
 
-      const response = await axios.post(
+      const response = await x.post(
         "https://transporte-el2a.onrender.com/api/bus/guardar",
         data
       );
@@ -68,7 +70,9 @@ export const useBusStore = defineStore("bus", () => {
 
   const actualizarBus = async (id, data) => {
     try {
-      const response = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.put(
         `https://transporte-el2a.onrender.com/api/bus/editar/${id}`,
         data
       );
@@ -84,7 +88,9 @@ export const useBusStore = defineStore("bus", () => {
 
   const obtenerBuses = async () => {
     try {
-      const busesData = await axios.get(
+      const x = insertarToken();
+      if (!x) return null;
+      const busesData = await x.get(
         "https://transporte-el2a.onrender.com/api/bus/all"
       );
       rows.value = busesData.data.busPopulate;
@@ -96,7 +102,9 @@ export const useBusStore = defineStore("bus", () => {
 
   const obtenerConductores = async () => {
     try {
-      const conductoresData = await axios.get(
+      const x = insertarToken();
+      if (!x) return null;
+      const conductoresData = await x.get(
         "https://transporte-el2a.onrender.com/api/conductor/all"
       );
       rows.value = conductoresData.data.conductor;
@@ -110,7 +118,9 @@ export const useBusStore = defineStore("bus", () => {
 
   const activar = async (id) => {
     try {
-      const bus = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const bus = await axioxs.put(
         `https://transporte-el2a.onrender.com/api/bus/activar/${id}`
       );
       if (bus) {
@@ -126,7 +136,9 @@ export const useBusStore = defineStore("bus", () => {
 
   const desactivar = async (id) => {
     try {
-      const bus = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const bus = await x.put(
         `https://transporte-el2a.onrender.com/api/bus/inactivar/${id}`
       );
       if (bus) {
@@ -140,6 +152,21 @@ export const useBusStore = defineStore("bus", () => {
       console.log("Error al desactivar bus:", error);
     }
   };
+
+  function insertarToken(){
+    const token = localStorage.getItem("x-token");
+
+    if(!token) return false
+
+    const axiosInstance = axios.create({
+      headers: {
+        'x-token': token
+      }
+    });
+
+    return axiosInstance
+  }
+
   
   const obtener = async () => {
     try {

@@ -18,8 +18,10 @@
               <div class="q-ma-xs text-center">{{ props.row.vendedor.nombre }}</div>
             </q-td>
             <q-td auto-width>
-              <div class="text-center">{{ props.row.ruta }}</div>
+              <div class="text-center">{{ props.row.ruta.ciudad_origen.nombre + ' / ' +
+                props.row.ruta.ciudad_destino.nombre }}</div>
             </q-td>
+
             <q-td auto-width>
               <div class="text-center">{{ props.row.cliente.nombre }}</div>
             </q-td>
@@ -31,18 +33,18 @@
             </q-td>
             <q-td auto-width>
               <div :class="{
-                  'text-center': true,
-                  activo: props.row.estado === 1,
-                  inactivo: props.row.estado === 0
-                }
+                'text-center': true,
+                activo: props.row.estado === 1,
+                inactivo: props.row.estado === 0
+              }
                 ">
                 {{ obtenerTextoEstado(props.row.estado) }}
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal" data-bs-target="#editClientModal"/>
-              <q-btn label="✅" color="primary" @click="useTiquete.activar(props.row._id)"
-                v-if="props.row.estado === 0" />
+              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal"
+                data-bs-target="#editClientModal" />
+              <q-btn label="✅" color="primary" @click="useTiquete.activar(props.row._id)" v-if="props.row.estado === 0" />
               <q-btn label="❌" color="primary" @click="useTiquete.desactivar(props.row._id)"
                 v-if="props.row.estado === 1" />
             </q-td>
@@ -283,7 +285,7 @@ p {
   color: red;
 }
 
-#readonly{
+#readonly {
   background-color: #ffeee4;
   cursor: not-allowed;
   color: #505050;
@@ -440,7 +442,7 @@ p {
   }
 }
 
-.cerrar{
+.cerrar {
   display: flex;
   justify-content: space-between;
   margin-right: 20px;
@@ -448,7 +450,7 @@ p {
 }
 
 
-#botoncerrar{
+#botoncerrar {
   width: 5px;
   font-size: 25px;
   border: none;
@@ -456,10 +458,9 @@ p {
   cursor: pointer;
 }
 
-.r{
+.r {
   display: flex;
   margin-top: 20px;
 }
-
 </style>
 

@@ -17,12 +17,12 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
     const agregarNuevoTiquete = async (data) => {
       try {
         const response = await axios.post(
-          "https://transporte-el2a.onrender.com/api/cliente/guardar",
+          "https://transporte-el2a.onrender.com/api/tiquete/guardar",
           data
         );
         console.log("Respuesta del servidor al agregar nuevo cliente:", response);
         estatus.value = response.status
-        rows.value.push(response.data.cliente);
+        rows.value.push(response.data.tiquetePopulate);
       } catch (error) {
         console.log("e", error);
         errorvalidacion.value = error.response.data.error
@@ -35,12 +35,14 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
   
       console.log("Hola soy data", data);
       try {
-        const response = await axios.put(
-          `https://transporte-el2a.onrender.com/api/cliente/editar/${id}`,
+        const x = insertarToken();
+        if (!x) return null;
+        const response = await x.put(
+          `https://transporte-el2a.onrender.com/api/tiquete/editar/${id}`,
           data
         );
         const buscar = rows.value.findIndex((r) => r._id == id);
-        rows.value.splice(buscar, 1, response.data.cliente);
+        rows.value.splice(buscar, 1, response.data.tiquetePopulate);
         console.log("r", response);
       } catch (error) {
         console.log("e", error);
@@ -53,7 +55,9 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
   
     const obtenerTiquetes = async () => {
       try {
-        const tiquetes = await axios.get(
+        const x = insertarToken();
+        if (!x) return null;
+        const tiquetes = await x.get(
           "https://transporte-el2a.onrender.com/api/tiquete/all"
         );
         rows.value = tiquetes.data.tiquetePopulate;
@@ -67,13 +71,15 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
   
     const activar = async (id) => {
       try {
-        const cliente = await axios.put(
-          `https://transporte-el2a.onrender.com/api/cliente/activar/${id}`
+        const x = insertarToken();
+        if (!x) return null;
+        const tiquete = await x.put(
+          `https://transporte-el2a.onrender.com/api/tiquete/activar/${id}`
         );
-        console.log(cliente);
-        if (cliente) {
+        console.log(tiquete);
+        if (tiquete) {
           const buscar = rows.value.findIndex((r) => r._id == id);
-          rows.value.splice(buscar, 1, cliente.data.cliente);
+          rows.value.splice(buscar, 1, tiquete.data.tiquetePopulate);
           activado.value = false;
         }
       } catch (error) {
@@ -83,20 +89,36 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
   
     const desactivar = async (id) => {
       try {
-        const cliente = await axios.put(
-          `https://transporte-el2a.onrender.com/api/cliente/inactivar/${id}`
+        const x = insertarToken();
+        if (!x) return null;
+        const tiquete = await x.put(
+          `https://transporte-el2a.onrender.com/api/tiquete/inactivar/${id}`
         );
-        console.log(cliente);
-        if (cliente) {
+        console.log(tiquete);
+        if (tiquete) {
           const buscar = rows.value.findIndex((r) => r._id == id);
-          rows.value.splice(buscar, 1, cliente.data.cliente);
+          rows.value.splice(buscar, 1, tiquete.data.tiquetePopulate);
           activado.value = true;
         }
-        return cliente;
+        return tiquete;
       } catch (error) {
         console.log("e", error);
       }
     };
+
+    function insertarToken(){
+      const token = localStorage.getItem("x-token");
+  
+      if(!token) return false
+  
+      const axiosInstance = axios.create({
+        headers: {
+          'x-token': token
+        }
+      });
+  
+      return axiosInstance
+    }
 
     const obtener = async () => {
       try {

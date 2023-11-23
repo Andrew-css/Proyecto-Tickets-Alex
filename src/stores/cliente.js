@@ -16,7 +16,9 @@ export const useClienteStore = defineStore("cliente", () => {
 
   const agregarNuevoCliente = async (data) => {
     try {
-      const response = await axios.post(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.post(
         "https://transporte-el2a.onrender.com/api/cliente/guardar",
         data
       );
@@ -32,10 +34,11 @@ export const useClienteStore = defineStore("cliente", () => {
 
 
   const actualizarCliente = async (id, data) => {
-
+    const x = insertarToken();
+    if (!x) return null;
     console.log("Hola soy data", data);
     try {
-      const response = await axios.put(
+      const response = await x.put(
         `https://transporte-el2a.onrender.com/api/cliente/editar/${id}`,
         data
       );
@@ -53,7 +56,9 @@ export const useClienteStore = defineStore("cliente", () => {
 
   const obtenerClientes = async () => {
     try {
-      const clientes = await axios.get(
+      const x = insertarToken();
+      if (!x) return null;
+      const clientes = await x.get(
         "https://transporte-el2a.onrender.com/api/cliente/all"
       );
       rows.value = clientes.data.cliente;
@@ -66,7 +71,9 @@ export const useClienteStore = defineStore("cliente", () => {
 
   const activar = async (id) => {
     try {
-      const cliente = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const cliente = await x.put(
         `https://transporte-el2a.onrender.com/api/cliente/activar/${id}`
       );
       console.log(cliente);
@@ -82,7 +89,9 @@ export const useClienteStore = defineStore("cliente", () => {
 
   const desactivar = async (id) => {
     try {
-      const cliente = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const cliente = await x.put(
         `https://transporte-el2a.onrender.com/api/cliente/inactivar/${id}`
       );
       console.log(cliente);
@@ -96,6 +105,21 @@ export const useClienteStore = defineStore("cliente", () => {
       console.log("e", error);
     }
   };
+
+  function insertarToken(){
+    const token = localStorage.getItem("x-token");
+
+    if(!token) return false
+
+    const axiosInstance = axios.create({
+      headers: {
+        'x-token': token
+      }
+    });
+
+    return axiosInstance
+  }
+
 
   const obtener = async () => {
     try {

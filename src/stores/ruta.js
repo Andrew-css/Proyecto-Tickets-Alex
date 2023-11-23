@@ -56,7 +56,9 @@ export const useRutaStore = defineStore("ruta", () => {
 
   const agregarNuevaRuta = async (data) => {
     try {
-      const response = await axios.post(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.post(
         "https://transporte-el2a.onrender.com/api/ruta/guardar",
         data
       );
@@ -71,7 +73,9 @@ export const useRutaStore = defineStore("ruta", () => {
 
   const actualizarRuta = async (id, data) => {
     try {
-      const response = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const response = await x.put(
         `https://transporte-el2a.onrender.com/api/ruta/editar/${id}`,
         data
       );
@@ -86,7 +90,9 @@ export const useRutaStore = defineStore("ruta", () => {
 
   const obtenerRutas = async () => {
     try {
-      const rutasData = await axios.get(
+      const x = insertarToken();
+      if (!x) return null;
+      const rutasData = await x.get(
         "https://transporte-el2a.onrender.com/api/ruta/all"
       );
       rows.value = rutasData.data.rutasPopulate;
@@ -99,7 +105,9 @@ export const useRutaStore = defineStore("ruta", () => {
 
   const activar = async (id) => {
     try {
-      const ruta = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const ruta = await x.put(
         `https://transporte-el2a.onrender.com/api/ruta/activar/${id}`
       );
       if (ruta) {
@@ -115,7 +123,9 @@ export const useRutaStore = defineStore("ruta", () => {
 
   const desactivar = async (id) => {
     try {
-      const ruta = await axios.put(
+      const x = insertarToken();
+      if (!x) return null;
+      const ruta = await x.put(
         `https://transporte-el2a.onrender.com/api/ruta/inactivar/${id}`
       );
       if (ruta) {
@@ -129,6 +139,21 @@ export const useRutaStore = defineStore("ruta", () => {
       console.log("Error al desactivar ruta:", error);
     }
   };
+
+  function insertarToken(){
+    const token = localStorage.getItem("x-token");
+
+    if(!token) return false
+
+    const axiosInstance = axios.create({
+      headers: {
+        'x-token': token
+      }
+    });
+
+    return axiosInstance
+  }
+
 
   const obtener = async () => {
     try {
