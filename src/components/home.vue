@@ -3,13 +3,15 @@
 
     <q-page-container>
       <div class="lcare">
-          <div class="card-info"><router-link class="router" to="/conductor" ><img src="../assets/hombre-conduciendo.png" alt=""></router-link>Conductores</div>
+        <div class="card-info"><router-link class="router" to="/conductor" ><img src="../assets/hombre-conduciendo.png" alt=""></router-link>Conductores</div>
         <div class="card-info"><router-link class="router" to="/vendedor" ><img src="../assets/vende.png" alt=""></router-link>Vendedores</div>
         <div class="card-info"><router-link class="router" to="/bus" ><img src="../assets/bus.png" alt=""></router-link> Vehiculos</div>
         <div class="card-info"><router-link class="router" to="/cliente" ><img src="../assets/servicio-al-cliente.png" alt=""></router-link>Clientes</div>
         <div class="card-info"><router-link class="router" to="/ruta" ><img src="../assets/ruta.png" alt=""></router-link>Rutas</div>
         <div class="card-info"><router-link class="router" to="/tiquete" ><img src="../assets/factura.png" alt=""></router-link>Ticketes</div>
         <div class="card-info"><router-link class="router" to="/ventas" ><img src="../assets/carrito-de-compras.png" alt=""></router-link>Ventas</div>
+        <div class="card-info"><router-link class="router" to="/ciudad" ><img src="../assets/ciudadela.png" alt=""></router-link>Ciudad</div>
+
       </div>
       <router-view /> 
     </q-page-container>
