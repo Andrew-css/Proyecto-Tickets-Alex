@@ -166,18 +166,14 @@ let email = ref("");
 let estado = ref(1);
 let loading = ref(false);
 let mensaje = ref('');
-let mensajeColor = ref(''); // Variable para el color del mensaje
+let mensajeColor = ref(''); 
 const nombreError = ref(null);
 const cedulaError = ref(null);
 const emailError = ref(null);
 
 const mostrarModalAgregar = ref (false);
 const mostrarModalEditar = ref (false);
-const data = ref({
-  nombre: nombre,
-  cedula: cedula,
-  email: email,
-});
+
 
 const soloNumeros = (value) => {
   const numeroRegex = /^[0-9]+$/;

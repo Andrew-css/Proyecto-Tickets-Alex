@@ -60,6 +60,7 @@
      loading.value = false;
      router.push("/home");
      console.log("Hola soy vendedor", response)
+     console.log("Hola soy nombre vendedor", response.user._id)
      localStorage.setItem("x-token", response.token)
    } else {
      console.log("Error de inicio de sesión");

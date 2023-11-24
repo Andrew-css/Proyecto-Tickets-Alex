@@ -8,7 +8,7 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
     let nombre = ref("");
     let cedula = ref("");
     let email = ref("");
-    
+    let tokenvendedor = ref()
     let cambiar = ref(false);
     let errorvalidacion = ref("")
     let estatus = ref()
@@ -20,7 +20,7 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
           "https://transporte-el2a.onrender.com/api/tiquete/guardar",
           data
         );
-        console.log("Respuesta del servidor al agregar nuevo cliente:", response);
+        console.log("Respuesta del servidor al agregar nuevo tiquete:", response);
         estatus.value = response.status
         rows.value.push(response.data.tiquetePopulate);
       } catch (error) {
@@ -108,7 +108,7 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
 
     function insertarToken(){
       const token = localStorage.getItem("x-token");
-  
+      tokenvendedor.value = token
       if(!token) return false
   
       const axiosInstance = axios.create({
@@ -140,6 +140,9 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
       desactivar,
       obtenerTiquetes,
       rows,
+      estatus,
+      errorvalidacion,
+      tokenvendedor,
       obtener,
     };
 
