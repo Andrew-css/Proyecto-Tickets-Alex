@@ -12,11 +12,14 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
     let cambiar = ref(false);
     let errorvalidacion = ref("")
     let estatus = ref()
+    let tickets = ref([])
   
   
     const agregarNuevoTiquete = async (data) => {
       try {
-        const response = await axios.post(
+        const x = insertarToken();
+        if (!x) return null;
+        const response = await x.post(
           "https://transporte-el2a.onrender.com/api/tiquete/guardar",
           data
         );
@@ -64,6 +67,19 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
         console.log(tiquetes)
       } catch (error) {
         console.log("e", error);
+      }
+    };
+
+    const continuarVentaTiquete = async () => {
+      try {
+        const x = insertarToken();
+        if (!x) return null;
+        const response = await x.get(
+          "https://transporte-el2a.onrender.com/api/tiquete/continuarVenta"
+        );
+        tickets.value = response.data.tiquetePopulate;
+      } catch (error) {
+        console.error("Error al obtener tiquetes desde el backend:", error);
       }
     };
   
@@ -144,6 +160,8 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
       errorvalidacion,
       tokenvendedor,
       obtener,
+      continuarVentaTiquete,
+      tickets,
     };
 
 

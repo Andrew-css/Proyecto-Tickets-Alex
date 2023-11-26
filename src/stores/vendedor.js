@@ -16,6 +16,8 @@ export const useVendedorStore = defineStore("vendedor", () => {
   let cambiar = ref(false);
   let errorvalidacion = ref("");
   let estatus = ref()
+  let vendedorId = ref("");
+  let nombreVendedor = ref("");
   const columns = ref([
     {
       name: "Nombre",
@@ -146,19 +148,24 @@ export const useVendedorStore = defineStore("vendedor", () => {
   const loginRequest = async (usuario, contrasena) => {
     try {
       const response = await axios.post("https://transporte-el2a.onrender.com/api/vendedor/login", {
-        usuario: usuario.value, 
+        usuario: usuario.value,
         contrasena: contrasena.value,
       });
-  
+
       if (response.status === 200) {
+        console.log("Hola soy respuesta login", response)
+        localStorage.setItem('vendedorId', response.data.vendedor._id);
+        localStorage.setItem('nombreVendedor', response.data.vendedor.nombre);
+        vendedorId.value = response.data.vendedor._id
+        nombreVendedor.value = response.data.vendedor.nombre
         return {
           success: true,
           user: response.data.vendedor,
           token: response.data.token,
         };
-        
+
       }
-     
+
     } catch (error) {
       console.error('Error al iniciar sesión', error);
       errorvalidacion.value = error.response.data.msg
@@ -168,11 +175,13 @@ export const useVendedorStore = defineStore("vendedor", () => {
       };
     }
   };
-  
-  function insertarToken(){
+
+
+
+  function insertarToken() {
     const token = localStorage.getItem("x-token");
 
-    if(!token) return false
+    if (!token) return false
 
     const axiosInstance = axios.create({
       headers: {
@@ -186,7 +195,7 @@ export const useVendedorStore = defineStore("vendedor", () => {
   const obtener = async () => {
     try {
       const x = insertarToken()
-      if(!x) return null
+      if (!x) return null
 
       const response = await x.get(`https://transporte-el2a.onrender.com/api/vendedor/all`);
       return response.data;
@@ -207,5 +216,7 @@ export const useVendedorStore = defineStore("vendedor", () => {
     estatus,
     rows,
     obtener,
+    vendedorId,
+    nombreVendedor,
   };
 });

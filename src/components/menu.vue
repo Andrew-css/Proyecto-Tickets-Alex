@@ -14,7 +14,7 @@
           <img src="../assets/perfil.jpeg" alt="">
           
         </div>
-        <h5 class="user">Usuario</h5>
+        <h5 class="user">{{ nombreVendedor }}</h5>
         <h5 class="user">Administrativo</h5>
       </div>
       <div class="btns-m">
@@ -83,13 +83,15 @@
 
 <script>
 import { ref } from "vue";
+import { useVendedorStore } from "../stores/vendedor.js";
 
 export default {
   setup() {
     const leftDrawerOpen = ref(false);
-
+    const nombreVendedor = ref(localStorage.getItem('nombreVendedor'))
     return {
       leftDrawerOpen,
+      nombreVendedor,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
