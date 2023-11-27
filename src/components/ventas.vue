@@ -34,7 +34,7 @@
               <div class="cerrar">
                 <p class="title">Seleccione
                 </p>
-                <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
+                <button type="button" data-bs-dismiss="modal" @click="cerrarModal()" class="row justify-center items-center"
                   id="botoncerrar">❌</button>
               </div>
               <span v-if="rutaError " class="error-message">{{ rutaError  }}</span>
@@ -454,6 +454,9 @@ const cerrar = () => {
   }
 };
 
+const cerrarModal = () => {
+    mostrarModalAgregar.value = false;
+};
 
 const abrirContinuarVenta = () => {
   mostrarContinuarVenta.value = true
