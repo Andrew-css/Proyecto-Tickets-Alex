@@ -4,6 +4,45 @@
       <h1 class="titulocli">TIQUETES</h1>
       <div class="linea"></div>
     </div>
+    <div v-if="loading" class="text-center">
+    <q-spinner-hourglass color="primary" size="70px" />
+    <h6>Por favor, espere...</h6>
+    </div>
+
+    <q-dialog v-model="mostrarModalTiquete" position="top">
+        <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+          data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form class="form">
+                <div class="cerrar">
+                  <p class="title">Información tiquete</p>
+                  <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
+                    id="botoncerrar">❌</button>
+                </div>
+                <div v-if="loading" class="text-center">
+                  <q-spinner-hourglass color="primary" size="50px" />
+                  <p>Por favor, espere...</p>
+                </div>
+                <p><strong>FECHA VENTA:</strong> {{ fecha_venta }}</p>
+                <p><strong>FECHA SALIDA:</strong> {{ fecha_salida }}</p>
+                <p><strong>C.C PASAJERO:</strong> {{ cedula }}</p>
+                <p><strong>NOMBRE:</strong> {{ cliente }}</p>
+                <p><strong>EMAIL:</strong> {{ email }}</p>
+                <p><strong>VEHICULO:</strong> {{ vehiculo }}</p>
+                <p><strong>ORIGEN:</strong> {{ origen }}</p>
+                <p><strong>DESTINO:</strong> {{ destino }}</p>
+                <p><strong>NUM SILLA:</strong> {{ num_asiento }}</p>
+                <p><strong>VALOR:</strong> {{ valor }}</p>
+
+                <!-- Resto del contenido del formulario... -->
+
+                <button type="button" @click="cerrar()" class="submit">Aceptar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+    </q-dialog>
 
     <div class="q-pa-xl">
       <q-table class="text-center" :rows="rows" :columns="columns" row-key="id">
@@ -42,7 +81,7 @@
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal"
+              <q-btn label="🎫" color="primary" @click="editar(props.row)" data-bs-toggle="modal"
                 data-bs-target="#editClientModal" />
               <q-btn label="✅" color="primary" @click="useTiquete.activar(props.row._id)" v-if="props.row.estado === 0" />
               <q-btn label="❌" color="primary" @click="useTiquete.desactivar(props.row._id)"
@@ -63,21 +102,40 @@ const useTiquete = useTiqueteStore();
 let rows = ref([]);
 let tiquetes = ref([]);
 let id = ref("");
-let nombre = ref("");
+let fecha_venta = ref("");
+let fecha_salida = ref("");
 let cedula = ref("");
+let cliente = ref("");
 let email = ref("");
+let vehiculo = ref("");
+let origen = ref("");
+let destino = ref("");
+let num_asiento = ref("");
+let valor = ref("");
 let estado = ref(1);
 let loading = ref(false);
+let mostrarModalTiquete = ref(false)
 let mensaje = ref('');
-let mensajeColor = ref(''); // Variable para el color del mensaje
+let mensajeColor = ref(''); 
 
 const editar = (row) => {
   console.log(row);
   id.value = row._id;
-  nombre.value = row.nombre;
-  cedula.value = row.cedula;
-  email.value = row.email;
-  estado.value = row.estado;
+  fecha_venta.value = row.fecha_salida;
+  fecha_salida.value = row.ruta.hora_salida;
+  cedula.value = row.cliente.cedula;
+  cliente.value = row.cliente.nombre;
+  email.value = row.cliente.email;
+  vehiculo.value = row.ruta.bus.placa
+  origen.value = row.ruta.ciudad_origen.nombre
+  destino.value = row.ruta.ciudad_destino.nombre
+  num_asiento.value = row.num_asiento
+  valor.value = row.ruta.valor
+  mostrarModalTiquete.value = true
+};
+
+const cerrar = () => {
+  mostrarModalTiquete.value = false
 };
 
 const columns = ref([
@@ -101,7 +159,7 @@ const columns = ref([
   },
   {
     name: "Fecha Salida",
-    label: "Fecha Salida",
+    label: "Fecha Venta",
     align: "center",
     field: (row) => row.fecha_salida,
   },
@@ -123,10 +181,12 @@ const columns = ref([
 
 
 async function obtenerTiquete() {
+  loading.value = true
   try {
     await useTiquete.obtenerTiquetes();
     tiquetes.value = useTiquete.rows;
     rows.value = useTiquete.rows;
+    loading.value = false
   } catch (error) {
     console.log(error);
   }

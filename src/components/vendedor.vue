@@ -7,14 +7,20 @@
     <div class="botongregar"> </div>
     <!-- Button trigger modal -->
 
-    <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-      @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg
-          xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
-          stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
-          <line y2="19" y1="5" x2="12" x1="12"></line>
-          <line y2="12" y1="12" x2="19" x1="5"></line>
-        </svg></span> >
-    </button>
+    <div class="r">
+      <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop" @click="agregar()"> <span class="button__text">Añadir</span> <span
+          class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2"
+            stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+            <line y2="19" y1="5" x2="12" x1="12"></line>
+            <line y2="12" y1="12" x2="19" x1="5"></line>
+          </svg></span>
+      </button>
+    </div>
+    <div v-if="loading" class="text-center">
+    <q-spinner-hourglass color="primary" size="70px" />
+    <h6>Por favor, espere...</h6>
+    </div>
     <q-dialog v-model="mostrarModalAgregar" position="top">
         <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
           data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
@@ -503,10 +509,12 @@ const editarVendedor = async () => {
 }
 
 async function obtenerVendedor() {
+  loading.value = true
   try {
     await useVendedor.obtenerVendedores();
     vendedores.value = useVendedor.rows;
     rows.value = useVendedor.rows;
+    loading.value = false
   } catch (error) {
     console.log(error);
   }
@@ -839,7 +847,6 @@ p {
 
 .r {
   display: flex;
-  margin-top: 20px;
 }
 
 .select{

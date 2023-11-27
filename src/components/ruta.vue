@@ -14,6 +14,10 @@
           </svg></span>
       </button>
     </div>
+    <div v-if="loading" class="text-center">
+    <q-spinner-hourglass color="primary" size="70px" />
+    <h6>Por favor, espere...</h6>
+    </div>
 
     <!-- Modal agregar -->
 
@@ -548,10 +552,12 @@ const editarRuta = async () => {
 }
 
 async function obtenerRutas() {
+  loading.value = true
   try {
     await useRuta.obtenerRutas();
     rutas.value = useRuta.rows;
     rows.value = useRuta.rows;
+    loading.value = false
   } catch (error) {
     console.log(error);
   }

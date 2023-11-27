@@ -5,60 +5,65 @@
       <div class="linea"></div>
     </div>
     <div class="r">
-      <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-      @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg
-          xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
-          stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
-          <line y2="19" y1="5" x2="12" x1="12"></line>
-          <line y2="12" y1="12" x2="19" x1="5"></line>
-        </svg></span> 
-    </button>
+      <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop" @click="agregar()"> <span class="button__text">Añadir</span> <span
+          class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2"
+            stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+            <line y2="19" y1="5" x2="12" x1="12"></line>
+            <line y2="12" y1="12" x2="19" x1="5"></line>
+          </svg></span>
+      </button>
+    </div>
+    <div v-if="loading" class="text-center">
+      <q-spinner-hourglass color="primary" size="70px" />
+      <h6>Por favor, espere...</h6>
     </div>
 
     <!-- MODAL AGREGAR -->
-  <q-dialog v-model="mostrarModalAgregar" position="top">
+    <q-dialog v-model="mostrarModalAgregar" position="top">
 
-        <div  class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
-          data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <form class="form">
-                <div class="cerrar">
-                  <p class="title">Añadir cliente</p>
-                  <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center" id="botoncerrar">❌</button>
-                </div>
-                <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
-                  emailError }}</span>
-                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
-                <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-                  mensaje
-                }}</span>
-                <div v-if="loading" class="text-center">
-                  <q-spinner-hourglass color="primary" size="50px" />
-                  <p>Por favor, espere...</p>
-                </div>
-                <label for="nombre">
-                  <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
+      <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div class="cerrar">
+                <p class="title">Añadir cliente</p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
+                  id="botoncerrar">❌</button>
+              </div>
+              <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
+                emailError }}</span>
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                mensaje
+              }}</span>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
+              <label for="nombre">
+                <input placeholder="Nombre" type="text" class="input" v-model="nombre">
 
-                </label>
+              </label>
 
-                <label for="cedula">
-                  <input  placeholder="Cedula" type="text" class="input" v-model="cedula">
+              <label for="cedula">
+                <input placeholder="Cedula" type="text" class="input" v-model="cedula">
 
-                </label>
+              </label>
 
-                <label for="email">
-                  <input  placeholder="Email" type="text" class="input" v-model="email">
+              <label for="email">
+                <input placeholder="Email" type="text" class="input" v-model="email">
 
-                </label>
+              </label>
 
-                <!-- Resto del contenido del formulario... -->
+              <!-- Resto del contenido del formulario... -->
 
-                <button type="button" @click="agregarNuevoCliente" class="submit">Enviar</button>
-              </form>
-            </div>
+              <button type="button" @click="agregarNuevoCliente" class="submit">Enviar</button>
+            </form>
           </div>
         </div>
+      </div>
 
     </q-dialog>
 
@@ -67,47 +72,49 @@
     <q-dialog v-model="mostrarModalEditar" position="top">
 
 
-    <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="editClientModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form class="form">
-            <div class="cerrar">
-              <p class="title">Editar cliente</p>
-              <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center" id="botoncerrar">❌</button>
-            </div>
-            <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
-              emailError }}</span>
-            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-              mensaje
-            }}</span>
-            <div v-if="loading" class="text-center">
-              <q-spinner-hourglass color="primary" size="50px" />
-              <p>Por favor, espere...</p>
-            </div>
-            <label for="nombre">
-              <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
+      <div class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="editClientModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div class="cerrar">
+                <p class="title">Editar cliente</p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
+                  class="row justify-center items-center" id="botoncerrar">❌</button>
+              </div>
+              <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
+                emailError }}</span>
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                mensaje
+              }}</span>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
+              <label for="nombre">
+                <input placeholder="Nombre" type="text" class="input" v-model="nombre">
 
-            </label>
+              </label>
 
-            <label for="cedula">
-              <input  placeholder="Cedula" type="text" class="input" v-model="cedula" readonly id="readonly">
+              <label for="cedula">
+                <input placeholder="Cedula" type="text" class="input" v-model="cedula" readonly id="readonly">
 
-            </label>
+              </label>
 
-            <label for="email">
-              <input  placeholder="Email" type="text" class="input" v-model="email" readonly id="readonly">
+              <label for="email">
+                <input placeholder="Email" type="text" class="input" v-model="email" readonly id="readonly">
 
-            </label>
+              </label>
 
-            <!-- Resto del contenido del formulario... -->
+              <!-- Resto del contenido del formulario... -->
 
-            <button type="button"  @click="editarCliente" class="submit">Enviar</button>
-          </form>
+              <button type="button" @click="editarCliente" class="submit">Enviar</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-</q-dialog>
+    </q-dialog>
 
 
     <div class="q-pa-xl">
@@ -130,18 +137,18 @@
             </q-td>
             <q-td auto-width>
               <div :class="{
-                  'text-center': true,
-                  activo: props.row.estado === 1,
-                  inactivo: props.row.estado === 0
-                }
+                'text-center': true,
+                activo: props.row.estado === 1,
+                inactivo: props.row.estado === 0
+              }
                 ">
                 {{ obtenerTextoEstado(props.row.estado) }}
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal" data-bs-target="#editClientModal"/>
-              <q-btn label="✅" color="primary" @click="useCliente.activar(props.row._id)"
-                v-if="props.row.estado === 0" />
+              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal"
+                data-bs-target="#editClientModal" />
+              <q-btn label="✅" color="primary" @click="useCliente.activar(props.row._id)" v-if="props.row.estado === 0" />
               <q-btn label="❌" color="primary" @click="useCliente.desactivar(props.row._id)"
                 v-if="props.row.estado === 1" />
             </q-td>
@@ -166,13 +173,13 @@ let email = ref("");
 let estado = ref(1);
 let loading = ref(false);
 let mensaje = ref('');
-let mensajeColor = ref(''); 
+let mensajeColor = ref('');
 const nombreError = ref(null);
 const cedulaError = ref(null);
 const emailError = ref(null);
 
-const mostrarModalAgregar = ref (false);
-const mostrarModalEditar = ref (false);
+const mostrarModalAgregar = ref(false);
+const mostrarModalEditar = ref(false);
 
 
 const soloNumeros = (value) => {
@@ -230,7 +237,7 @@ const agregar = () => {
   cedula.value = "";
   email.value = "";
   mensaje.value = "";
-  mostrarModalAgregar.value= true 
+  mostrarModalAgregar.value = true
 
 };
 
@@ -239,7 +246,7 @@ const cerrar = () => {
   cedula.value = "";
   email.value = "";
   mensaje.value = "";
-  mostrarModalAgregar.value= false
+  mostrarModalAgregar.value = false
 };
 
 const cerrarEditar = () => {
@@ -247,7 +254,7 @@ const cerrarEditar = () => {
   cedula.value = "";
   email.value = "";
   mensaje.value = "";
-  mostrarModalEditar.value= false 
+  mostrarModalEditar.value = false
 
 };
 
@@ -271,11 +278,11 @@ const agregarNuevoCliente = async () => {
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } else if (!nombre.value.trim()){
+  } else if (!nombre.value.trim()) {
     nombreError.value = 'Nombre no valido'
   } else if (nombre.value.length > 15) {
     nombreError.value = 'El nombre no debe tener más de 15 caracteres';
-  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
     nombreError.value = 'El nombre debe ser una cadena de texto válida'
   }
 
@@ -343,11 +350,11 @@ const editarCliente = async () => {
   // Validar los campos
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } else if (!nombre.value.trim()){
+  } else if (!nombre.value.trim()) {
     nombreError.value = 'Nombre no valido'
   } else if (nombre.value.length > 15) {
     nombreError.value = 'El nombre no debe tener más de 15 caracteres';
-  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
     nombreError.value = 'El nombre debe ser una cadena de texto válida'
   }
 
@@ -376,10 +383,12 @@ const editarCliente = async () => {
 }
 
 async function obtenerCliente() {
+  loading.value = true
   try {
     await useCliente.obtenerClientes();
     clientes.value = useCliente.rows;
     rows.value = useCliente.rows;
+    loading.value = false
   } catch (error) {
     console.log(error);
   }
@@ -538,7 +547,7 @@ p {
   color: red;
 }
 
-#readonly{
+#readonly {
   background-color: #ffeee4;
   cursor: not-allowed;
   color: #505050;
@@ -695,7 +704,7 @@ p {
   }
 }
 
-.cerrar{
+.cerrar {
   display: flex;
   justify-content: space-between;
   margin-right: 20px;
@@ -703,7 +712,7 @@ p {
 }
 
 
-#botoncerrar{
+#botoncerrar {
   width: 5px;
   font-size: 25px;
   border: none;
@@ -711,10 +720,9 @@ p {
   cursor: pointer;
 }
 
-.r{
+.r {
   display: flex;
   margin-top: 20px;
 }
-
 </style>
 

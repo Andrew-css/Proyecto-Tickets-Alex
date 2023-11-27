@@ -4,77 +4,91 @@
       <h1 class="titulocli">CIUDADES</h1>
       <div class="linea"></div>
     </div>
-    <div class="botongregar">  </div>
-    
+    <div class="botongregar"> </div>
 
-      <!-- Button trigger modal -->
-<button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span> >
-</button>
 
-<!-- Modal -->
+    <!-- Button trigger modal -->
+    <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+      @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg
+          xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
+          stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+          <line y2="19" y1="5" x2="12" x1="12"></line>
+          <line y2="12" y1="12" x2="19" x1="5"></line>
+        </svg></span> >
+    </button>
+    <div v-if="loading" class="text-center">
+      <q-spinner-hourglass color="primary" size="70px" />
+      <h6>Por favor, espere...</h6>
+    </div>
 
-  <q-dialog v-model="mostrarModalAgregar" position="top">
+    <!-- Modal -->
 
-      <div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
+    <q-dialog v-model="mostrarModalAgregar" position="top">
+
+      <div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <form class="form ">
               <div class="cerrar">
-                    <p class="title">Añadir ciudad</p>
-                    <button type="button"  data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center" id="botoncerrar">❌</button>
-                  </div>
+                <p class="title">Añadir ciudad</p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
+                  id="botoncerrar">❌</button>
+              </div>
               <span v-if="nombreError" class="error-message">{{ nombreError }}</span>
-                  <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }} </p>
-                  <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-                    mensaje
-                  }}</span>
-                  <div v-if="loading" class="text-center">
-                    <q-spinner-hourglass color="primary" size="50px" />
-                    <p>Por favor, espere...</p>
-                  </div>
-              <label >
-                  <input  placeholder="" type="text" class="input" v-model="nombre">
-                  <span>Nombre</span>
-              </label>  
-  
-              <button  type="button" class="btn btn-secondary submit"    @click="agregarNuevaCiudad">Enviar</button>
-            </form> 
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }} </p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                mensaje
+              }}</span>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
+              <label>
+                <input placeholder="" type="text" class="input" v-model="nombre">
+                <span>Nombre</span>
+              </label>
+
+              <button type="button" class="btn btn-secondary submit" @click="agregarNuevaCiudad">Enviar</button>
+            </form>
           </div>
         </div>
       </div>
-  </q-dialog>
+    </q-dialog>
 
- 
-  <q-dialog v-model="mostrarModalEditar" position="top">
-    <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form class="form">
-            <div class="cerrar">
-              <p class="title">Editar ciudad</p>
-              <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center" id="botoncerrar">❌</button>
-            </div>
-            <span v-if="nombreError " class="error-message">{{ nombreError }}</span>
-            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }}</p>
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-              mensaje
-            }}</span>
-            <div v-if="loading" class="text-center">
-              <q-spinner-hourglass color="primary" size="50px" />
-              <p>Por favor, espere...</p>
-            </div>
-            <label for="nombre">
-              <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
 
-            </label>
+    <q-dialog v-model="mostrarModalEditar" position="top">
+      <div class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div class="cerrar">
+                <p class="title">Editar ciudad</p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
+                  class="row justify-center items-center" id="botoncerrar">❌</button>
+              </div>
+              <span v-if="nombreError" class="error-message">{{ nombreError }}</span>
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCiudad.errorvalidacion }}</p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                mensaje
+              }}</span>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
+              <label for="nombre">
+                <input placeholder="Nombre" type="text" class="input" v-model="nombre">
 
-          
-            <button type="button"  @click="editarCiudad" class="submit">Enviar</button>
-          </form>
+              </label>
+
+
+              <button type="button" @click="editarCiudad" class="submit">Enviar</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </q-dialog>
+    </q-dialog>
 
 
     <div class="q-pa-xl">
@@ -99,9 +113,11 @@
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn label="📋" color="primary" @click="editar(props.row) " data-bs-toggle="modal" data-bs-target="#editClientModal" />
+              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal"
+                data-bs-target="#editClientModal" />
               <q-btn label="✅" color="primary" @click="useCiudad.activar(props.row._id)" v-if="props.row.estado === 0" />
-              <q-btn label="❌" color="primary" @click="useCiudad.desactivar(props.row._id)" v-if="props.row.estado === 1" />
+              <q-btn label="❌" color="primary" @click="useCiudad.desactivar(props.row._id)"
+                v-if="props.row.estado === 1" />
             </q-td>
           </q-tr>
         </template>
@@ -120,11 +136,11 @@ let ciudades = ref([]);
 const nombreError = ref(null);
 let id = ref("");
 let nombre = ref("");
-let loading = ref (false);
+let loading = ref(false);
 let mensaje = ref("");
 let mensajeColor = ref('');
-const mostrarModalAgregar = ref (false);
-const mostrarModalEditar = ref (false); 
+const mostrarModalAgregar = ref(false);
+const mostrarModalEditar = ref(false);
 
 
 
@@ -137,12 +153,12 @@ const mostrarMensajeExito = (message) => {
 
 const clearErrors = () => {
 
-setTimeout(() => {
-  nombreError.value = null;
-  useCiudad.errorvalidacion = '';
-  mensaje.value = '';
-}, 4500);
-};  
+  setTimeout(() => {
+    nombreError.value = null;
+    useCiudad.errorvalidacion = '';
+    mensaje.value = '';
+  }, 4500);
+};
 
 const editar = (row) => {
   console.log(row);
@@ -189,10 +205,12 @@ const cerrarEditar = () => {
 };
 
 async function obtenerCiudad() {
+  loading.value = true
   try {
     await useCiudad.obtenerCiudades();
     ciudades.value = useCiudad.rows;
     rows.value = useCiudad.rows;
+    loading.value = false
   } catch (error) {
     console.log(error);
   }
@@ -224,15 +242,15 @@ const agregarNuevaCiudad = async () => {
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } else if (!nombre.value.trim()){
+  } else if (!nombre.value.trim()) {
     nombreError.value = 'Nombre no valido'
-  } else if(/^\d+$/.test(nombre.value)){
+  } else if (/^\d+$/.test(nombre.value)) {
     nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
     nombreError.value = 'El nombre debe ser una cadena de texto válida'
   }
 
-  
+
 
   if (!nombreError.value) {
     const data = {
@@ -275,11 +293,11 @@ const editarCiudad = async () => {
   // Validar los campos
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } else if (!nombre.value.trim()){
+  } else if (!nombre.value.trim()) {
     nombreError.value = 'Nombre no valido'
-  } else if(/^\d+$/.test(nombre.value)){
+  } else if (/^\d+$/.test(nombre.value)) {
     nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
     nombreError.value = 'El nombre debe ser una cadena de texto válida'
   }
 
@@ -325,57 +343,64 @@ onMounted(async () => {
   color: green;
   font-weight: bold;
 }
+
 .inactivo {
   color: red;
   font-weight: bold;
 }
+
 p {
   display: flex;
 }
-.contenedor{
+
+.contenedor {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.linea{
+.linea {
   background-color: #1976d2;
   width: 50%;
   height: 5px;
 }
-.titulocli{
+
+.titulocli {
   font-size: 45px;
   font-family: "Roboto", "-apple-system", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-.botongregar{
+
+.botongregar {
   width: 100%;
   height: 50px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
-.butoagre{
+
+.butoagre {
   margin-right: 47px;
   margin-bottom: 0px;
   margin-top: 0px;
 }
-.q-pa-xl{
+
+.q-pa-xl {
   padding: 10px 48px 48px 48px;
 }
 
-.q-card{
+.q-card {
   width: 60%;
   height: 60%;
   display: grid;
   grid-template-rows: 10% 90%;
 }
 
-.q-card__section{
+.q-card__section {
   display: flex;
   flex-direction: column;
 }
 
-.butonenviar{
+.butonenviar {
   margin-top: 30px;
 }
 
@@ -391,7 +416,9 @@ p {
   margin-right: 50px;
 }
 
-.button, .button__icon, .button__text {
+.button,
+.button__icon,
+.button__text {
   transition: all 0.3s;
 }
 
@@ -435,7 +462,7 @@ p {
 }
 
 .button:active {
-  border: 1px solid #1976d2 ;
+  border: 1px solid #1976d2;
 }
 
 /* FORMULARIO */
@@ -462,7 +489,8 @@ p {
   padding-left: 30px;
 }
 
-.title::before,.title::after {
+.title::before,
+.title::after {
   position: absolute;
   content: "";
   height: 16px;
@@ -484,7 +512,8 @@ p {
   animation: pulse 1s linear infinite;
 }
 
-.message, .signin {
+.message,
+.signin {
   color: rgba(88, 87, 87, 0.822);
   font-size: 14px;
 }
@@ -519,7 +548,7 @@ p {
   border-radius: 10px;
 }
 
-.form label .input + span {
+.form label .input+span {
   position: absolute;
   left: 10px;
   top: 15px;
@@ -529,18 +558,19 @@ p {
   transition: 0.3s ease;
 }
 
-.form label .input:placeholder-shown + span {
+.form label .input:placeholder-shown+span {
   top: 15px;
   font-size: 0.9em;
 }
 
-.form label .input:focus + span,.form label .input:valid + span {
+.form label .input:focus+span,
+.form label .input:valid+span {
   top: 30px;
   font-size: 0.7em;
   font-weight: 600;
 }
 
-.form label .input:valid + span {
+.form label .input:valid+span {
   color: green;
 }
 
@@ -570,14 +600,15 @@ p {
     opacity: 0;
   }
 }
-.cerrar{
+
+.cerrar {
   display: flex;
   justify-content: space-between;
   margin-right: 20px;
 
 }
 
-#botoncerrar{
+#botoncerrar {
   width: 5px;
   font-size: 25px;
   border: none;
@@ -585,7 +616,7 @@ p {
   cursor: pointer;
 }
 
-.r{
+.r {
   display: flex;
   margin-top: 20px;
 }
@@ -601,7 +632,4 @@ p {
   color: red;
   font-weight: bold;
   font-size: 20px;
-}
-
-
-</style>
+}</style>

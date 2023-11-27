@@ -17,58 +17,64 @@
           <line y2="12" y1="12" x2="19" x1="5"></line>
         </svg></span> >
     </button>
+    <div v-if="loading" class="text-center">
+      <q-spinner-hourglass color="primary" size="70px" />
+      <h6>Por favor, espere...</h6>
+    </div>
 
     <!-- Modal -->
     <q-dialog v-model="mostrarModalAgregar" position="top">
 
-    <div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
-      data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form class="form ">
-            <div class="cerrar">
-              <p class="title">Añadir conductor</p>
-              <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
-                id="botoncerrar">❌</button>
-            </div>
-            <span v-if="nombreError || cedulaError" class="error-message">{{ nombreError || cedulaError }}</span>
-            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useConductor.errorvalidacion }}</p>
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-              mensaje
-            }}</span>
-            <div v-if="loading" class="text-center">
-              <q-spinner-hourglass color="primary" size="50px" />
-              <p>Por favor, espere...</p>
-            </div>
+      <div class="modal fade " style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form ">
+              <div class="cerrar">
+                <p class="title">Añadir conductor</p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
+                  id="botoncerrar">❌</button>
+              </div>
+              <span v-if="nombreError || cedulaError" class="error-message">{{ nombreError || cedulaError }}</span>
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useConductor.errorvalidacion }}</p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                mensaje
+              }}</span>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
 
-            <label>
-              <input required="" placeholder="" type="text" class="input" v-model="nombre">
-              <span>Nombre</span>
-            </label>
-            <label>
-              <input required="" placeholder="" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
-              <span>Cedula</span>
-            </label>
+              <label>
+                <input required="" placeholder="" type="text" class="input" v-model="nombre">
+                <span>Nombre</span>
+              </label>
+              <label>
+                <input required="" placeholder="" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
+                <span>Cedula</span>
+              </label>
 
 
 
-            <button type="button" class="btn btn-secondary submit" @click="agregarNuevoConductor">Enviar</button>
-          </form>
+              <button type="button" class="btn btn-secondary submit" @click="agregarNuevoConductor">Enviar</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </q-dialog>
+    </q-dialog>
 
-  <!-- MODAL DE EDITAR  -->
+    <!-- MODAL DE EDITAR  -->
 
-  <q-dialog v-model="mostrarModalEditar" position="top">
-      <div   class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="editClientModal">
+    <q-dialog v-model="mostrarModalEditar" position="top">
+      <div class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="editClientModal">
         <div class="modal-dialog">
           <div class="modal-content">
             <form class="form">
               <div class="cerrar">
                 <p class="title">Editar conductor</p>
-                <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center" id="botoncerrar">❌</button>
+                <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
+                  class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
               <span v-if="nombreError || cedulaError" class="error-message">{{ nombreError || cedulaError }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useConductor.errorvalidacion }}</p>
@@ -80,17 +86,17 @@
                 <p>Por favor, espere...</p>
               </div>
               <label for="nombre">
-                <input  placeholder="Nombre" type="text" class="input" v-model="nombre">
+                <input placeholder="Nombre" type="text" class="input" v-model="nombre">
 
               </label>
 
               <label for="cedula">
-                <input  placeholder="Cedula" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
+                <input placeholder="Cedula" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
               </label>
 
               <!-- Resto del contenido del formulario... -->
 
-              <button type="button"  @click="editarConductor" class="submit">Enviar</button>
+              <button type="button" @click="editarConductor" class="submit">Enviar</button>
             </form>
           </div>
         </div>
@@ -124,7 +130,8 @@
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal" data-bs-target="#editClientModal"/>
+              <q-btn label="📋" color="primary" @click="editar(props.row)" data-bs-toggle="modal"
+                data-bs-target="#editClientModal" />
               <q-btn label="✅" color="primary" @click="useConductor.activar(props.row._id)"
                 v-if="props.row.estado === 0" />
               <q-btn label="❌" color="primary" @click="useConductor.desactivar(props.row._id)"
@@ -143,7 +150,6 @@ import { onMounted, ref } from "vue";
 const useConductor = useConductorStore();
 let rows = ref([]);
 let conductores = ref([]);
-
 let id = ref("");
 let nombre = ref("");
 let cedula = ref("");
@@ -153,8 +159,8 @@ let mensaje = ref("");
 let mensajeColor = ref('');
 let nombreError = ref(null)
 let cedulaError = ref(null)
-const mostrarModalAgregar = ref (false);
-const mostrarModalEditar = ref  (false);
+const mostrarModalAgregar = ref(false);
+const mostrarModalEditar = ref(false);
 
 
 const mostrarMensajeExito = (message) => {
@@ -237,11 +243,13 @@ const soloNumeros = (value) => {
 };
 
 async function obtenerConductor() {
+  loading.value = true
   try {
     await useConductor.obtenerConductores()
     conductores.value = useConductor.rows;
     rows.value = useConductor.rows;
     console.log("Conductor", conductores.value)
+    loading.value = false
 
   } catch (error) {
     console.log(error);
@@ -280,23 +288,23 @@ const agregarNuevoConductor = async () => {
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } else if (!nombre.value.trim()){
+  } else if (!nombre.value.trim()) {
     nombreError.value = 'Nombre no valido'
-  } else if(/^\d+$/.test(nombre.value)){
+  } else if (/^\d+$/.test(nombre.value)) {
     nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
     nombreError.value = 'El nombre debe ser una cadena de texto válida'
   } else if (nombre.value.length > 15) {
     nombreError.value = 'El nombre no debe tener más de 15 caracteres';
   }
 
-  if (cedula.value.trim()==='') {
+  if (cedula.value.trim() === '') {
     cedulaError.value = 'La cédula es requerida';
-  }else if (!soloNumeros(cedula.value)) {
+  } else if (!soloNumeros(cedula.value)) {
     cedulaError.value = 'La cédula debe contener solo números';
   } else if (cedula.value.trim().length !== 10) {
     cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
-  } 
+  }
 
 
 
@@ -338,17 +346,17 @@ const agregarNuevoConductor = async () => {
   clearErrors();
 };
 
-const editarConductor= async () => {
+const editarConductor = async () => {
   clearErrors();
 
   // Validar los campos
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } else if (!nombre.value.trim()){
+  } else if (!nombre.value.trim()) {
     nombreError.value = 'Nombre no valido'
-  } else if(/^\d+$/.test(nombre.value)){
+  } else if (/^\d+$/.test(nombre.value)) {
     nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  } else if(!/^[a-zA-Z\s]+$/.test(nombre.value)){
+  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
     nombreError.value = 'El nombre debe ser una cadena de texto válida'
   } else if (nombre.value.length > 15) {
     nombreError.value = 'El nombre no debe tener más de 15 caracteres';
