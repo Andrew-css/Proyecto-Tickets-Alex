@@ -84,8 +84,8 @@
                 </label> -->
 
               <label for="hora_salida">
-                <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
-                <span>Fecha y Hora de salida :</span>
+                <input placeholder="" type="time" class="input" v-model="hora_salida">
+                <span>Hora de salida:</span>
               </label>
 
               <label for="valor">
@@ -185,8 +185,8 @@
                 </label> -->
 
               <label for="hora_salida">
-                <input placeholder="" type="datetime-local" class="input" v-model="hora_salida">
-                <span>Fecha y Hora de salida :</span>
+                <input placeholder="" type="time" class="input" v-model="hora_salida">
+                <span>Hora de salida :</span>
               </label>
 
               <label for="valor">
@@ -242,7 +242,7 @@
               <div class="text-center">{{ props.row.ciudad_destino.nombre }}</div>
             </q-td>
             <q-td auto-width>
-              <div class="text-center">{{ formatDate(props.row.hora_salida) }}</div>
+              <div class="text-center">{{ formatHoraSalida(props.row.hora_salida) }}</div>
             </q-td>
             <q-td auto-width>
               <div class="text-center">{{ props.row.valor }}</div>
@@ -306,10 +306,10 @@ let horaSalidaError = ref(null);
 let valorError = ref(null);
 let busError = ref(null);
 
-const formatDate = (dateString) => {
+const formatHoraSalida = (dateString) => {
   const date = new Date(dateString);
-  // Formatear la fecha según tus preferencias, por ejemplo, 'yyyy-MM-dd HH:mm:ss'
-  return format(date, 'yyyy-MM-dd HH:mm:ss');
+  // Formatear solo la hora en formato 'HH:mm:ss'
+  return format(date, 'HH:mm:ss');
 };
 
 const agregar = () => {
@@ -363,14 +363,15 @@ const clearErrors = () => {
   }, 4500);
 };
 
+
 const editar = (row) => {
   console.log("Datos de la fila:", row);
   id.value = row._id;
-  ciudad_origen.value = row.ciudad_origen.nombre;
-  ciudad_destino.value = row.ciudad_destino.nombre;
-  hora_salida.value = format(new Date(row.hora_salida), "yyyy-MM-dd'T'HH:mm");
+  ciudad_origen.value = {label:row.ciudad_origen.nombre, value: row.ciudad_origen._id};
+  ciudad_destino.value = {label:row.ciudad_destino.nombre, value: row.ciudad_destino._id};
+  hora_salida.value = format(new Date(row.hora_salida), 'yyyy-MM-ddTHH:mm:ss');
   valor.value = row.valor;
-  bus.value = row.bus.placa;
+  bus.value = {label:row.bus.placa, value: row.bus._id};
   estado.value = row.estado;
   mostrarModalEditar.value = true;
 };
@@ -389,8 +390,8 @@ const columns = ref([
     field: (row) => row.ciudad_destino,
   },
   {
-    name: "Fecha y Hora Salida",
-    label: "Fecha y Hora Salida",
+    name: "Hora Salida",
+    label: "Hora Salida",
     align: "center",
     field: (row) => row.hora_salida,
   },
@@ -451,10 +452,12 @@ const agregarNuevaRuta = async () => {
 
 
   if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value && !valorError.value && !busError.value) {
+    const fechaActual = new Date();
+    const horaSalidaDate = new Date(fechaActual.toDateString() + ' ' + hora_salida.value);
     const data = {
       ciudad_origen: ciudad_origen.value.value,
       ciudad_destino: ciudad_destino.value.value,
-      hora_salida: hora_salida.value,
+      hora_salida: horaSalidaDate,
       valor: valor.value,
       bus: bus.value.value,
     };
@@ -525,10 +528,13 @@ const editarRuta = async () => {
 
   if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value && !valorError.value && !busError.value) {
     loading.value = true;
+    const fechaActual = new Date();
+    const horaSalidaDate = new Date(fechaActual.toDateString() + ' ' + hora_salida.value);
+
     const data = {
       ciudad_origen: ciudad_origen.value.value,
       ciudad_destino: ciudad_destino.value.value,
-      hora_salida: hora_salida.value,
+      hora_salida: horaSalidaDate,
       valor: valor.value,
       bus: bus.value.value,
     };
