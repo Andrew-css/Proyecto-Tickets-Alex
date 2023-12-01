@@ -34,10 +34,10 @@
               <div class="cerrar">
                 <p class="title">Seleccione
                 </p>
-                <button type="button" data-bs-dismiss="modal" @click="cerrarModal()" class="row justify-center items-center"
-                  id="botoncerrar">❌</button>
+                <button type="button" data-bs-dismiss="modal" @click="cerrarModal()"
+                  class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-              <span v-if="rutaError " class="error-message">{{ rutaError  }}</span>
+              <span v-if="rutaError" class="error-message">{{ rutaError }}</span>
               <div v-if="loading" class="text-center">
                 <q-spinner-hourglass color="primary" size="50px" />
                 <p>Cargando rutas, por favor espere...</p>
@@ -85,7 +85,7 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrarContinuarVenta()"
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-              <span v-if="rutaError " class="error-message">{{ rutaError  }}</span>
+              <span v-if="rutaError" class="error-message">{{ rutaError }}</span>
               <div v-if="loading" class="text-center">
                 <q-spinner-hourglass color="primary" size="50px" />
                 <p>Cargando rutas, por favor espere...</p>
@@ -120,8 +120,7 @@
     </q-dialog>
 
 
-    <div v-if="mostrarasientos">
-      <p>Asientos del Bus:</p>
+    <div class="allasientos" v-if="mostrarasientos">
       <div class="asientos-container">
         <button v-for="asiento in Array(asientosBus).fill().map((_, index) => index + 1)" :key="asiento"
           @click="seleccionarAsiento(asiento)" :class="{
@@ -139,38 +138,51 @@
 
 
     <!-- Nuevo bloque para el formulario -->
-    <div v-if="mostrarFormulario" class="formulario">
-      <button type="button" @click="mostrarFormulario = false">Cerrar Formulario</button>
-      <button type="button" @click="abrirModalAgregarCliente">Agregar Cliente</button>
+    <q-dialog v-model="mostrarruta">
+      <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div v-if="mostrarFormulario" class="formulario">
+                <div class="botoneliminarx">
+                  <button type="button" data-bs-dismiss="modal" @click="mostrarFormulario = false" class="eliminarx"
+                    id="botoncerrar">❌</button>
+                </div>
+                <button type="button" @click="abrirModalAgregarCliente">Agregar Cliente</button>
 
-      <q-select filled v-model="cliente" clearable use-input hide-selected fill-input input-debounce="0"
-        label="Digite cédula cliente" :options="clientes.map(c => ({ label: c.cedula, value: c }))"
-        @filter="filtrarClientes" style="width: 400px">
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              No se encontraron resultados
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
+                <q-select filled v-model="cliente" clearable use-input hide-selected fill-input input-debounce="0"
+                  label="Digite cédula cliente" :options="clientes.map(c => ({ label: c.cedula, value: c }))"
+                  @filter="filtrarClientes" style="width: 400px">
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        No se encontraron resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
 
-      <q-input filled v-model="nombre" label="Nombre Cliente" readonly />
+                <q-input filled v-model="nombre" label="Nombre Cliente" readonly />
 
-      <q-input filled v-model="email" label="Email Cliente" readonly />
+                <q-input filled v-model="email" label="Email Cliente" readonly />
 
-      <q-input filled v-model="asientoSeleccionado" label="Numero Asiento" readonly />
+                <q-input filled v-model="asientoSeleccionado" label="Numero Asiento" readonly />
 
-      <q-input filled v-model="valor" label="Valor" />
+                <q-input filled v-model="valor" label="Valor" />
 
 
 
-      <button type="button" @click="vender" :disabled="loadingVender" class="submit">
-        {{ loadingVender ? 'Cargando...' : 'Vender' }}
-      </button>
-      <div v-if="mensajeExito" class="success-message">{{ mensajeExito }}</div>
-      <span v-if="clienteError || valorError " class="error-message">{{ clienteError || valorError }}</span>
-    </div>
+                <button type="button" @click="vender" :disabled="loadingVender" class="submit">
+                  {{ loadingVender ? 'Cargando...' : 'Vender' }}
+                </button>
+                <div v-if="mensajeExito" class="success-message">{{ mensajeExito }}</div>
+                <span v-if="clienteError || valorError" class="error-message">{{ clienteError || valorError }}</span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </q-dialog>
 
     <q-dialog v-model="mostrarModalAgregarCliente" position="top">
 
@@ -269,7 +281,7 @@ const vendedorId = ref(localStorage.getItem('vendedorId'))
 const ventas = ref('')
 const loadingVender = ref(false);
 const mensajeExito = ref('');
-
+const mostrarruta = ref(false)
 
 
 console.log("Hola soy ruta seleccionada:", ruta)
@@ -301,6 +313,7 @@ const seleccionarAsiento = (asiento) => {
   }
   asientoSeleccionado.value = asiento;
   mostrarFormulario.value = true;
+  mostrarruta.value = true;
 };
 
 
@@ -354,7 +367,7 @@ watch(cliente, (nuevoCliente) => {
 
 const vender = async () => {
   loadingVender.value = true;
-  if (!cliente.value){
+  if (!cliente.value) {
     clienteError.value = 'Por favor digite la cedula del cliente'
     setTimeout(() => {
       clienteError.value = ''
@@ -362,7 +375,7 @@ const vender = async () => {
     }, 4500);
   }
 
-  if (!valor.value){
+  if (!valor.value) {
     valorError.value = 'Por favor digite el valor del tiquete'
     setTimeout(() => {
       valorError.value = ''
@@ -429,7 +442,7 @@ const vender = async () => {
 
 const abrirModalAgregarCliente = () => {
   mostrarModalAgregarCliente.value = true;
-};  
+};
 
 const cerrarAgregarCliente = () => {
   mostrarModalAgregarCliente.value = false
@@ -449,13 +462,13 @@ const cerrar = () => {
       rutaError.value = '';
     }, 4500);
   } else {
-     // Clear the error message immediately when the condition is not met
+    // Clear the error message immediately when the condition is not met
     mostrarModalAgregar.value = false;
   }
 };
 
 const cerrarModal = () => {
-    mostrarModalAgregar.value = false;
+  mostrarModalAgregar.value = false;
 };
 
 const abrirContinuarVenta = () => {
@@ -750,6 +763,7 @@ p {
 
 .button:hover .button__text {
   color: transparent;
+      
 }
 
 .button:hover .button__icon {
@@ -900,6 +914,9 @@ p {
 }
 
 .submit {
+  justify-content: center;
+  align-items: center;
+  display: flex;
   border: none;
   outline: none;
   background-color: royalblue;
@@ -954,6 +971,7 @@ p {
   /* Cambia el borde al asiento seleccionado */
   color: #fff;
   /* Cambia el color del texto al asiento seleccionado si es necesario */
+
 }
 
 .formulario {
@@ -971,5 +989,17 @@ p {
   /* Color de fondo para los asientos vendidos */
   cursor: not-allowed;
   /* Cursor not-allowed para los asientos vendidos */
+}
+
+.allasientos {
+  margin: 0 auto;
+  width: 600px;
+  margin-top: 200px;
+}
+
+.botoneliminarx{
+  display: flex;
+    width: 94%;
+    justify-content: flex-end;
 }
 </style>
