@@ -143,9 +143,9 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <form class="form">
-              <div v-if="mostrarFormulario" class="formulario">
+              <div class="formulario">
                 <div class="botoneliminarx">
-                  <button type="button" data-bs-dismiss="modal" @click="mostrarFormulario = false" class="eliminarx"
+                  <button type="button" data-bs-dismiss="modal" @click="cerrarFormulario" class="eliminarx"
                     id="botoncerrar">❌</button>
                 </div>
                 <button type="button" @click="abrirModalAgregarCliente">Agregar Cliente</button>
@@ -316,7 +316,9 @@ const seleccionarAsiento = (asiento) => {
   mostrarruta.value = true;
 };
 
-
+const cerrarFormulario = async () => {
+  mostrarruta.value = false
+  }
 
 watch(ruta, (nuevaRuta) => {
   mostrarasientos.value = true
