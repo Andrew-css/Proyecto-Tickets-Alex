@@ -123,22 +123,6 @@
                       <input placeholder="Cedula" type="text" class="input" v-model="cedula">
 
                     </label>
-
-                    <label for="usuario">
-                      <input placeholder="Usuario" type="text" class="input" v-model="usuario" readonly id="readonly">
-
-                    </label>
-
-                    <label for="contrasena" class="label-container">
-                      <input placeholder="Contrasena" :type="mostrarContrasena ? 'text' : 'password'" class="input"
-                        v-model="contrasena" />
-
-                       Botón para mostrar/ocultar contraseña 
-                      <button type="button" @click="toggleMostrarContrasena" class="toggle-password-button">
-                        {{ mostrarContrasena ? '🔒' : '🔓' }}
-                      </button> 
-                    </label> 
-
                     <!-- Resto del contenido del formulario... -->
 
                     <button type="button" @click="editarVendedor" class="submit">Enviar</button>
@@ -395,6 +379,7 @@ const agregarNuevoVendedor = async () => {
       apellido: apellido.value,
       cedula: cedula.value,
       telefono: telefono.value,
+      usuario: usuario.value,
       contrasena: contrasena.value
     };
 
@@ -462,21 +447,15 @@ const editarVendedor = async () => {
     telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres';
   }
 
-  if (!contrasena.value) {
-    contrasenaError.value = 'La contraseña es requerida';
-  } else if (contrasena.value.length < 8) {
-    contrasenaError.value = 'La contraseña debe tener al menos 8 caracteres';
-  }
-
-  if (!nombreError.value && !apellidoError.value && !cedulaError.value && !telefonoError.value && !contrasenaError.value) {
+  if (!nombreError.value && !apellidoError.value && !cedulaError.value && !telefonoError.value) {
     loading.value = true;
     const data = {
       nombre: nombre.value,
       apellido: apellido.value,
-      telefono: telefono.value,
-      contrasena: contrasena.value,
       cedula: cedula.value,
+      telefono: telefono.value,
       usuario: usuario.value,
+      contrasena: contrasena.value,
     };
 
     try {

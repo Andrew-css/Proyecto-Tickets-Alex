@@ -98,12 +98,12 @@
               </label>
 
               <label for="cedula">
-                <input placeholder="Cedula" type="text" class="input" v-model="cedula" readonly id="readonly">
+                <input placeholder="Cedula" type="text" class="input" v-model="cedula">
 
               </label>
 
               <label for="email">
-                <input placeholder="Email" type="text" class="input" v-model="email" readonly id="readonly">
+                <input placeholder="Email" type="text" class="input" v-model="email">
 
               </label>
 
@@ -270,7 +270,7 @@ const clearErrors = () => {
 };
 
 const agregarNuevoCliente = async () => {
-  loading.value = true;
+  loading.value = true
   nombreError.value = null;
   cedulaError.value = null;
   emailError.value = null;
@@ -325,6 +325,7 @@ const agregarNuevoCliente = async () => {
         }, 4500);
       } else {
         mensajeColor.value = 'error';
+        mensaje.value = useCliente.errorvalidacion
         setTimeout(() => {
           useCliente.errorvalidacion = '';
         }, 4500);
@@ -345,9 +346,11 @@ const agregarNuevoCliente = async () => {
 
 
 const editarCliente = async () => {
-  clearErrors();
+  nombreError.value = null;
+  cedulaError.value = null;
+  emailError.value = null;
+  useCliente.errorvalidacion = '';
 
-  // Validar los campos
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
@@ -358,7 +361,24 @@ const editarCliente = async () => {
     nombreError.value = 'El nombre debe ser una cadena de texto válida'
   }
 
-  if (!nombreError.value) {
+  if (!cedula.value) {
+    cedulaError.value = 'La cédula es requerida';
+  } else if (cedula.value.length !== 10) {
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
+  } else if (!soloNumeros(cedula.value)) {
+    cedulaError.value = 'La cédula debe contener solo números';
+  }
+
+  if (!email.value) {
+    emailError.value = 'El email es requerido';
+  }
+
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  if (!emailRegex.test(email.value)) {
+    emailError.value = 'El email debe ser válido';
+  }
+
+  if (!nombreError.value || !cedulaError.value || emailError.value) {
     loading.value = true
     const data = {
       nombre: nombre.value,
@@ -368,10 +388,23 @@ const editarCliente = async () => {
 
     try {
       const response = await useCliente.actualizarCliente(id.value, data);
-      mensajeColor.value = 'success';
-      loading.value = false;
-      mensaje.value = "Cliente editado correctamente (presione ❌ para cerrar)";
-      clearErrors();
+      if (useCliente.estatus === 200) {
+        mensajeColor.value = 'success';
+        mensaje.value = 'Cliente editado correctamente (presione ❌ para cerrar)';
+        setTimeout(() => {
+          nombre.value = '';
+          cedula.value = '';
+          email.value = '';
+          useCliente.errorvalidacion = '';
+          mensaje.value = '';
+        }, 4500);
+      } else {
+        mensajeColor.value = 'error';
+        mensaje.value = useCliente.errorvalidacion
+        setTimeout(() => {
+          useCliente.errorvalidacion = '';
+        }, 4500);
+      }
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
@@ -725,4 +758,3 @@ p {
   margin-top: 20px;
 }
 </style>
-

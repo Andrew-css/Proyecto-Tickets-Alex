@@ -120,7 +120,7 @@ export const useBusStore = defineStore("bus", () => {
     try {
       const x = insertarToken();
       if (!x) return null;
-      const bus = await axioxs.put(
+      const bus = await x.put(
         `https://transporte-el2a.onrender.com/api/bus/activar/${id}`
       );
       if (bus) {

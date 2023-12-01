@@ -270,7 +270,7 @@ const editar = (row) => {
   empresa.value = row.empresa;
   asiento.value = row.asiento;
   placa.value = row.placa;
-  conductor.value = row.conductor.nombre;
+  conductor.value = {label:row.conductor.nombre, value: row.conductor._id};
   estado.value = row.estado;
   mostrarModalEditar.value = true;
 };
@@ -463,13 +463,24 @@ const editarBus = async () => {
     try {
       const response = await useBus.actualizarBus(id.value, data);
 
-      mensajeColor.value = 'success';
-      loading.value = false;
-      mensaje.value = "Bus editado correctamente (presione ❌ para cerrar)";
-      setTimeout(() => {
+      if (useBus.estatus === 200) {
+        mensajeColor.value = 'success';
+        mensaje.value = 'Bus editado correctamente (presione ❌ para cerrar)';
+        setTimeout(() => {
+          empresa.value = '';
+          asiento.value = '';
+          placa.value = '';
+          conductor.value = '';
           useBus.errorvalidacion = '';
           mensaje.value = '';
         }, 4500);
+      } else {
+        mensajeColor.value = 'error';
+        setTimeout(() => {
+          useBus.errorvalidacion = '';
+          loading.value = false
+        }, 4500);
+      }
 
     } catch (error) {
       console.log('Error al editar el bus:', error);
