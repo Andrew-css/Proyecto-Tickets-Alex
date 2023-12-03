@@ -32,8 +32,8 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
                   id="botoncerrar">❌</button>
               </div>
-              <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
-                emailError }}</span>
+              <span v-if="nombreError || cedulaError || telefonoError || emailError" class="error-message">{{ nombreError || cedulaError ||
+                telefonoError || emailError }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
                 mensaje
@@ -44,17 +44,22 @@
               </div>
               <label for="nombre">
                 <input placeholder="Nombre" type="text" class="input" v-model="nombre">
-
+                <span>Nombre</span>
               </label>
 
               <label for="cedula">
                 <input placeholder="Cedula" type="text" class="input" v-model="cedula">
+                <span>Cedula</span>
+              </label>
 
+              <label for="telefono">
+                <input placeholder="Telefono" type="text" class="input" v-model="telefono">
+                <span>Teléfono</span>
               </label>
 
               <label for="email">
                 <input placeholder="Email" type="text" class="input" v-model="email">
-
+                <span>Email</span>
               </label>
 
               <!-- Resto del contenido del formulario... -->
@@ -82,8 +87,8 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-              <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
-                emailError }}</span>
+              <span v-if="nombreError || cedulaError || telefonoError || emailError" class="error-message">{{ nombreError || cedulaError ||
+               telefonoError || emailError }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
                 mensaje
@@ -94,17 +99,22 @@
               </div>
               <label for="nombre">
                 <input placeholder="Nombre" type="text" class="input" v-model="nombre">
-
+                <span>Nombre</span>
               </label>
 
               <label for="cedula">
                 <input placeholder="Cedula" type="text" class="input" v-model="cedula">
+                <span>Cedula</span>
+              </label>
 
+              <label for="telefono">
+                <input placeholder="Telefono" type="text" class="input" v-model="telefono">
+                <span>Teléfono</span>
               </label>
 
               <label for="email">
                 <input placeholder="Email" type="text" class="input" v-model="email">
-
+                <span>Email</span>
               </label>
 
               <!-- Resto del contenido del formulario... -->
@@ -131,6 +141,9 @@
             </q-td>
             <q-td auto-width>
               <div class="text-center">{{ props.row.cedula }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-center">{{ props.row.telefono }}</div>
             </q-td>
             <q-td auto-width>
               <div class="text-center">{{ props.row.email }}</div>
@@ -169,6 +182,7 @@ let clientes = ref([]);
 let id = ref("");
 let nombre = ref("");
 let cedula = ref("");
+let telefono = ref("");
 let email = ref("");
 let estado = ref(1);
 let loading = ref(false);
@@ -176,6 +190,7 @@ let mensaje = ref('');
 let mensajeColor = ref('');
 const nombreError = ref(null);
 const cedulaError = ref(null);
+const telefonoError = ref(null)
 const emailError = ref(null);
 
 const mostrarModalAgregar = ref(false);
@@ -194,6 +209,7 @@ const editar = (row) => {
   nombre.value = row.nombre;
   cedula.value = row.cedula;
   email.value = row.email;
+  telefono.value = row.telefono
   estado.value = row.estado;
   mostrarModalEditar.value = true;
   clearErrors();
@@ -211,6 +227,12 @@ const columns = ref([
     label: "Cedula",
     align: "center",
     field: (row) => row.cedula,
+  },
+  {
+    name: "Telefono",
+    label: "Telefono",
+    align: "center",
+    field: (row) => row.telefono,
   },
   {
     name: "Email",
@@ -236,6 +258,7 @@ const agregar = () => {
   nombre.value = "";
   cedula.value = "";
   email.value = "";
+  telefono.value = "";
   mensaje.value = "";
   mostrarModalAgregar.value = true
 
@@ -245,6 +268,7 @@ const cerrar = () => {
   nombre.value = "";
   cedula.value = "";
   email.value = "";
+  telefono.value = "";
   mensaje.value = "";
   mostrarModalAgregar.value = false
 };
@@ -253,6 +277,7 @@ const cerrarEditar = () => {
   nombre.value = "";
   cedula.value = "";
   email.value = "";
+  telefono.value = "";
   mensaje.value = "";
   mostrarModalEditar.value = false
 
@@ -263,6 +288,7 @@ const clearErrors = () => {
   setTimeout(() => {
     nombreError.value = null;
     cedulaError.value = null;
+    telefonoError.value = null;
     emailError.value = null;
     mensaje.value = '';
     useCliente.errorvalidacion = '';
@@ -273,6 +299,7 @@ const agregarNuevoCliente = async () => {
   loading.value = true
   nombreError.value = null;
   cedulaError.value = null;
+  telefonoError.value = null;
   emailError.value = null;
   useCliente.errorvalidacion = '';
 
@@ -280,11 +307,7 @@ const agregarNuevoCliente = async () => {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
     nombreError.value = 'Nombre no valido'
-  } else if (nombre.value.length > 15) {
-    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
-  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
-    nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  }
+  } 
 
   if (!cedula.value) {
     cedulaError.value = 'La cédula es requerida';
@@ -292,6 +315,10 @@ const agregarNuevoCliente = async () => {
     cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
   } else if (!soloNumeros(cedula.value)) {
     cedulaError.value = 'La cédula debe contener solo números';
+  }
+
+  if (!telefono.value) {
+    telefonoError.value = 'El telefono es requerido';
   }
 
   if (!email.value) {
@@ -303,10 +330,11 @@ const agregarNuevoCliente = async () => {
     emailError.value = 'El email debe ser válido';
   }
 
-  if (!nombreError.value && !cedulaError.value && !emailError.value) {
+  if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value) {
     const data = {
       nombre: nombre.value,
       cedula: cedula.value,
+      telefono: telefono.value,
       email: email.value,
     };
 
@@ -320,6 +348,7 @@ const agregarNuevoCliente = async () => {
           nombre.value = '';
           cedula.value = '';
           email.value = '';
+          telefono.value = '';
           useCliente.errorvalidacion = '';
           mensaje.value = '';
         }, 4500);
@@ -349,17 +378,14 @@ const editarCliente = async () => {
   nombreError.value = null;
   cedulaError.value = null;
   emailError.value = null;
+  telefonoError.value = null;
   useCliente.errorvalidacion = '';
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
     nombreError.value = 'Nombre no valido'
-  } else if (nombre.value.length > 15) {
-    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
-  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
-    nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  }
+  } 
 
   if (!cedula.value) {
     cedulaError.value = 'La cédula es requerida';
@@ -367,6 +393,10 @@ const editarCliente = async () => {
     cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
   } else if (!soloNumeros(cedula.value)) {
     cedulaError.value = 'La cédula debe contener solo números';
+  }
+
+  if (!telefono.value) {
+    telefonoError.value = 'El telefono es requerido';
   }
 
   if (!email.value) {
@@ -377,12 +407,15 @@ const editarCliente = async () => {
   if (!emailRegex.test(email.value)) {
     emailError.value = 'El email debe ser válido';
   }
+  console.log("Hola soy id", id.value)
 
-  if (!nombreError.value || !cedulaError.value || emailError.value) {
+  if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value) {
     loading.value = true
     const data = {
+      _id: id.value,
       nombre: nombre.value,
       cedula: cedula.value,
+      telefono: telefono.value,
       email: email.value,
     };
 
@@ -392,27 +425,21 @@ const editarCliente = async () => {
         mensajeColor.value = 'success';
         mensaje.value = 'Cliente editado correctamente (presione ❌ para cerrar)';
         setTimeout(() => {
-          nombre.value = '';
-          cedula.value = '';
-          email.value = '';
           useCliente.errorvalidacion = '';
           mensaje.value = '';
         }, 4500);
       } else {
         mensajeColor.value = 'error';
-        mensaje.value = useCliente.errorvalidacion
         setTimeout(() => {
           useCliente.errorvalidacion = '';
-        }, 4500);
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
-      clearErrors();
     }
   }
   loading.value = false;
-  clearErrors();
 }
 
 async function obtenerCliente() {
@@ -420,8 +447,9 @@ async function obtenerCliente() {
   try {
     await useCliente.obtenerClientes();
     clientes.value = useCliente.rows;
-    rows.value = useCliente.rows;
+    rows.value = useCliente.rows.reverse();
     loading.value = false
+    console.log(clientes.value)
   } catch (error) {
     console.log(error);
   }

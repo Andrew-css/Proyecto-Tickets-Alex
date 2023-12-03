@@ -339,9 +339,7 @@ const agregarNuevoVendedor = async () => {
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } else if (nombre.value.length > 15) {
-    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
-  }
+  } 
 
   if (!apellido.value) {
     apellidoError.value = 'El apellido es requerido';
@@ -425,9 +423,7 @@ const editarVendedor = async () => {
   // Validar los campos
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } else if (nombre.value.length > 15) {
-    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
-  }
+  } 
 
   if (!apellido.value) {
     apellidoError.value = 'El apellido es requerido';
@@ -492,7 +488,7 @@ async function obtenerVendedor() {
   try {
     await useVendedor.obtenerVendedores();
     vendedores.value = useVendedor.rows;
-    rows.value = useVendedor.rows;
+    rows.value = useVendedor.rows.reverse();
     loading.value = false
   } catch (error) {
     console.log(error);

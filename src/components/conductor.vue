@@ -35,7 +35,9 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
                   id="botoncerrar">❌</button>
               </div>
-              <span v-if="nombreError || cedulaError" class="error-message">{{ nombreError || cedulaError }}</span>
+              <span v-if="nombreError || cedulaError || telefonoError || emailError || numlicenciaError"
+                class="error-message">{{ nombreError || cedulaError || telefonoError || emailError || numlicenciaError
+                }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useConductor.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
                 mensaje
@@ -52,6 +54,19 @@
               <label>
                 <input required="" placeholder="" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
                 <span>Cedula</span>
+              </label>
+              <label>
+                <input required="" placeholder="" type="text" class="input" v-model="telefono" @keydown="handleKeydown">
+                <span>Telefono</span>
+              </label>
+              <label>
+                <input required="" placeholder="" type="text" class="input" v-model="email" @keydown="handleKeydown">
+                <span>Email</span>
+              </label>
+              <label>
+                <input required="" placeholder="" type="text" class="input" v-model="num_licencia"
+                  @keydown="handleKeydown">
+                <span>Numero Licencia</span>
               </label>
 
 
@@ -87,11 +102,26 @@
               </div>
               <label for="nombre">
                 <input placeholder="Nombre" type="text" class="input" v-model="nombre">
-
+                <span>Nombre</span>
               </label>
 
               <label for="cedula">
                 <input placeholder="Cedula" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
+                <span>Cedula</span>
+              </label>
+
+              <label>
+                <input required="" placeholder="" type="text" class="input" v-model="telefono" @keydown="handleKeydown">
+                <span>Telefono</span>
+              </label>
+              <label>
+                <input required="" placeholder="" type="text" class="input" v-model="email" @keydown="handleKeydown">
+                <span>Email</span>
+              </label>
+              <label>
+                <input required="" placeholder="" type="text" class="input" v-model="num_licencia"
+                  @keydown="handleKeydown">
+                <span>Numero Licencia</span>
               </label>
 
               <!-- Resto del contenido del formulario... -->
@@ -119,6 +149,15 @@
             </q-td>
             <q-td auto-width>
               <div class="text-center">{{ props.row.cedula }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-center">{{ props.row.telefono }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-center">{{ props.row.email }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-center">{{ props.row.num_licencia }}</div>
             </q-td>
             <q-td auto-width>
               <div :class="{
@@ -153,12 +192,18 @@ let conductores = ref([]);
 let id = ref("");
 let nombre = ref("");
 let cedula = ref("");
+let telefono = ref("");
+let email = ref("");
+let num_licencia = ref("");
 let estado = ref(1);
 let loading = ref(false);
 let mensaje = ref("");
 let mensajeColor = ref('');
-let nombreError = ref(null)
-let cedulaError = ref(null)
+let nombreError = ref(null);
+let cedulaError = ref(null);
+let telefonoError = ref(null);
+let emailError = ref(null);
+let numlicenciaError = ref(null);
 const mostrarModalAgregar = ref(false);
 const mostrarModalEditar = ref(false);
 
@@ -176,6 +221,9 @@ const clearErrors = () => {
   setTimeout(() => {
     nombreError.value = null;
     cedulaError.value = null;
+    telefonoError.value = null;
+    emailError.value = null;
+    numlicenciaError.value = null;
     mensaje.value = '';
   }, 4500);
 };
@@ -183,6 +231,9 @@ const clearErrors = () => {
 const agregar = () => {
   nombre.value = "";
   cedula.value = "";
+  telefono.value = "";
+  email.value = "";
+  num_licencia.value = "";
   mostrarModalAgregar.value = true
 };
 
@@ -191,7 +242,9 @@ const editar = (row) => {
   id.value = row._id;
   nombre.value = row.nombre;
   cedula.value = row.cedula;
-  estado.value = row.estado;
+  telefono.value = row.telefono;
+  email.value = row.email;
+  num_licencia.value = row.num_licencia;
   mostrarModalEditar.value = true
   clearErrors();
 };
@@ -199,12 +252,18 @@ const editar = (row) => {
 const cerrar = () => {
   nombre.value = "";
   cedula.value = "";
+  telefono.value = "";
+  email.value = "";
+  num_licencia.value = "";
   mostrarModalAgregar.value = false
 };
 
 const cerrarEditar = () => {
   nombre.value = "";
   cedula.value = "";
+  telefono.value = "";
+  email.value = "";
+  num_licencia.value = "";
   mostrarModalEditar.value = false
 };
 const columns = ref([
@@ -219,6 +278,24 @@ const columns = ref([
     label: "Cedula",
     align: "center",
     field: (row) => row.cedula,
+  },
+  {
+    name: "Telefono",
+    label: "Telefono",
+    align: "center",
+    field: (row) => row.telefono,
+  },
+  {
+    name: "Email",
+    label: "Email",
+    align: "center",
+    field: (row) => row.email,
+  },
+  {
+    name: "num_licencia",
+    label: "num_licencia",
+    align: "center",
+    field: (row) => row.num_licencia,
   },
   {
     name: "Estado",
@@ -242,12 +319,170 @@ const soloNumeros = (value) => {
   return numeroRegex.test(value);
 };
 
+
+const agregarNuevoConductor = async () => {
+
+nombreError.value = null;
+cedulaError.value = null;
+telefonoError.value = null;
+emailError.value = null;
+numlicenciaError.value = null;
+useConductor.errorvalidacion = '';
+
+if (!nombre.value) {
+  nombreError.value = 'El nombre es requerido';
+} else if (!nombre.value.trim()) {
+  nombreError.value = 'Nombre no valido'
+}
+
+if (cedula.value.trim() === '') {
+  cedulaError.value = 'La cédula es requerida';
+} else if (!soloNumeros(cedula.value)) {
+  cedulaError.value = 'La cédula debe contener solo números';
+} else if (cedula.value.trim().length !== 10) {
+  cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
+}
+
+if (!telefono.value) {
+  telefonoError.value = 'El telefono es requerido';
+}
+
+if (!email.value) {
+  emailError.value = 'El email es requerido';
+}
+
+if (!num_licencia.value) {
+  numlicenciaError.value = 'El número de licencia es requerido';
+}
+
+
+
+if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value && !numlicenciaError.value) {
+  loading.value = true
+  const data = {
+    nombre: nombre.value,
+    cedula: cedula.value,
+    telefono: telefono.value,
+    email: email.value,
+    num_licencia: num_licencia.value,
+  };
+
+  try {
+    loading.value = true;
+    const response = await useConductor.agregarNuevoConductor(data);
+
+    if (useConductor.estatus === 200) {
+      mensajeColor.value = 'success';
+      mensaje.value = 'Conductor añadido correctamente (presione ❌ para cerrar)';
+      setTimeout(() => {
+        nombre.value = '';
+        cedula.value = '';
+        telefono.value = "";
+        email.value = "";
+        num_licencia.value = "";
+        useConductor.errorvalidacion = '';
+        mensaje.value = '';
+        loading.value = false;
+      }, 4500);
+    } else {
+      mensajeColor.value = 'error';
+      setTimeout(() => {
+        useConductor.errorvalidacion = '';
+        loading.value = false;
+      }, 4500);
+    }
+  } catch (error) {
+    console.log('Error al agregar el conductor:', error);
+    mensajeColor.value = 'error';
+    setTimeout(() => {
+      useConductor.errorvalidacion = ''
+      loading.value = false;;
+    }, 4500);
+  }
+}
+
+loading.value = false;
+clearErrors();
+};
+
+const editarConductor = async () => {
+clearErrors();
+
+// Validar los campos
+if (!nombre.value) {
+  nombreError.value = 'El nombre es requerido';
+} else if (!nombre.value.trim()) {
+  nombreError.value = 'Nombre no valido'
+}
+
+if (cedula.value.trim() === '') {
+  cedulaError.value = 'La cédula es requerida';
+} else if (!soloNumeros(cedula.value)) {
+  cedulaError.value = 'La cédula debe contener solo números';
+} else if (cedula.value.trim().length !== 10) {
+  cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
+}
+
+if (!telefono.value) {
+  telefonoError.value = 'El telefono es requerido';
+}
+
+if (!email.value) {
+  emailError.value = 'El email es requerido';
+}
+
+if (!num_licencia.value) {
+  numlicenciaError.value = 'El número de licencia es requerido';
+}
+
+if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value && !numlicenciaError.value) {
+  loading.value = true
+  const data = {
+    nombre: nombre.value,
+    cedula: cedula.value,
+    telefono: telefono.value,
+    email: email.value,
+    num_licencia: num_licencia.value,
+  };
+
+  try {
+    const response = await useConductor.actualizarConductor(id.value, data);
+    if (useConductor.estatus === 200) {
+      mensajeColor.value = 'success';
+      mensaje.value = 'Conductor editado correctamente (presione ❌ para cerrar)';
+      setTimeout(() => {
+        nombre.value = '';
+        cedula.value = '';
+        telefono.value = "";
+        email.value = "";
+        num_licencia.value = "";
+        useConductor.errorvalidacion = '';
+        mensaje.value = '';
+        loading.value = false
+      }, 4500);
+    } else {
+      mensajeColor.value = 'error';
+      setTimeout(() => {
+        useConductor.errorvalidacion = '';
+        loading.value = false;
+      }, 4500);
+    }
+  } catch (error) {
+    console.log('Error al editar el conductor:', error);
+    mensajeColor.value = 'error';
+    loading.value = false;
+  }
+}
+loading.value = false;
+clearErrors();
+}
+
 async function obtenerConductor() {
   loading.value = true
   try {
     await useConductor.obtenerConductores()
     conductores.value = useConductor.rows;
-    rows.value = useConductor.rows;
+    rows.value = useConductor.rows.reverse();
     console.log("Conductor", conductores.value)
     loading.value = false
 
@@ -280,109 +515,7 @@ onMounted(async () => {
 
 
 
-const agregarNuevoConductor = async () => {
-  loading.value = true;
-  nombreError.value = null;
-  cedulaError.value = null;
-  useConductor.errorvalidacion = '';
 
-  if (!nombre.value) {
-    nombreError.value = 'El nombre es requerido';
-  } else if (!nombre.value.trim()) {
-    nombreError.value = 'Nombre no valido'
-  } else if (/^\d+$/.test(nombre.value)) {
-    nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
-    nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  } else if (nombre.value.length > 15) {
-    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
-  }
-
-  if (cedula.value.trim() === '') {
-    cedulaError.value = 'La cédula es requerida';
-  } else if (!soloNumeros(cedula.value)) {
-    cedulaError.value = 'La cédula debe contener solo números';
-  } else if (cedula.value.trim().length !== 10) {
-    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
-  }
-
-
-
-
-  if (!nombreError.value && !cedulaError.value) {
-    const data = {
-      nombre: nombre.value,
-      cedula: cedula.value,
-    };
-
-    try {
-      const response = await useConductor.agregarNuevoConductor(data);
-
-      if (useConductor.estatus === 200) {
-        mensajeColor.value = 'success';
-        mensaje.value = 'Conductor añadido correctamente (presione ❌ para cerrar)';
-        setTimeout(() => {
-          nombre.value = '';
-          cedula.value = '';
-          useConductor.errorvalidacion = '';
-          mensaje.value = '';
-        }, 4500);
-      } else {
-        mensajeColor.value = 'error';
-        setTimeout(() => {
-          useConductor.errorvalidacion = '';
-        }, 4500);
-      }
-    } catch (error) {
-      console.log('Error al agregar el conductor:', error);
-      mensajeColor.value = 'error';
-      setTimeout(() => {
-        useConductor.errorvalidacion = '';
-      }, 4500);
-    }
-  }
-
-  loading.value = false;
-  clearErrors();
-};
-
-const editarConductor = async () => {
-  clearErrors();
-
-  // Validar los campos
-  if (!nombre.value) {
-    nombreError.value = 'El nombre es requerido';
-  } else if (!nombre.value.trim()) {
-    nombreError.value = 'Nombre no valido'
-  } else if (/^\d+$/.test(nombre.value)) {
-    nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
-    nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  } else if (nombre.value.length > 15) {
-    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
-  }
-
-  if (!nombreError.value) {
-    loading.value = true
-    const data = {
-      nombre: nombre.value,
-      cedula: cedula.value,
-    };
-
-    try {
-      const response = await useConductor.actualizarConductor(id.value, data);
-      mensajeColor.value = 'success';
-      loading.value = false;
-      mensaje.value = "Conductor editado correctamente (presione ❌ para cerrar)";
-      clearErrors();
-    } catch (error) {
-      console.log('Error al agregar el conductor:', error);
-      mensajeColor.value = 'error';
-    }
-  }
-  loading.value = false;
-  clearErrors();
-}
 
 const handleKeydown = (event) => {
   if (event.key === ' ') {

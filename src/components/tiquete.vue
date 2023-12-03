@@ -185,7 +185,7 @@ async function obtenerTiquete() {
   try {
     await useTiquete.obtenerTiquetes();
     tiquetes.value = useTiquete.rows;
-    rows.value = useTiquete.rows;
+    rows.value = useTiquete.rows.reverse();
     loading.value = false
   } catch (error) {
     console.log(error);

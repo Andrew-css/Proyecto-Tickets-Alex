@@ -209,7 +209,7 @@ async function obtenerCiudad() {
   try {
     await useCiudad.obtenerCiudades();
     ciudades.value = useCiudad.rows;
-    rows.value = useCiudad.rows;
+    rows.value = useCiudad.rows.reverse();
     loading.value = false
   } catch (error) {
     console.log(error);
@@ -236,7 +236,7 @@ const obtenerTextoEstado = (estado) => {
 // VALIDACIONES 
 
 const agregarNuevaCiudad = async () => {
-  loading.value = true;
+
   nombreError.value = null;
   useCiudad.errorvalidacion = '';
 
@@ -244,15 +244,12 @@ const agregarNuevaCiudad = async () => {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
     nombreError.value = 'Nombre no valido'
-  } else if (/^\d+$/.test(nombre.value)) {
-    nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
-    nombreError.value = 'El nombre debe ser una cadena de texto válida'
   }
 
 
 
   if (!nombreError.value) {
+    loading.value = true
     const data = {
       nombre: nombre.value,
     };
@@ -295,11 +292,7 @@ const editarCiudad = async () => {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
     nombreError.value = 'Nombre no valido'
-  } else if (/^\d+$/.test(nombre.value)) {
-    nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  } else if (!/^[a-zA-Z\s]+$/.test(nombre.value)) {
-    nombreError.value = 'El nombre debe ser una cadena de texto válida'
-  }
+  } 
 
   if (!nombreError.value) {
     loading.value = true
@@ -321,7 +314,7 @@ const editarCiudad = async () => {
         loading.value = false
       }
     } catch (error) {
-      console.log('Error al agregar el cliente:', error);
+      console.log('Error al editar la ciudad:', error);
       mensajeColor.value = 'error';
       loading.value = false
     }

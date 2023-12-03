@@ -49,7 +49,7 @@ export const useConductorStore = defineStore("conductor", () => {
         data
       );
       console.log("Respuesta del servidor al agregar nuevo conductor:", response);
-      rows.value.push(response.data.conductor);
+      rows.value.unshift(response.data.conductor);
       estatus.value=response.status
     } catch (error) {
       console.log("Error al agregar nuevo conductor:", error);
@@ -69,8 +69,10 @@ export const useConductorStore = defineStore("conductor", () => {
       const buscar = rows.value.findIndex((c) => c._id == id);
       rows.value.splice(buscar, 1, response.data.conductor);
       console.log("Respuesta del servidor al actualizar conductor:", response);
+      estatus.value = response.status
     } catch (error) {
       console.log("Error al actualizar conductor:", error);
+      errorvalidacion.value = error.response.data.error
     }
   };
 

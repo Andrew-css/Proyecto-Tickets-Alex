@@ -60,7 +60,7 @@ export const useBusStore = defineStore("bus", () => {
       console.log("Respuesta del servidor al agregar nuevo bus:", response);
       console.log("Datos del array", data)
       estatus.value = response.status
-      rows.value.push(response.data.busPopulate);
+      rows.value.unshift(response.data.busPopulate);
     } catch (error) {
       console.log("Error al agregar nuevo bus:", error);
       errorvalidacion.value = error.response.data.error

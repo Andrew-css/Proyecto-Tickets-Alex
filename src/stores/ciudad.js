@@ -33,7 +33,7 @@ export const useCiudadStore = defineStore("ciudad", () => {
       );
       console.log("Respuesta del servidor al agregar nueva ciudad:", response);
       estatus.value = response.status
-      rows.value.push(response.data);
+      rows.value.unshift(response.data);
     } catch (error) {
       console.log("Error al agregar nueva ciudad:", error);
       errorvalidacion.value = error.response.data.error

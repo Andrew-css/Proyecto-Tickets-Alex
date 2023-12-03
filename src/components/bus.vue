@@ -5,156 +5,156 @@
       <div class="linea"></div>
     </div>
     <div class="r">
-      <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @click="agregar()"> <span class="button__text">Añadir</span> <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span> >
-     </button>
+      <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop" @click="agregar()"> <span class="button__text">Añadir</span> <span
+          class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2"
+            stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+            <line y2="19" y1="5" x2="12" x1="12"></line>
+            <line y2="12" y1="12" x2="19" x1="5"></line>
+          </svg></span> >
+      </button>
     </div>
     <div v-if="loading" class="text-center">
-    <q-spinner-hourglass color="primary" size="70px" />
-    <h6>Por favor, espere...</h6>
+      <q-spinner-hourglass color="primary" size="70px" />
+      <h6>Por favor, espere...</h6>
     </div>
-    
-    
-     <!-- MODAL DE AÑADIR CON QUASART -->
+
+
+    <!-- MODAL DE AÑADIR CON QUASART -->
 
     <q-dialog v-model="mostrarModalAgregar" position="top">
-    <div  class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
-      data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form class="form">
-            <div class="cerrar">
-              <p class="title">Añadir Bus</p>
-              <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
-                id="botoncerrar">❌</button>
-            </div>
-            <span v-if="empresaError || asientoError || placaError || conductorError" class="error-message">{{
-              empresaError || asientoError ||
-              placaError || conductorError }}</span>
-            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useBus.errorvalidacion }}</p>
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{ mensaje }}</span>
-            <div v-if="loading" class="text-center">
-              <q-spinner-hourglass color="primary" size="50px" />
-              <p>Por favor, espere...</p>
-            </div>
-            <label for="empresa">
-              <input placeholder="Empresa" type="text" class="input" v-model="empresa">
+      <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div class="cerrar">
+                <p class="title">Añadir Bus</p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
+                  id="botoncerrar">❌</button>
+              </div>
+              <span v-if="empresaError || asientoError || placaError || conductorError || numeroError"
+                class="error-message">{{
+                  empresaError || asientoError ||
+                  placaError || conductorError || numeroError }}</span>
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useBus.errorvalidacion }}</p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{ mensaje
+              }}</span>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
+              <label for="empresa">
+                <input placeholder="Empresa" type="text" class="input" v-model="empresa">
+                <span>empresa</span>
+              </label>
 
-            </label>
+              <label for="asiento">
+                <input placeholder="Cantidad Asientos" type="text" class="input" v-model="asiento"
+                  @keydown="handleKeydown">
+                  <span>Cantidad Asientos</span>
+              </label>
 
-            <label for="asiento">
-              <input placeholder="Asiento" type="text" class="input" v-model="asiento" @keydown="handleKeydown">
+              <label for="placa">
+                <input placeholder="Placa" type="text" class="input" v-model="placa" @keydown="handleKeydown">
+                <span>Placa</span>
+              </label>
 
-            </label>
+              <label for="numero">
+                <input placeholder="Numero" type="text" class="input" v-model="numero" @keydown="handleKeydown">
+                <span>Numero Bus</span>
+              </label>
 
-            <label for="placa">
-              <input placeholder="Placa" type="text" class="input" v-model="placa" @keydown="handleKeydown">
 
-            </label>
-            
-   
-          <q-select
-              filled
-              v-model="conductor"
-              clearable
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              label="Seleccione un conductor"
-              :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
-              @filter="filtrarConductores"
-              style="width: 400px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                   No se encontraron resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+              <q-select filled v-model="conductor" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione un conductor" :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
+                @filter="filtrarConductores" style="width: 400px">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
 
-            <!-- Resto del contenido del formulario... -->
+              <!-- Resto del contenido del formulario... -->
 
-            <button type="button" @click="agregarNuevoBus" class="submit">Enviar</button>
-          </form>
+              <button type="button" @click="agregarNuevoBus" class="submit">Enviar</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
 
-  </q-dialog>
+    </q-dialog>
 
     <!-- MODAL DE EDITAR CON QUASART -->
 
     <q-dialog v-model="mostrarModalEditar" position="top">
 
-    <div class="modal fade" style="margin-top: 12%;" id="editBusModal" data-bs-backdrop="static"
-      data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form class="form">
-            <div class="cerrar">
-              <p class="title">Editar Bus</p>
-              <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center"
-                id="botoncerrar">❌</button>
-            </div>
-            <span v-if="empresaError || asientoError || placaError" class="error-message">{{ empresaError || asientoError
-              ||
-              placaError }}</span>
-            <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useBus.errorvalidacion }}</p>
-            <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-              mensaje
-            }}</span>
-            <div v-if="loading" class="text-center">
-              <q-spinner-hourglass color="primary" size="50px" />
-              <p>Por favor, espere...</p>
-            </div>
-            <label for="empresa">
-              <input placeholder="Empresa" type="text" class="input" v-model="empresa">
+      <div class="modal fade" style="margin-top: 12%;" id="editBusModal" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div class="cerrar">
+                <p class="title">Editar Bus</p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
+                  class="row justify-center items-center" id="botoncerrar">❌</button>
+              </div>
+              <span v-if="empresaError || asientoError || placaError || conductorError || numeroError"
+                class="error-message">{{ empresaError || asientoError
+                  ||
+                  placaError || conductorError || numeroError }}</span>
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useBus.errorvalidacion }}</p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                mensaje
+              }}</span>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
+              <label for="empresa">
+                <input placeholder="Empresa" type="text" class="input" v-model="empresa">
+                <span>Empresa</span>
+              </label>
 
-            </label>
+              <label for="asiento">
+                <input placeholder="Cantidad Asientos" type="text" class="input" v-model="asiento"
+                  @keydown="handleKeydown">
+                  <span>Cantidad Asientos</span>
+              </label>
 
-            <label for="asiento">
-              <input placeholder="Asiento" type="text" class="input" v-model="asiento" @keydown="handleKeydown" >
+              <label for="placa">
+                <input placeholder="Placa" type="text" class="input" v-model="placa">
+                <span>Placa</span>
+              </label>
 
-            </label>
+              <label for="numero">
+                <input placeholder="Numero" type="text" class="input" v-model="numero" @keydown="handleKeydown">
+                <span>Numero Bus</span>
+              </label>
 
-            <label for="placa">
-              <input placeholder="Placa" type="text" class="input" v-model="placa"  readonly id="readonly">
+              <q-select filled v-model="conductor" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione un conductor" :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
+                @filter="filtrarConductores" style="width: 400px">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+              <!-- Resto del contenido del formulario... -->
 
-            </label>
-
-         <q-select
-         
-        filled
-        v-model="conductor"
-        clearable
-        use-input
-        hide-selected
-        fill-input
-        input-debounce="0"
-        label="Seleccione un conductor"
-        :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
-        @filter="filtrarConductores"
-        style="width: 400px"
-      >
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-             No se encontraron resultados
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-            <!-- Resto del contenido del formulario... -->
-
-            <button type="button" @click="editarBus" class="submit">Enviar</button>
-          </form>
+              <button type="button" @click="editarBus" class="submit">Enviar</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
 
-  </q-dialog>
+    </q-dialog>
 
 
     <!-- TABLA DE DATOS  -->
@@ -177,6 +177,9 @@
             </q-td>
             <q-td auto-width>
               <div class="text-center">{{ props.row.placa }}</div>
+            </q-td>
+            <q-td auto-width>
+              <div class="text-center">{{ props.row.numero }}</div>
             </q-td>
             <q-td auto-width>
               <div class="text-center">{{ props.row.conductor.nombre }}</div>
@@ -219,6 +222,7 @@ const empresaError = ref(null);
 const asientoError = ref(null);
 const placaError = ref(null);
 const conductorError = ref(null);
+const numeroError = ref(null)
 const mostrarModalAgregar = ref(false);
 const mostrarModalEditar = ref(false);
 let id = ref("");
@@ -226,6 +230,7 @@ let empresa = ref("");
 let asiento = ref("");
 let placa = ref("");
 let conductor = ref("");
+let numero = ref("");
 let estado = ref(1);
 
 
@@ -240,6 +245,7 @@ const agregar = () => {
   placa.value = "";
   mensaje.value = "";
   conductor.value = "";
+  numero.value = "";
   mostrarModalAgregar.value = true;
 };
 
@@ -250,6 +256,7 @@ const cerrarEditar = () => {
   placa.value = "";
   mensaje.value = "";
   conductor.value = "";
+  numero.value = "";
   mostrarModalEditar.value = false;
 };
 
@@ -260,6 +267,7 @@ const cerrar = () => {
   placa.value = "";
   mensaje.value = "";
   conductor.value = "";
+  numero.value = "";
   mostrarModalAgregar.value = false;
 
 };
@@ -270,9 +278,10 @@ const editar = (row) => {
   empresa.value = row.empresa;
   asiento.value = row.asiento;
   placa.value = row.placa;
-  conductor.value = {label:row.conductor.nombre, value: row.conductor._id};
+  numero.value = row.numero;
+  conductor.value = { label: row.conductor.nombre, value: row.conductor._id };
   estado.value = row.estado;
-  mostrarModalEditar.value = true;
+ mostrarModalEditar.value = true;
 };
 
 const columns = ref([
@@ -283,8 +292,8 @@ const columns = ref([
     field: (row) => row.empresa,
   },
   {
-    name: "Asiento",
-    label: "Asiento",
+    name: "Cantidad Asientos",
+    label: "Cantidad Asientos",
     align: "center",
     field: (row) => row.asiento,
   },
@@ -293,6 +302,12 @@ const columns = ref([
     label: "Placa",
     align: "center",
     field: (row) => row.placa,
+  },
+  {
+    name: "Numero Bus",
+    label: "Numero Bus",
+    align: "center",
+    field: (row) => row.numero,
   },
   {
     name: "Conductor",
@@ -325,12 +340,13 @@ const soloNumeros = (value) => {
 
 const clearErrors = () => {
 
-setTimeout(() => {
-  empresaError.value = null;
-  asientoError.value = null;
-  placaError.value = null;
-  conductorError.value = null;
-}, 4500);
+  setTimeout(() => {
+    empresaError.value = null;
+    asientoError.value = null;
+    placaError.value = null;
+    numeroError.value = null
+    conductorError.value = null;
+  }, 4500);
 };
 
 
@@ -340,7 +356,7 @@ async function obtenerBuses() {
   try {
     await useBus.obtenerBuses();
     buses.value = useBus.rows;
-    rows.value = useBus.rows;
+    rows.value = useBus.rows.reverse();
     loading.value = false
   } catch (error) {
     console.log(error);
@@ -349,18 +365,12 @@ async function obtenerBuses() {
 
 const agregarNuevoBus = async () => {
   loading.value = true;
-  empresaError.value = null;
-  asientoError.value = null;
-  placaError.value = null;
-  conductorError.value = null
-  useBus.errorvalidacion = '';
+  clearErrors();
 
   if (!empresa.value) {
     empresaError.value = 'La empresa es requerida';
-  } else if (!empresa.value.trim()){
+  } else if (!empresa.value.trim()) {
     empresaError.value = 'Empresa no valida'
-  } else if(!/^[a-zA-Z\s]+$/.test(empresa.value)){
-    empresaError.value = 'El nombre de la empresa debe ser una cadena de texto válida'
   }
 
 
@@ -377,17 +387,21 @@ const agregarNuevoBus = async () => {
   } else if (placa.value.length > 7) {
     placaError.value = 'La placa no puede tener más de 7 caracteres';
   }
+  if (!numero.value) {
+    numeroError.value = 'El número de bus es requerido';
+  }
 
   if (!conductor.value) {
     conductorError.value = 'El conductor es requerido';
   }
 
-  if (!empresaError.value && !asientoError.value && !placaError.value && !conductorError.value) {
+  if (!empresaError.value && !asientoError.value && !placaError.value && !numeroError.value && !conductorError.value) {
     loading.value = true
     const data = {
       empresa: empresa.value,
       asiento: asiento.value,
       placa: placa.value,
+      numero: numero.value,
       conductor: conductor.value.value,
     };
 
@@ -401,14 +415,17 @@ const agregarNuevoBus = async () => {
           empresa.value = '';
           asiento.value = '';
           placa.value = '';
+          numero.value = '';
           conductor.value = '';
           useBus.errorvalidacion = '';
           mensaje.value = '';
+          loading.value = false;
         }, 4500);
       } else {
         mensajeColor.value = 'error';
         setTimeout(() => {
           useBus.errorvalidacion = '';
+          loading.value = false;
         }, 4500);
       }
     } catch (error) {
@@ -416,6 +433,7 @@ const agregarNuevoBus = async () => {
       mensajeColor.value = 'error';
       setTimeout(() => {
         useBus.errorvalidacion = '';
+        loading.value = false;
       }, 4500);
     }
   }
@@ -429,13 +447,10 @@ const agregarNuevoBus = async () => {
 const editarBus = async () => {
   clearErrors();
 
-  // Validar los campos
   if (!empresa.value) {
     empresaError.value = 'La empresa es requerida';
-  } else if (!empresa.value.trim()){
+  } else if (!empresa.value.trim()) {
     empresaError.value = 'Empresa no valida'
-  } else if(!/^[a-zA-Z\s]+$/.test(empresa.value)){
-    empresaError.value = 'El nombre de la empresa debe ser una cadena de texto válida'
   }
 
 
@@ -447,16 +462,26 @@ const editarBus = async () => {
     asientoError.value = 'El número de asiento no puede ser mayor a 40';
   }
 
-  if (!conductor.value) {
-    placaError.value = 'El conductor es requerido';
-  } 
+  if (!placa.value) {
+    placaError.value = 'La placa es requerida';
+  } else if (placa.value.length > 7) {
+    placaError.value = 'La placa no puede tener más de 7 caracteres';
+  }
+  if (!numero.value) {
+    numeroError.value = 'El número de bus es requerido';
+  }
 
-  if (!empresaError.value && !asientoError.value && !placaError.value) {
+  if (!conductor.value) {
+    conductorError.value = 'El conductor es requerido';
+  }
+
+  if (!empresaError.value && !asientoError.value && !placaError.value && !numeroError.value && !conductorError.value) {
     loading.value = true
     const data = {
       empresa: empresa.value,
       asiento: asiento.value,
       placa: placa.value,
+      numero: numero.value,
       conductor: conductor.value.value,
     };
 
@@ -467,25 +492,21 @@ const editarBus = async () => {
         mensajeColor.value = 'success';
         mensaje.value = 'Bus editado correctamente (presione ❌ para cerrar)';
         setTimeout(() => {
-          empresa.value = '';
-          asiento.value = '';
-          placa.value = '';
-          conductor.value = '';
           useBus.errorvalidacion = '';
           mensaje.value = '';
+          loading.value = false;
         }, 4500);
       } else {
         mensajeColor.value = 'error';
+        loading.value = false;
         setTimeout(() => {
           useBus.errorvalidacion = '';
-          loading.value = false
         }, 4500);
       }
-
     } catch (error) {
       console.log('Error al editar el bus:', error);
       mensajeColor.value = 'error';
-  
+      loading.value = false;
     }
   }
 }
@@ -854,13 +875,13 @@ p {
   margin-top: 20px;
 }
 
-.select{
+.select {
   border: 1px solid rgb(193, 193, 193);
   border-radius: 15px;
 }
 
-#labelmodaladd{
+#labelmodaladd {
   margin-left: 10px;
-    margin-top: 10px;
+  margin-top: 10px;
 }
 </style>

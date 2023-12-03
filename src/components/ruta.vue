@@ -33,9 +33,8 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
                   id="botoncerrar">❌</button>
               </div>
-              <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
-                class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError ||
-                  busError
+              <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError  "
+                class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError
                 }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
@@ -88,12 +87,8 @@
                 <span>Hora de salida:</span>
               </label>
 
-              <label for="valor">
-                <input placeholder="" type="text" class="input" v-model="valor">
-                <span>Valor :</span>
-              </label>
 
-              <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
+<!--               <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
                 label="Seleccione bus" :options="buses.map(c => ({ label: c.placa, value: c._id }))"
                 @filter="filtrarBuses" style="width: 400px">
                 <template v-slot:no-option>
@@ -103,7 +98,7 @@
                     </q-item-section>
                   </q-item>
                 </template>
-              </q-select>
+              </q-select> -->
 
               <!-- <label for="bus">
                   <select v-model="bus" id="bus" class="input">
@@ -134,9 +129,8 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-              <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError || busError"
-                class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError || valorError ||
-                  busError
+              <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError "
+                class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError
                 }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
@@ -189,12 +183,8 @@
                 <span>Hora de salida :</span>
               </label>
 
-              <label for="valor">
-                <input placeholder="" type="text" class="input" v-model="valor">
-                <span>Valor :</span>
-              </label>
 
-              <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
+<!--               <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
                 label="Seleccione bus" :options="buses.map(c => ({ label: c.placa, value: c._id }))"
                 @filter="filtrarBuses" style="width: 400px">
                 <template v-slot:no-option>
@@ -204,7 +194,7 @@
                     </q-item-section>
                   </q-item>
                 </template>
-              </q-select>
+              </q-select> -->
 
               <!-- <label for="bus">
                   <select v-model="bus" id="bus" class="input">
@@ -245,12 +235,6 @@
               <div class="text-center">{{ formatHoraSalida(props.row.hora_salida) }}</div>
             </q-td>
             <q-td auto-width>
-              <div class="text-center">{{ props.row.valor }}</div>
-            </q-td>
-            <q-td auto-width>
-              <div class="text-center">{{ props.row.bus.placa }}</div>
-            </q-td>
-            <q-td auto-width>
               <div :class="{
                 'text-center': true,
                 activo: props.row.estado === 1,
@@ -275,26 +259,21 @@
 <script setup>
 import { useRutaStore } from "../stores/ruta.js";
 import { useCiudadStore } from "../stores/ciudad.js";
-import { useBusStore } from "../stores/bus.js";
 import { onMounted, ref } from "vue";
 import { format } from 'date-fns';
 
 const useRuta = useRutaStore();
 const useCiudad = useCiudadStore();
-const useBus = useBusStore();
 const mostrarModalAgregar = ref(false);
 const mostrarModalEditar = ref(false);
 
 let rows = ref([]);
 let rutas = ref([]);
 let ciudades = ref([]);
-let buses = ref([]);
 let id = ref("");
 let ciudad_origen = ref("");
 let ciudad_destino = ref("");
 let hora_salida = ref("");
-let valor = ref("");
-let bus = ref("");
 let estado = ref(1);
 let loading = ref(false);
 let mensaje = ref("");
@@ -303,9 +282,6 @@ let mensajeColor = ref("");
 let ciudadOrigenError = ref(null);
 let ciudadDestinoError = ref(null);
 let horaSalidaError = ref(null);
-let valorError = ref(null);
-let busError = ref(null);
-
 const formatHoraSalida = (dateString) => {
   const date = new Date(dateString);
   // Formatear solo la hora en formato 'HH:mm:ss'
@@ -317,8 +293,6 @@ const agregar = () => {
   ciudad_origen.value = "";
   ciudad_destino.value = "";
   hora_salida.value = "";
-  valor.value = "";
-  bus.value = "";
   mensaje.value = "";
   useRuta.errorvalidacion = "";
 };
@@ -328,8 +302,6 @@ const cerrar = () => {
   ciudad_origen.value = "";
   ciudad_destino.value = "";
   hora_salida.value = "";
-  valor.value = "";
-  bus.value = "";
   mensaje.value = "";
   useRuta.errorvalidacion = "";
 };
@@ -339,8 +311,6 @@ const cerrarEditar = () => {
   ciudad_origen.value = "";
   ciudad_destino.value = "";
   hora_salida.value = "";
-  valor.value = "";
-  bus.value = "";
   mensaje.value = "";
   useRuta.errorvalidacion = "";
 };
@@ -356,8 +326,6 @@ const clearErrors = () => {
     ciudadOrigenError.value = null;
     ciudadDestinoError.value = null;
     horaSalidaError.value = null;
-    valorError.value = null;
-    busError.value = null;
     mensaje.value = '';
     useRuta.errorvalidacion = '';
   }, 4500);
@@ -370,8 +338,6 @@ const editar = (row) => {
   ciudad_origen.value = {label:row.ciudad_origen.nombre, value: row.ciudad_origen._id};
   ciudad_destino.value = {label:row.ciudad_destino.nombre, value: row.ciudad_destino._id};
   hora_salida.value = format(new Date(row.hora_salida), 'yyyy-MM-ddTHH:mm:ss');
-  valor.value = row.valor;
-  bus.value = {label:row.bus.placa, value: row.bus._id};
   estado.value = row.estado;
   mostrarModalEditar.value = true;
 };
@@ -394,18 +360,6 @@ const columns = ref([
     label: "Hora Salida",
     align: "center",
     field: (row) => row.hora_salida,
-  },
-  {
-    name: "Valor",
-    label: "Valor",
-    align: "center",
-    field: (row) => row.valor,
-  },
-  {
-    name: "Bus",
-    label: "Bus",
-    align: "center",
-    field: (row) => row.bus,
   },
   {
     name: "Estado",
@@ -440,26 +394,15 @@ const agregarNuevaRuta = async () => {
     horaSalidaError.value = 'La Fecha y hora de salida es requerida';
   }
 
-  if (!valor.value) {
-    valorError.value = 'El valor es requerido';
-  } else if (!soloNumeros(valor.value)) {
-    valorError.value = 'El valor debe contener solo números';
-  }
-
-  if (!bus.value) {
-    busError.value = 'El bus es requerido';
-  }
 
 
-  if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value && !valorError.value && !busError.value) {
+  if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value) {
     const fechaActual = new Date();
     const horaSalidaDate = new Date(fechaActual.toDateString() + ' ' + hora_salida.value);
     const data = {
       ciudad_origen: ciudad_origen.value.value,
       ciudad_destino: ciudad_destino.value.value,
       hora_salida: horaSalidaDate,
-      valor: valor.value,
-      bus: bus.value.value,
     };
 
     try {
@@ -473,8 +416,6 @@ const agregarNuevaRuta = async () => {
           ciudad_origen.value = '';
           ciudad_destino.value = '';
           hora_salida.value = '';
-          valor.value = '';
-          bus.value = '';
           useRuta.errorvalidacion = '';
           mensaje.value = '';
         }, 4500);
@@ -516,17 +457,9 @@ const editarRuta = async () => {
     horaSalidaError.value = 'La Fecha y hora de salida es requerida';
   }
 
-  if (!valor.value) {
-    valorError.value = 'El valor es requerido';
-  } else if (!soloNumeros(valor.value)) {
-    valorError.value = 'El valor debe contener solo números';
-  }
 
-  if (!bus.value) {
-    busError.value = 'El bus es requerido';
-  }
 
-  if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value && !valorError.value && !busError.value) {
+  if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value) {
     loading.value = true;
     const fechaActual = new Date();
     const horaSalidaDate = new Date(fechaActual.toDateString() + ' ' + hora_salida.value);
@@ -535,8 +468,6 @@ const editarRuta = async () => {
       ciudad_origen: ciudad_origen.value.value,
       ciudad_destino: ciudad_destino.value.value,
       hora_salida: horaSalidaDate,
-      valor: valor.value,
-      bus: bus.value.value,
     };
 
     try {
@@ -562,7 +493,7 @@ async function obtenerRutas() {
   try {
     await useRuta.obtenerRutas();
     rutas.value = useRuta.rows;
-    rows.value = useRuta.rows;
+    rows.value = useRuta.rows.reverse();
     loading.value = false
   } catch (error) {
     console.log(error);
@@ -578,14 +509,14 @@ async function obtenerCiudades() {
   }
 }
 
-async function obtenerBuses() {
+/* async function obtenerBuses() {
   try {
     await useBus.obtenerBuses();
     buses.value = useBus.rows;
   } catch (error) {
     console.log(error);
   }
-}
+} */
 
 async function desactivarRuta(id) {
   await useRuta.desactivar(id);
@@ -616,7 +547,7 @@ const filtrarCiudades = (val, update) => {
   });
 }
 
-const filtrarBuses = (val, update) => {
+/* const filtrarBuses = (val, update) => {
   if (val === '') {
     // Restablecer las opciones a la lista original de conductores cuando el input está vacío
     update(() => {
@@ -629,12 +560,11 @@ const filtrarBuses = (val, update) => {
     const needle = val.toLowerCase();
     buses.value = useBus.rows.filter(c => c.placa.toLowerCase().includes(needle));
   });
-}
+} */
 
 onMounted(async () => {
   obtenerRutas();
   obtenerCiudades();
-  obtenerBuses();
   desactivarRuta()
   activarRuta()
 });

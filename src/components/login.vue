@@ -6,19 +6,19 @@
          <div class="shape"></div>
      </div>
      <form>
-         <h3>Login Here</h3>
+         <h3>CityExpress</h3>
  
-         <label for="typeEmailX">Username</label>
-         <input  v-model="usuario" type="text" placeholder="Email or Phone" id="typeEmailX">
+         <label for="typeEmailX">Usuario</label>
+         <input  v-model="usuario" type="text" placeholder="Digite aquí el usuario" id="typeEmailX">
  
-         <label for="typePasswordX">Password</label>
-         <input v-model="contrasena" type="password" placeholder="Password" id="typePasswordX">
+         <label for="typePasswordX">Contraseña</label>
+         <input v-model="contrasena" type="password" placeholder="Digite aquí la contraseña" id="typePasswordX">
          <div v-if="loading" class="text-center">
                      <q-spinner-hourglass color="primary" size="50px" />
                      <p>Por favor, espere...</p>
          </div>
  
-         <router-link to=""><button @click="login">Log In</button></router-link>
+         <router-link to=""><button @click="login">Ingresar</button></router-link>
          <p style="color: red; font-weight: bold;"> {{ useVendedor.errorvalidacion }}</p>
         
      </form>

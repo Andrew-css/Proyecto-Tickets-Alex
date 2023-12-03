@@ -24,7 +24,7 @@ export const useClienteStore = defineStore("cliente", () => {
       );
       console.log("Respuesta del servidor al agregar nuevo cliente:", response);
       estatus.value = response.status
-      rows.value.push(response.data.cliente);
+      rows.value.unshift(response.data.cliente);
     } catch (error) {
       console.log("e", error);
       errorvalidacion.value = error.response.data.error
@@ -45,6 +45,7 @@ export const useClienteStore = defineStore("cliente", () => {
       const buscar = rows.value.findIndex((r) => r._id == id);
       rows.value.splice(buscar, 1, response.data.cliente);
       console.log("r", response);
+      estatus.value = response.status
     } catch (error) {
       console.log("e", error);
       errorvalidacion.value = error.response.data.error
