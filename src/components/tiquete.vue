@@ -10,7 +10,7 @@
     </div>
 
     <q-dialog v-model="mostrarModalTiquete" position="top">
-        <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+        <div class="modal fade" style="margin-top: 3%;" id="staticBackdrop" data-bs-backdrop="static"
           data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -28,8 +28,8 @@
                 <p><strong>FECHA SALIDA:</strong> {{ fecha_salida }}</p>
                 <p><strong>C.C PASAJERO:</strong> {{ cedula }}</p>
                 <p><strong>NOMBRE:</strong> {{ cliente }}</p>
-                <p><strong>EMAIL:</strong> {{ email }}</p>
-                <p><strong>VEHICULO:</strong> {{ vehiculo }}</p>
+                <p><strong>TELEFONO:</strong> {{ telefono }}</p>
+                <p><strong>VEHICULO:</strong>{{ numerovehiculo }} / {{ vehiculo }}</p>
                 <p><strong>ORIGEN:</strong> {{ origen }}</p>
                 <p><strong>DESTINO:</strong> {{ destino }}</p>
                 <p><strong>NUM SILLA:</strong> {{ num_asiento }}</p>
@@ -97,6 +97,7 @@
 <script setup>
 import { useTiqueteStore } from "../stores/tiquete.js";
 import { onMounted, ref } from "vue";
+import { format } from 'date-fns';
 
 const useTiquete = useTiqueteStore();
 let rows = ref([]);
@@ -106,31 +107,38 @@ let fecha_venta = ref("");
 let fecha_salida = ref("");
 let cedula = ref("");
 let cliente = ref("");
-let email = ref("");
+let telefono = ref("");
 let vehiculo = ref("");
 let origen = ref("");
 let destino = ref("");
 let num_asiento = ref("");
 let valor = ref("");
-let estado = ref(1);
+let numerovehiculo = ref("")
 let loading = ref(false);
 let mostrarModalTiquete = ref(false)
 let mensaje = ref('');
 let mensajeColor = ref(''); 
 
+const formatHoraSalida = (dateString) => {
+  const date = new Date(dateString);
+  // Formatear solo la hora en formato 'HH:mm:ss'
+  return format(date, 'HH:mm:ss');
+};
+
 const editar = (row) => {
   console.log(row);
   id.value = row._id;
-  fecha_venta.value = row.fecha_salida;
-  fecha_salida.value = row.ruta.hora_salida;
+  fecha_venta.value = format(new Date(row.fecha_salida), 'yyyy-MM-dd HH:mm:ss');
+  fecha_salida.value = format(new Date(row.fecha_salida), 'yyyy-MM-dd ') + format(new Date(row.ruta.hora_salida), 'HH:mm:ss');
   cedula.value = row.cliente.cedula;
   cliente.value = row.cliente.nombre;
-  email.value = row.cliente.email;
-  vehiculo.value = row.ruta.bus.placa
+  telefono.value = row.cliente.telefono;
+  vehiculo.value = row.bus.placa
+  numerovehiculo.value = row.bus.numero
   origen.value = row.ruta.ciudad_origen.nombre
   destino.value = row.ruta.ciudad_destino.nombre
   num_asiento.value = row.num_asiento
-  valor.value = row.ruta.valor
+  valor.value = row.valor
   mostrarModalTiquete.value = true
 };
 

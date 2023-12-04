@@ -82,6 +82,7 @@ export const useRutaStore = defineStore("ruta", () => {
       const buscar = rows.value.findIndex((ruta) => ruta._id == id);
       rows.value.splice(buscar, 1, response.data.rutasPopulate);
       console.log("Respuesta del servidor al actualizar ruta:", response);
+      estatus.value = response.status
     } catch (error) {
       console.log("Error al actualizar ruta:", error);
       errorvalidacion.value = error.response.data.error

@@ -74,7 +74,6 @@ export const useVendedorStore = defineStore("vendedor", () => {
       console.log("Error al agregar nuevo vendedor:", error);
       errorvalidacion.value = error.response.data.error
     }
-    toolbar.value = false;
   };
 
   const actualizarVendedor = async (id, data) => {
@@ -85,12 +84,12 @@ export const useVendedorStore = defineStore("vendedor", () => {
         `https://transporte-el2a.onrender.com/api/vendedor/editar/${id}`,
         data
       );
-      estatus.value = response.status
       const index = rows.value.findIndex((v) => v._id === id);
       if (index !== -1) {
         rows.value.splice(index, 1, response.data.vendedor);
       }
       console.log("Respuesta del servidor al actualizar vendedor:", response);
+      estatus.value = response.status
     } catch (error) {
       console.log("Error al actualizar vendedor:", error);
       errorvalidacion.value = error.response.data.error;

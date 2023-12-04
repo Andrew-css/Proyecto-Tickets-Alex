@@ -46,7 +46,7 @@
               </div>
               <label for="empresa">
                 <input placeholder="Empresa" type="text" class="input" v-model="empresa">
-                <span>empresa</span>
+                <span>Empresa</span>
               </label>
 
               <label for="asiento">
@@ -62,7 +62,7 @@
 
               <label for="numero">
                 <input placeholder="Numero" type="text" class="input" v-model="numero" @keydown="handleKeydown">
-                <span>Numero Bus</span>
+                <span>Número Bus</span>
               </label>
 
 
@@ -132,7 +132,7 @@
 
               <label for="numero">
                 <input placeholder="Numero" type="text" class="input" v-model="numero" @keydown="handleKeydown">
-                <span>Numero Bus</span>
+                <span>Número Bus</span>
               </label>
 
               <q-select filled v-model="conductor" clearable use-input hide-selected fill-input input-debounce="0"
@@ -411,6 +411,7 @@ const agregarNuevoBus = async () => {
       if (useBus.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Bus añadido correctamente (presione ❌ para cerrar)';
+  
         setTimeout(() => {
           empresa.value = '';
           asiento.value = '';
@@ -423,17 +424,18 @@ const agregarNuevoBus = async () => {
         }, 4500);
       } else {
         mensajeColor.value = 'error';
+        loading.value = false;
         setTimeout(() => {
           useBus.errorvalidacion = '';
-          loading.value = false;
         }, 4500);
       }
     } catch (error) {
       console.log('Error al agregar  bus:', error);
       mensajeColor.value = 'error';
+      loading.value = false;
       setTimeout(() => {
         useBus.errorvalidacion = '';
-        loading.value = false;
+        
       }, 4500);
     }
   }
@@ -478,6 +480,7 @@ const editarBus = async () => {
   if (!empresaError.value && !asientoError.value && !placaError.value && !numeroError.value && !conductorError.value) {
     loading.value = true
     const data = {
+      _id: id.value,
       empresa: empresa.value,
       asiento: asiento.value,
       placa: placa.value,
@@ -491,10 +494,10 @@ const editarBus = async () => {
       if (useBus.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Bus editado correctamente (presione ❌ para cerrar)';
+        loading.value = false
         setTimeout(() => {
           useBus.errorvalidacion = '';
           mensaje.value = '';
-          loading.value = false;
         }, 4500);
       } else {
         mensajeColor.value = 'error';

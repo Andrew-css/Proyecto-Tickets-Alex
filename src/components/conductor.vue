@@ -292,8 +292,8 @@ const columns = ref([
     field: (row) => row.email,
   },
   {
-    name: "num_licencia",
-    label: "num_licencia",
+    name: "Numero licencia",
+    label: "Numero licencia",
     align: "center",
     field: (row) => row.num_licencia,
   },
@@ -322,159 +322,153 @@ const soloNumeros = (value) => {
 
 const agregarNuevoConductor = async () => {
 
-nombreError.value = null;
-cedulaError.value = null;
-telefonoError.value = null;
-emailError.value = null;
-numlicenciaError.value = null;
-useConductor.errorvalidacion = '';
+  nombreError.value = null;
+  cedulaError.value = null;
+  telefonoError.value = null;
+  emailError.value = null;
+  numlicenciaError.value = null;
+  useConductor.errorvalidacion = '';
 
-if (!nombre.value) {
-  nombreError.value = 'El nombre es requerido';
-} else if (!nombre.value.trim()) {
-  nombreError.value = 'Nombre no valido'
-}
+  if (!nombre.value) {
+    nombreError.value = 'El nombre es requerido';
+  } else if (!nombre.value.trim()) {
+    nombreError.value = 'Nombre no valido'
+  }
 
-if (cedula.value.trim() === '') {
-  cedulaError.value = 'La cédula es requerida';
-} else if (!soloNumeros(cedula.value)) {
-  cedulaError.value = 'La cédula debe contener solo números';
-} else if (cedula.value.trim().length !== 10) {
-  cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
-}
+  if (cedula.value.trim() === '') {
+    cedulaError.value = 'La cédula es requerida';
+  } else if (!soloNumeros(cedula.value)) {
+    cedulaError.value = 'La cédula debe contener solo números';
+  } else if (cedula.value.trim().length !== 10) {
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
+  }
 
-if (!telefono.value) {
-  telefonoError.value = 'El telefono es requerido';
-}
+  if (!telefono.value) {
+    telefonoError.value = 'El telefono es requerido';
+  }
 
-if (!email.value) {
-  emailError.value = 'El email es requerido';
-}
+  if (!email.value) {
+    emailError.value = 'El email es requerido';
+  }
 
-if (!num_licencia.value) {
-  numlicenciaError.value = 'El número de licencia es requerido';
-}
+  if (!num_licencia.value) {
+    numlicenciaError.value = 'El número de licencia es requerido';
+  }
 
 
 
-if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value && !numlicenciaError.value) {
-  loading.value = true
-  const data = {
-    nombre: nombre.value,
-    cedula: cedula.value,
-    telefono: telefono.value,
-    email: email.value,
-    num_licencia: num_licencia.value,
-  };
+  if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value && !numlicenciaError.value) {
+    loading.value = true
+    const data = {
+      nombre: nombre.value,
+      cedula: cedula.value,
+      telefono: telefono.value,
+      email: email.value,
+      num_licencia: num_licencia.value,
+    };
 
-  try {
-    loading.value = true;
-    const response = await useConductor.agregarNuevoConductor(data);
+    try {
+      loading.value = true;
+      const response = await useConductor.agregarNuevoConductor(data);
 
-    if (useConductor.estatus === 200) {
-      mensajeColor.value = 'success';
-      mensaje.value = 'Conductor añadido correctamente (presione ❌ para cerrar)';
-      setTimeout(() => {
-        nombre.value = '';
-        cedula.value = '';
-        telefono.value = "";
-        email.value = "";
-        num_licencia.value = "";
-        useConductor.errorvalidacion = '';
-        mensaje.value = '';
+      if (useConductor.estatus === 200) {
+        mensajeColor.value = 'success';
+        mensaje.value = 'Conductor añadido correctamente (presione ❌ para cerrar)';
         loading.value = false;
-      }, 4500);
-    } else {
+        setTimeout(() => {
+          nombre.value = '';
+          cedula.value = '';
+          telefono.value = "";
+          email.value = "";
+          num_licencia.value = "";
+          useConductor.errorvalidacion = '';
+          mensaje.value = '';
+        }, 4500);
+      } else {
+        mensajeColor.value = 'error';
+        loading.value = false;
+        setTimeout(() => {
+          useConductor.errorvalidacion = '';  
+        }, 4500);
+      }
+    } catch (error) {
+      console.log('Error al agregar el conductor:', error);
       mensajeColor.value = 'error';
+      loading.value = false;;
       setTimeout(() => {
-        useConductor.errorvalidacion = '';
-        loading.value = false;
+        useConductor.errorvalidacion = ''
       }, 4500);
     }
-  } catch (error) {
-    console.log('Error al agregar el conductor:', error);
-    mensajeColor.value = 'error';
-    setTimeout(() => {
-      useConductor.errorvalidacion = ''
-      loading.value = false;;
-    }, 4500);
   }
-}
-
-loading.value = false;
-clearErrors();
+  loading.value = false;
+  clearErrors();
 };
 
 const editarConductor = async () => {
-clearErrors();
+  clearErrors();
 
-// Validar los campos
-if (!nombre.value) {
-  nombreError.value = 'El nombre es requerido';
-} else if (!nombre.value.trim()) {
-  nombreError.value = 'Nombre no valido'
-}
-
-if (cedula.value.trim() === '') {
-  cedulaError.value = 'La cédula es requerida';
-} else if (!soloNumeros(cedula.value)) {
-  cedulaError.value = 'La cédula debe contener solo números';
-} else if (cedula.value.trim().length !== 10) {
-  cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
-}
-
-if (!telefono.value) {
-  telefonoError.value = 'El telefono es requerido';
-}
-
-if (!email.value) {
-  emailError.value = 'El email es requerido';
-}
-
-if (!num_licencia.value) {
-  numlicenciaError.value = 'El número de licencia es requerido';
-}
-
-if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value && !numlicenciaError.value) {
-  loading.value = true
-  const data = {
-    nombre: nombre.value,
-    cedula: cedula.value,
-    telefono: telefono.value,
-    email: email.value,
-    num_licencia: num_licencia.value,
-  };
-
-  try {
-    const response = await useConductor.actualizarConductor(id.value, data);
-    if (useConductor.estatus === 200) {
-      mensajeColor.value = 'success';
-      mensaje.value = 'Conductor editado correctamente (presione ❌ para cerrar)';
-      setTimeout(() => {
-        nombre.value = '';
-        cedula.value = '';
-        telefono.value = "";
-        email.value = "";
-        num_licencia.value = "";
-        useConductor.errorvalidacion = '';
-        mensaje.value = '';
-        loading.value = false
-      }, 4500);
-    } else {
-      mensajeColor.value = 'error';
-      setTimeout(() => {
-        useConductor.errorvalidacion = '';
-        loading.value = false;
-      }, 4500);
-    }
-  } catch (error) {
-    console.log('Error al editar el conductor:', error);
-    mensajeColor.value = 'error';
-    loading.value = false;
+  // Validar los campos
+  if (!nombre.value) {
+    nombreError.value = 'El nombre es requerido';
+  } else if (!nombre.value.trim()) {
+    nombreError.value = 'Nombre no valido'
   }
-}
-loading.value = false;
-clearErrors();
+
+  if (cedula.value.trim() === '') {
+    cedulaError.value = 'La cédula es requerida';
+  } else if (!soloNumeros(cedula.value)) {
+    cedulaError.value = 'La cédula debe contener solo números';
+  } else if (cedula.value.trim().length !== 10) {
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
+  }
+
+  if (!telefono.value) {
+    telefonoError.value = 'El telefono es requerido';
+  }
+
+  if (!email.value) {
+    emailError.value = 'El email es requerido';
+  }
+
+  if (!num_licencia.value) {
+    numlicenciaError.value = 'El número de licencia es requerido';
+  }
+
+  if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value && !numlicenciaError.value) {
+    loading.value = true
+    const data = {
+      _id: id.value,
+      nombre: nombre.value,
+      cedula: cedula.value,
+      telefono: telefono.value,
+      email: email.value,
+      num_licencia: num_licencia.value,
+    };
+
+    try {
+      const response = await useConductor.actualizarConductor(id.value, data);
+      if (useConductor.estatus === 200) {
+        mensajeColor.value = 'success';
+        mensaje.value = 'Conductor editado correctamente (presione ❌ para cerrar)';
+        loading.value = false
+        setTimeout(() => {
+          useConductor.errorvalidacion = '';
+          mensaje.value = '';
+        }, 4500);
+      } else {
+        mensajeColor.value = 'error';
+        loading.value = false;
+        setTimeout(() => {
+          useConductor.errorvalidacion = '';
+
+        }, 4500);
+      }
+    } catch (error) {
+      console.log('Error al editar el conductor:', error);
+      mensajeColor.value = 'error';
+      loading.value = false;
+    }
+  }
 }
 
 async function obtenerConductor() {
@@ -832,4 +826,5 @@ p {
   color: red;
   font-weight: bold;
   font-size: 20px;
-}</style>
+}
+</style>

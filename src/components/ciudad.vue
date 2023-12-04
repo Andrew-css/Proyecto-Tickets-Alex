@@ -79,7 +79,7 @@
               </div>
               <label for="nombre">
                 <input placeholder="Nombre" type="text" class="input" v-model="nombre">
-
+                <span>Nombre</span>
               </label>
 
 

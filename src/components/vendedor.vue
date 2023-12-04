@@ -22,7 +22,7 @@
     <h6>Por favor, espere...</h6>
     </div>
     <q-dialog v-model="mostrarModalAgregar" position="top">
-        <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+        <div class="modal fade" style="margin-top: 5%;" id="staticBackdrop" data-bs-backdrop="static"
           data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -45,32 +45,32 @@
                 </div>
                 <label for="nombre">
                   <input placeholder="Nombre" type="text" class="input" v-model="nombre">
-
+                  <span>Nombre</span>
                 </label>
 
                 <label for="apellido">
                   <input placeholder="Apellido" type="text" class="input" v-model="apellido">
-
+                  <span>Apellido</span>
                 </label>
 
                 <label for="cedula">
                   <input placeholder="Cedula" type="text" class="input" v-model="cedula">
-
+                  <span>Cédula</span>
                 </label>
 
                 <label for="telefono">
                   <input placeholder="Telefono" type="text" class="input" v-model="telefono">
-
+                  <span>Teléfono</span>
                 </label>
 
                 <label for="usuario">
                   <input placeholder="Usuario" type="text" class="input" v-model="usuario">
-
+                  <span>Usuario</span>
                 </label>
 
                 <label for="contrasena">
                   <input placeholder="Contrasena" type="text" class="input" v-model="contrasena">
-
+                  <span>Contraseña</span>
                 </label>
 
                 <!-- Resto del contenido del formulario... -->
@@ -106,23 +106,25 @@
                     </div>
                     <label for="nombre">
                       <input placeholder="Nombre" type="text" class="input" v-model="nombre">
-
+                      <span>Nombre</span>
                     </label>
 
                     <label for="apellido">
                       <input placeholder="Apellido" type="text" class="input" v-model="apellido">
-
-                    </label>
-
-                    <label for="telefono">
-                      <input placeholder="Telefono" type="text" class="input" v-model="telefono">
-
+                      <span>Apellido</span>
                     </label>
 
                     <label for="cedula">
                       <input placeholder="Cedula" type="text" class="input" v-model="cedula">
-
+                      <span>Cedula</span>
                     </label>
+
+                    <label for="telefono">
+                      <input placeholder="Telefono" type="text" class="input" v-model="telefono">
+                      <span>Teléfono</span>
+                    </label>
+
+                    
                     <!-- Resto del contenido del formulario... -->
 
                     <button type="button" @click="editarVendedor" class="submit">Enviar</button>
@@ -155,9 +157,6 @@
             </q-td>
             <q-td auto-width>
               <div class="text-center">{{ props.row.telefono }}</div>
-            </q-td>
-            <q-td auto-width>
-              <div class="text-center">{{ props.row.usuario }}</div>
             </q-td>
             <q-td auto-width>
               <div :class="{
@@ -299,12 +298,6 @@ const columns = ref([
     field: (row) => row.telefono,
   },
   {
-    name: "Usuario",
-    label: "Usuario",
-    align: "center",
-    field: (row) => row.usuario,
-  },
-  {
     name: "Estado",
     label: "Estado",
     align: "center",
@@ -388,6 +381,7 @@ const agregarNuevoVendedor = async () => {
       if (useVendedor.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Vendedor añadido correctamente (presione ❌ para cerrar)';
+        loading.value = false;
         setTimeout(() => {
           nombre.value = '';
           apellido.value = '';
@@ -397,19 +391,21 @@ const agregarNuevoVendedor = async () => {
           contrasena.value = '';
           useVendedor.errorvalidacion = '';
           mensaje.value = '';
-        }, 3000);
+        }, 4500);
       } else {
         mensajeColor.value = 'error';
+        loading.value = false;
         setTimeout(() => {
           useVendedor.errorvalidacion = '';
-        }, 3000);
+        }, 4500);
       }
     } catch (error) {
       console.log('Error al agregar el vendedor:', error);
       mensajeColor.value = 'error';
+      loading.value = false;
       setTimeout(() => {
         useVendedor.errorvalidacion = '';
-      }, 3000);
+      }, 4500);
     }
   }
 
@@ -446,6 +442,7 @@ const editarVendedor = async () => {
   if (!nombreError.value && !apellidoError.value && !cedulaError.value && !telefonoError.value) {
     loading.value = true;
     const data = {
+      _id: id.value,
       nombre: nombre.value,
       apellido: apellido.value,
       cedula: cedula.value,
@@ -459,28 +456,27 @@ const editarVendedor = async () => {
       if (useVendedor.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Vendedor editado correctamente (presione ❌ para cerrar)';
+        loading.value = false;
         setTimeout(() => {
           useVendedor.errorvalidacion = '';
           mensaje.value = '';
         }, 4500);
       } else {
         mensajeColor.value = 'error';
+        loading.value = false;
         setTimeout(() => {
           useVendedor.errorvalidacion = '';
-          loading.value = false
         }, 4500);
       }
     } catch (error) {
       console.log('Error al editar el vendedor:', error);
       mensajeColor.value = 'error';
+      loading.value = false;
       setTimeout(() => {
         useVendedor.errorvalidacion = '';
-        loading.value = false
       }, 4500);
     }
   }
-  loading.value = false;
-  clearErrors();
 }
 
 async function obtenerVendedor() {

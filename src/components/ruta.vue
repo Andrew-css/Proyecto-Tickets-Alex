@@ -180,7 +180,7 @@
 
               <label for="hora_salida">
                 <input placeholder="" type="time" class="input" v-model="hora_salida">
-                <span>Hora de salida :</span>
+                <span>Hora de salida:</span>
               </label>
 
 
@@ -321,7 +321,6 @@ const soloNumeros = (value) => {
 };
 
 const clearErrors = () => {
-
   setTimeout(() => {
     ciudadOrigenError.value = null;
     ciudadDestinoError.value = null;
@@ -337,7 +336,7 @@ const editar = (row) => {
   id.value = row._id;
   ciudad_origen.value = {label:row.ciudad_origen.nombre, value: row.ciudad_origen._id};
   ciudad_destino.value = {label:row.ciudad_destino.nombre, value: row.ciudad_destino._id};
-  hora_salida.value = format(new Date(row.hora_salida), 'yyyy-MM-ddTHH:mm:ss');
+  hora_salida.value = format(new Date(row.hora_salida), 'HH:mm');
   estado.value = row.estado;
   mostrarModalEditar.value = true;
 };
@@ -399,6 +398,7 @@ const agregarNuevaRuta = async () => {
   if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value) {
     const fechaActual = new Date();
     const horaSalidaDate = new Date(fechaActual.toDateString() + ' ' + hora_salida.value);
+    loading.value = true
     const data = {
       ciudad_origen: ciudad_origen.value.value,
       ciudad_destino: ciudad_destino.value.value,
@@ -412,6 +412,7 @@ const agregarNuevaRuta = async () => {
       if (useRuta.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Ruta añadida correctamente (presione ❌ para cerrar)';
+        loading.value = false
         setTimeout(() => {
           ciudad_origen.value = '';
           ciudad_destino.value = '';
@@ -463,7 +464,6 @@ const editarRuta = async () => {
     loading.value = true;
     const fechaActual = new Date();
     const horaSalidaDate = new Date(fechaActual.toDateString() + ' ' + hora_salida.value);
-
     const data = {
       ciudad_origen: ciudad_origen.value.value,
       ciudad_destino: ciudad_destino.value.value,
@@ -473,19 +473,30 @@ const editarRuta = async () => {
     try {
       const response = await useRuta.actualizarRuta(id.value, data);
       mensajeColor.value = 'success';
-      loading.value = false;
-      mensaje.value = "Ruta editada correctamente (presione ❌ para cerrar)";
-      clearErrors()
+      if (useRuta.estatus === 200) {
+        mensajeColor.value = 'success';
+        mensaje.value = 'Ruta editada correctamente (presione ❌ para cerrar)';
+        loading.value = false;
+        setTimeout(() => {
+          useRuta.errorvalidacion = '';
+          mensaje.value = '';
+        }, 4500);
+      } else {
+        mensajeColor.value = 'error';
+        loading.value = false;
+        setTimeout(() => {
+          useRuta.errorvalidacion = '';
+        }, 3000);
+      }
     } catch (error) {
       console.log('Error al editar la ruta:', error);
       mensajeColor.value = 'error';
+      loading.value = false;
       setTimeout(() => {
         useRuta.errorvalidacion = '';
       }, 4500);
     }
   }
-  loading.value = false;
-  clearErrors();
 }
 
 async function obtenerRutas() {
