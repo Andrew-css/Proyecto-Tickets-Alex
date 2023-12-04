@@ -59,8 +59,8 @@ export const useBusStore = defineStore("bus", () => {
       );
       console.log("Respuesta del servidor al agregar nuevo bus:", response);
       console.log("Datos del array", data)
-      estatus.value = response.status
       rows.value.unshift(response.data.busPopulate);
+      estatus.value = response.status
     } catch (error) {
       console.log("Error al agregar nuevo bus:", error);
       errorvalidacion.value = error.response.data.error
@@ -79,11 +79,11 @@ export const useBusStore = defineStore("bus", () => {
       const buscar = rows.value.findIndex((b) => b._id == id);
       rows.value.splice(buscar, 1, response.data.busPopulate);
       console.log("Respuesta del servidor al actualizar bus:", response);
+      estatus.value = response.status
     } catch (error) {
       console.log("Error al actualizar bus:", error);
       errorvalidacion.value = error.response.data.error
     }
-    toolbar.value = false;
   };
 
   const obtenerBuses = async () => {

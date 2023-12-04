@@ -63,8 +63,8 @@ export const useRutaStore = defineStore("ruta", () => {
         data
       );
       console.log("Respuesta del servidor al agregar nueva ruta:", response);
-      estatus.value = response.status
       rows.value.unshift(response.data.rutasPopulate);
+      estatus.value = response.status
     } catch (error) {
       console.log("Error al agregar nueva ruta:", error);
       errorvalidacion.value = error.response.data.error

@@ -51,17 +51,17 @@
 
               <label for="asiento">
                 <input placeholder="Cantidad Asientos" type="text" class="input" v-model="asiento"
-                  @keydown="handleKeydown">
+                >
                   <span>Cantidad Asientos</span>
               </label>
 
               <label for="placa">
-                <input placeholder="Placa" type="text" class="input" v-model="placa" @keydown="handleKeydown">
+                <input placeholder="Placa" type="text" class="input" v-model="placa">
                 <span>Placa</span>
               </label>
 
               <label for="numero">
-                <input placeholder="Numero" type="text" class="input" v-model="numero" @keydown="handleKeydown">
+                <input placeholder="Numero Bus" type="text" class="input" v-model="numero">
                 <span>Número Bus</span>
               </label>
 
@@ -121,7 +121,7 @@
 
               <label for="asiento">
                 <input placeholder="Cantidad Asientos" type="text" class="input" v-model="asiento"
-                  @keydown="handleKeydown">
+                >
                   <span>Cantidad Asientos</span>
               </label>
 
@@ -131,7 +131,7 @@
               </label>
 
               <label for="numero">
-                <input placeholder="Numero" type="text" class="input" v-model="numero" @keydown="handleKeydown">
+                <input placeholder="Numero Bus" type="text" class="input" v-model="numero">
                 <span>Número Bus</span>
               </label>
 
@@ -346,7 +346,7 @@ const clearErrors = () => {
     placaError.value = null;
     numeroError.value = null
     conductorError.value = null;
-  }, 4500);
+  }, 5500);
 };
 
 
@@ -364,32 +364,36 @@ async function obtenerBuses() {
 }
 
 const agregarNuevoBus = async () => {
-  loading.value = true;
   clearErrors();
 
   if (!empresa.value) {
     empresaError.value = 'La empresa es requerida';
   } else if (!empresa.value.trim()) {
-    empresaError.value = 'Empresa no valida'
+    empresaError.value = 'Solo espacios no es permitido, por favor digite un nombre de empresa   real'
   }
 
 
   if (!asiento.value) {
     asientoError.value = 'El asiento es requerido';
   } else if (!soloNumeros(asiento.value)) {
-    asientoError.value = 'El asiento debe contener solo números';
+    asientoError.value = 'El asiento debe contener solo números (sin espacios si es el caso)';
   } else if (asiento.value > 40) {
     asientoError.value = 'El número de asiento no puede ser mayor a 40';
   }
 
   if (!placa.value) {
     placaError.value = 'La placa es requerida';
+  }else if (!placa.value.trim()) {
+    placaError.value = 'Solo espacios no es permitido, por favor digite una placa real'
   } else if (placa.value.length > 7) {
-    placaError.value = 'La placa no puede tener más de 7 caracteres';
+    placaError.value = 'La placa no puede tener más de 7 caracteres (eliminar espacios si es el caso)';
   }
+
   if (!numero.value) {
     numeroError.value = 'El número de bus es requerido';
-  }
+  } else if (!numero.value.trim()) {
+    numeroError.value = 'Solo espacios no es permitido, por favor digite un numero de bus real'
+  } 
 
   if (!conductor.value) {
     conductorError.value = 'El conductor es requerido';
@@ -411,7 +415,7 @@ const agregarNuevoBus = async () => {
       if (useBus.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Bus añadido correctamente (presione ❌ para cerrar)';
-  
+        loading.value = false;
         setTimeout(() => {
           empresa.value = '';
           asiento.value = '';
@@ -420,26 +424,23 @@ const agregarNuevoBus = async () => {
           conductor.value = '';
           useBus.errorvalidacion = '';
           mensaje.value = '';
-          loading.value = false;
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
           useBus.errorvalidacion = '';
-        }, 4500);
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al agregar  bus:', error);
       mensajeColor.value = 'error';
       loading.value = false;
       setTimeout(() => {
-        useBus.errorvalidacion = '';
-        
-      }, 4500);
+          useBus.errorvalidacion = '';
+        }, 7500);
     }
   }
-
   loading.value = false;
   clearErrors();
 };
@@ -452,26 +453,31 @@ const editarBus = async () => {
   if (!empresa.value) {
     empresaError.value = 'La empresa es requerida';
   } else if (!empresa.value.trim()) {
-    empresaError.value = 'Empresa no valida'
+    empresaError.value = 'Solo espacios no es permitido, por favor digite un nombre de empresa   real'
   }
 
 
   if (!asiento.value) {
     asientoError.value = 'El asiento es requerido';
   } else if (!soloNumeros(asiento.value)) {
-    asientoError.value = 'El asiento debe contener solo números';
+    asientoError.value = 'El asiento debe contener solo números (sin espacios si es el caso)';
   } else if (asiento.value > 40) {
     asientoError.value = 'El número de asiento no puede ser mayor a 40';
   }
 
   if (!placa.value) {
     placaError.value = 'La placa es requerida';
+  }else if (!placa.value.trim()) {
+    placaError.value = 'Solo espacios no es permitido, por favor digite una placa real'
   } else if (placa.value.length > 7) {
-    placaError.value = 'La placa no puede tener más de 7 caracteres';
+    placaError.value = 'La placa no puede tener más de 7 caracteres (eliminar espacios si es el caso)';
   }
+
   if (!numero.value) {
     numeroError.value = 'El número de bus es requerido';
-  }
+  } else if (!numero.value.trim()) {
+    numeroError.value = 'Solo espacios no es permitido, por favor digite un numero de bus real'
+  } 
 
   if (!conductor.value) {
     conductorError.value = 'El conductor es requerido';
@@ -498,18 +504,21 @@ const editarBus = async () => {
         setTimeout(() => {
           useBus.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
           useBus.errorvalidacion = '';
-        }, 4500);
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al editar el bus:', error);
       mensajeColor.value = 'error';
       loading.value = false;
+      setTimeout(() => {
+          useBus.errorvalidacion = '';
+        }, 7500);
     }
   }
 }

@@ -327,7 +327,7 @@ const clearErrors = () => {
     horaSalidaError.value = null;
     mensaje.value = '';
     useRuta.errorvalidacion = '';
-  }, 4500);
+  }, 5500);
 };
 
 
@@ -375,7 +375,6 @@ const columns = ref([
 ]);
 
 const agregarNuevaRuta = async () => {
-  loading.value = true;
   clearErrors()
   useRuta.errorvalidacion = '';
 
@@ -390,15 +389,15 @@ const agregarNuevaRuta = async () => {
   }
 
   if (!hora_salida.value) {
-    horaSalidaError.value = 'La Fecha y hora de salida es requerida';
+    horaSalidaError.value = 'La hora de salida es requerida';
   }
 
 
 
   if (!ciudadOrigenError.value && !ciudadDestinoError.value && !horaSalidaError.value) {
+    loading.value = true
     const fechaActual = new Date();
     const horaSalidaDate = new Date(fechaActual.toDateString() + ' ' + hora_salida.value);
-    loading.value = true
     const data = {
       ciudad_origen: ciudad_origen.value.value,
       ciudad_destino: ciudad_destino.value.value,
@@ -419,19 +418,19 @@ const agregarNuevaRuta = async () => {
           hora_salida.value = '';
           useRuta.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
         setTimeout(() => {
           useRuta.errorvalidacion = '';
-        }, 3000);
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al agregar la ruta:', error);
       mensajeColor.value = 'error';
       setTimeout(() => {
         useRuta.errorvalidacion = '';
-      }, 4500);
+      }, 5500);
     }
   }
 
@@ -455,7 +454,7 @@ const editarRuta = async () => {
   }
 
   if (!hora_salida.value) {
-    horaSalidaError.value = 'La Fecha y hora de salida es requerida';
+    horaSalidaError.value = 'La hora de salida es requerida';
   }
 
 
@@ -480,13 +479,13 @@ const editarRuta = async () => {
         setTimeout(() => {
           useRuta.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 7500);
       } else {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
           useRuta.errorvalidacion = '';
-        }, 3000);
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al editar la ruta:', error);
@@ -494,7 +493,7 @@ const editarRuta = async () => {
       loading.value = false;
       setTimeout(() => {
         useRuta.errorvalidacion = '';
-      }, 4500);
+      }, 7500);
     }
   }
 }

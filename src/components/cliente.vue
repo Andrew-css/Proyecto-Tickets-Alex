@@ -290,47 +290,49 @@ const clearErrors = () => {
     cedulaError.value = null;
     telefonoError.value = null;
     emailError.value = null;
-    mensaje.value = '';
-    useCliente.errorvalidacion = '';
-  }, 4500);
+  }, 5500);
 };
 
 const agregarNuevoCliente = async () => {
-  loading.value = true
   nombreError.value = null;
   cedulaError.value = null;
-  telefonoError.value = null;
   emailError.value = null;
+  telefonoError.value = null;
   useCliente.errorvalidacion = '';
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
-    nombreError.value = 'Nombre no valido'
+    nombreError.value = 'Solo espacios no es permitido, por favor digite un nombre real'
   } 
 
   if (!cedula.value) {
     cedulaError.value = 'La cédula es requerida';
-  } else if (cedula.value.length !== 10) {
-    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
   } else if (!soloNumeros(cedula.value)) {
-    cedulaError.value = 'La cédula debe contener solo números';
-  }
+    cedulaError.value = 'La cédula debe contener solo números (sin espacios si es el caso)';
+  } else if (cedula.value.length !== 10) {
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
+  } 
 
   if (!telefono.value) {
-    telefonoError.value = 'El telefono es requerido';
-  }
+    telefonoError.value = 'El telefono es requerido ';
+  } else if (!telefono.value.trim()) {
+    telefonoError.value = 'Solo espacios no es permitido, por favor digite un teléfono real'
+  } else if (telefono.value.length !== 10) {
+    telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
+  } 
 
   if (!email.value) {
     emailError.value = 'El email es requerido';
-  }
-
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  if (!emailRegex.test(email.value)) {
-    emailError.value = 'El email debe ser válido';
+  } else if (!email.value.trim()) {
+    emailError.value = 'Solo espacios no es permitido, por favor digite un email real'
+  } else if (!emailRegex.test(email.value)) {
+    emailError.value = 'El email debe ser válido (eliminar espacios si es el caso)';
   }
 
   if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value) {
+    loading.value = true;
     const data = {
       nombre: nombre.value,
       cedula: cedula.value,
@@ -340,10 +342,10 @@ const agregarNuevoCliente = async () => {
 
     try {
       const response = await useCliente.agregarNuevoCliente(data);
-
       if (useCliente.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Cliente añadido correctamente (presione ❌ para cerrar)';
+        loading.value = false;
         setTimeout(() => {
           nombre.value = '';
           cedula.value = '';
@@ -351,20 +353,21 @@ const agregarNuevoCliente = async () => {
           telefono.value = '';
           useCliente.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
-        mensaje.value = useCliente.errorvalidacion
+        loading.value = false;
         setTimeout(() => {
           useCliente.errorvalidacion = '';
-        }, 4500);
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
+      loading.value = false;
       setTimeout(() => {
         useCliente.errorvalidacion = '';
-      }, 4500);
+      }, 7500);
     }
   }
 
@@ -380,37 +383,41 @@ const editarCliente = async () => {
   emailError.value = null;
   telefonoError.value = null;
   useCliente.errorvalidacion = '';
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
-    nombreError.value = 'Nombre no valido'
+    nombreError.value = 'Solo espacios no es permitido, por favor digite un nombre real'
   } 
 
   if (!cedula.value) {
     cedulaError.value = 'La cédula es requerida';
-  } else if (cedula.value.length !== 10) {
-    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
   } else if (!soloNumeros(cedula.value)) {
-    cedulaError.value = 'La cédula debe contener solo números';
-  }
+    cedulaError.value = 'La cédula debe contener solo números (sin espacios si es el caso)';
+  } else if (cedula.value.length !== 10) {
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
+  } 
 
   if (!telefono.value) {
-    telefonoError.value = 'El telefono es requerido';
-  }
+    telefonoError.value = 'El telefono es requerido ';
+  } else if (!telefono.value.trim()) {
+    telefonoError.value = 'Solo espacios no es permitido, por favor digite un teléfono real'
+  } else if (telefono.value.length !== 10) {
+    telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
+  } 
 
   if (!email.value) {
     emailError.value = 'El email es requerido';
-  }
-
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  if (!emailRegex.test(email.value)) {
-    emailError.value = 'El email debe ser válido';
+  } else if (!email.value.trim()) {
+    emailError.value = 'Solo espacios no es permitido, por favor digite un email real'
+  } else if (!emailRegex.test(email.value)) {
+    emailError.value = 'El email debe ser válido (eliminar espacios si es el caso)';
   }
   console.log("Hola soy id", id.value)
 
   if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value) {
-    loading.value = true
+    loading.value = true;
     const data = {
       _id: id.value,
       nombre: nombre.value,
@@ -424,12 +431,14 @@ const editarCliente = async () => {
       if (useCliente.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Cliente editado correctamente (presione ❌ para cerrar)';
+        loading.value = false;
         setTimeout(() => {
           useCliente.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
+        loading.value = false;
         setTimeout(() => {
           useCliente.errorvalidacion = '';
         }, 7500);
@@ -437,9 +446,13 @@ const editarCliente = async () => {
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
+      loading.value = false;
+      setTimeout(() => {
+        useCliente.errorvalidacion = '';
+      }, 7500);
     }
   }
-  loading.value = false;
+  clearErrors();
 }
 
 async function obtenerCliente() {

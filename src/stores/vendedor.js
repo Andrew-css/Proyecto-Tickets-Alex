@@ -68,8 +68,8 @@ export const useVendedorStore = defineStore("vendedor", () => {
         data
       );
       console.log("Respuesta del servidor al agregar nuevo vendedor:", response);
-      estatus.value = response.status
       rows.value.unshift(response.data.vendedor);
+      estatus.value = response.status;
     } catch (error) {
       console.log("Error al agregar nuevo vendedor:", error);
       errorvalidacion.value = error.response.data.error

@@ -50,7 +50,7 @@ export const useConductorStore = defineStore("conductor", () => {
       );
       console.log("Respuesta del servidor al agregar nuevo conductor:", response);
       rows.value.unshift(response.data.conductor);
-      estatus.value=response.status
+      estatus.value = response.status
     } catch (error) {
       console.log("Error al agregar nuevo conductor:", error);
       errorvalidacion.value = error.response.data.error

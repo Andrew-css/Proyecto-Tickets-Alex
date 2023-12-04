@@ -47,26 +47,27 @@
                 <p>Por favor, espere...</p>
               </div>
 
-              <label>
-                <input required="" placeholder="" type="text" class="input" v-model="nombre">
+              <label for="nombre">
+                <input placeholder="Nombre" type="text" class="input" v-model="nombre">
                 <span>Nombre</span>
               </label>
+
+              <label for="cedula">
+                <input placeholder="Cédula" type="text" class="input" v-model="cedula">
+                <span>Cédula</span>
+              </label>
+
               <label>
-                <input required="" placeholder="" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
-                <span>Cedula</span>
+                <input placeholder="Teléfono" type="text" class="input" v-model="telefono">
+                <span>Teléfono</span>
               </label>
               <label>
-                <input required="" placeholder="" type="text" class="input" v-model="telefono" @keydown="handleKeydown">
-                <span>Telefono</span>
-              </label>
-              <label>
-                <input required="" placeholder="" type="text" class="input" v-model="email" @keydown="handleKeydown">
+                <input placeholder="Email" type="text" class="input" v-model="email">
                 <span>Email</span>
               </label>
               <label>
-                <input required="" placeholder="" type="text" class="input" v-model="num_licencia"
-                  @keydown="handleKeydown">
-                <span>Numero Licencia</span>
+                <input placeholder="Número Licencia" type="text" class="input" v-model="num_licencia">
+                <span>Número Licencia</span>
               </label>
 
 
@@ -91,7 +92,7 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-              <span v-if="nombreError || cedulaError" class="error-message">{{ nombreError || cedulaError }}</span>
+              <span v-if="nombreError || cedulaError || telefonoError || emailError || numlicenciaError" class="error-message">{{ nombreError || cedulaError || telefonoError || emailError || numlicenciaError }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useConductor.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
                 mensaje
@@ -106,22 +107,21 @@
               </label>
 
               <label for="cedula">
-                <input placeholder="Cedula" type="text" class="input" v-model="cedula" @keydown="handleKeydown">
-                <span>Cedula</span>
+                <input placeholder="Cédula" type="text" class="input" v-model="cedula">
+                <span>Cédula</span>
               </label>
 
               <label>
-                <input required="" placeholder="" type="text" class="input" v-model="telefono" @keydown="handleKeydown">
-                <span>Telefono</span>
+                <input placeholder="Teléfono" type="text" class="input" v-model="telefono">
+                <span>Teléfono</span>
               </label>
               <label>
-                <input required="" placeholder="" type="text" class="input" v-model="email" @keydown="handleKeydown">
+                <input placeholder="Email" type="text" class="input" v-model="email">
                 <span>Email</span>
               </label>
               <label>
-                <input required="" placeholder="" type="text" class="input" v-model="num_licencia"
-                  @keydown="handleKeydown">
-                <span>Numero Licencia</span>
+                <input placeholder="Número Licencia" type="text" class="input" v-model="num_licencia">
+                <span>Número Licencia</span>
               </label>
 
               <!-- Resto del contenido del formulario... -->
@@ -217,7 +217,6 @@ const mostrarMensajeExito = (message) => {
 
 
 const clearErrors = () => {
-
   setTimeout(() => {
     nombreError.value = null;
     cedulaError.value = null;
@@ -225,7 +224,7 @@ const clearErrors = () => {
     emailError.value = null;
     numlicenciaError.value = null;
     mensaje.value = '';
-  }, 4500);
+  }, 5500);
 };
 
 const agregar = () => {
@@ -321,38 +320,50 @@ const soloNumeros = (value) => {
 
 
 const agregarNuevoConductor = async () => {
-
   nombreError.value = null;
   cedulaError.value = null;
   telefonoError.value = null;
   emailError.value = null;
   numlicenciaError.value = null;
   useConductor.errorvalidacion = '';
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
-    nombreError.value = 'Nombre no valido'
+    nombreError.value = 'Solo espacios no es permitido, por favor digite un nombre real'
   }
 
-  if (cedula.value.trim() === '') {
+  if (!cedula.value) {
     cedulaError.value = 'La cédula es requerida';
+  } else if (!cedula.value.trim()) {
+    cedulaError.value = 'Solo espacios no es permitido, por favor digite una cedula real';
   } else if (!soloNumeros(cedula.value)) {
-    cedulaError.value = 'La cédula debe contener solo números';
+    cedulaError.value = 'La cédula debe contener solo números (eliminar espacios si es el caso)';
   } else if (cedula.value.trim().length !== 10) {
-    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
   }
 
   if (!telefono.value) {
-    telefonoError.value = 'El telefono es requerido';
-  }
+    telefonoError.value = 'El telefono es requerido '
+  } else if (!telefono.value.trim()) {
+    telefonoError.value = 'Solo espacios no es permitido, por favor digite un teléfono real'
+  } else if (telefono.value.length !== 10) {
+    telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres (eliminar espacios si es el caso)'
+  } 
 
   if (!email.value) {
     emailError.value = 'El email es requerido';
+  } else if (!email.value.trim()) {
+    emailError.value = 'Solo espacios no es permitido, por favor digite un email real'
+  } else if (!emailRegex.test(email.value)) {
+    emailError.value = 'El email debe ser válido (eliminar espacios si es el caso)';
   }
 
   if (!num_licencia.value) {
     numlicenciaError.value = 'El número de licencia es requerido';
+  } else if (!num_licencia.value.trim()) {
+    numlicenciaError.value = 'Solo espacios no es permitido, por favor digite un número de licencia real'
   }
 
 
@@ -383,13 +394,13 @@ const agregarNuevoConductor = async () => {
           num_licencia.value = "";
           useConductor.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
-          useConductor.errorvalidacion = '';  
-        }, 4500);
+          useConductor.errorvalidacion = '';
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al agregar el conductor:', error);
@@ -397,7 +408,7 @@ const agregarNuevoConductor = async () => {
       loading.value = false;;
       setTimeout(() => {
         useConductor.errorvalidacion = ''
-      }, 4500);
+      }, 7500);
     }
   }
   loading.value = false;
@@ -405,33 +416,50 @@ const agregarNuevoConductor = async () => {
 };
 
 const editarConductor = async () => {
-  clearErrors();
+  nombreError.value = null;
+  cedulaError.value = null;
+  telefonoError.value = null;
+  emailError.value = null;
+  numlicenciaError.value = null;
+  useConductor.errorvalidacion = '';
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
-  // Validar los campos
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
-    nombreError.value = 'Nombre no valido'
+    nombreError.value = 'Solo espacios no es permitido, por favor digite un nombre real'
   }
 
-  if (cedula.value.trim() === '') {
+  if (!cedula.value) {
     cedulaError.value = 'La cédula es requerida';
+  } else if (!cedula.value.trim()) {
+    cedulaError.value = 'Solo espacios no es permitido, por favor digite una cedula real';
   } else if (!soloNumeros(cedula.value)) {
-    cedulaError.value = 'La cédula debe contener solo números';
+    cedulaError.value = 'La cédula debe contener solo números (eliminar espacios si es el caso)';
   } else if (cedula.value.trim().length !== 10) {
-    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
   }
 
   if (!telefono.value) {
-    telefonoError.value = 'El telefono es requerido';
-  }
+    telefonoError.value = 'El telefono es requerido '
+  } else if (!telefono.value.trim()) {
+    telefonoError.value = 'Solo espacios no es permitido, por favor digite un teléfono real'
+  } else if (telefono.value.length !== 10) {
+    telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres (eliminar espacios si es el caso)'
+  } 
 
   if (!email.value) {
     emailError.value = 'El email es requerido';
+  } else if (!email.value.trim()) {
+    emailError.value = 'Solo espacios no es permitido, por favor digite un email real'
+  } else if (!emailRegex.test(email.value)) {
+    emailError.value = 'El email debe ser válido (eliminar espacios si es el caso)';
   }
 
   if (!num_licencia.value) {
     numlicenciaError.value = 'El número de licencia es requerido';
+  } else if (!num_licencia.value.trim()) {
+    numlicenciaError.value = 'Solo espacios no es permitido, por favor digite un número de licencia real'
   }
 
   if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value && !numlicenciaError.value) {
@@ -454,21 +482,24 @@ const editarConductor = async () => {
         setTimeout(() => {
           useConductor.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
           useConductor.errorvalidacion = '';
-
-        }, 4500);
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al editar el conductor:', error);
       mensajeColor.value = 'error';
       loading.value = false;
+      setTimeout(() => {
+        useConductor.errorvalidacion = ''
+      }, 7500);
     }
   }
+  clearErrors();
 }
 
 async function obtenerConductor() {
@@ -506,16 +537,6 @@ onMounted(async () => {
   desactivarConductor();
   activarConductor();
 });
-
-
-
-
-
-const handleKeydown = (event) => {
-  if (event.key === ' ') {
-    event.preventDefault();
-  }
-};
 </script>
 
 <style scoped>

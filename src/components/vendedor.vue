@@ -93,8 +93,8 @@
                       <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center"
                         id="botoncerrar">❌</button>
                     </div>
-                    <span v-if="nombreError || apellidoError || cedulaError || telefonoError || contrasenaError"
-                      class="error-message">{{ nombreError || apellidoError || cedulaError || telefonoError || contrasenaError
+                    <span v-if="nombreError || apellidoError || cedulaError || telefonoError || usuarioError || contrasenaError"
+                      class="error-message">{{ nombreError || apellidoError || cedulaError || telefonoError || usuarioError || contrasenaError
                       }}</span>
                     <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useVendedor.errorvalidacion }}</p>
                     <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
@@ -322,44 +322,55 @@ const clearErrors = () => {
     telefonoError.value = null;
     usuarioError.value = null;
     contrasenaError.value = null;
-  }, 4500);
+  }, 5500);
 };
 
 const agregarNuevoVendedor = async () => {
-  loading.value = true;
   clearErrors()
   useVendedor.errorvalidacion = '';
 
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } 
+  } else if (!nombre.value.trim()) {
+    nombreError.value = 'Solo espacios no es permitido, por favor digite un nombre real'
+  }
 
   if (!apellido.value) {
     apellidoError.value = 'El apellido es requerido';
+  } else if (!apellido.value.trim()) {
+    apellidoError.value = 'Solo espacios no es permitido, por favor digite un apellido real'
   }
 
   if (!cedula.value) {
     cedulaError.value = 'La cédula es requerida';
+  } else if (!cedula.value.trim()) {
+    cedulaError.value = 'Solo espacios no es permitido, por favor digite una cédula real'
+  } else if (!soloNumeros(cedula.value)) {
+    cedulaError.value = 'La cédula debe contener solo números (eliminar espacios si es el caso)';
   } else if (cedula.value.length !== 10) {
     cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
-  } else if (!soloNumeros(cedula.value)) {
-    cedulaError.value = 'La cédula debe contener solo números';
   }
 
   if (!telefono.value) {
     telefonoError.value = 'El teléfono es requerido';
+  } else if (!telefono.value.trim()) {
+    telefonoError.value = 'Solo espacios no es permitido, por favor digite un teléfono real'
   } else if (telefono.value.length !== 10) {
-    telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres';
+    telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
   }
 
   if (!usuario.value) {
     usuarioError.value = 'El usuario es requerido';
+  } else if (!usuario.value.trim()) {
+    usuarioError.value = 'Solo espacios no es permitido, por favor digite un usuario válido'
   }
 
   if (!contrasena.value) {
     contrasenaError.value = 'La contraseña es requerida';
+  } else if (!contrasena.value.trim()) {
+    contrasenaError.value = 'Solo espacios no es permitido, por favor digite una contraseña válida'
   } else if (contrasena.value.length < 8) {
-    contrasenaError.value = 'La contraseña debe tener al menos 8 caracteres';
+    contrasenaError.value = 'La contraseña debe tener al menos 8 caracteres (eliminar espacios si es el caso)';
   }
 
 
@@ -391,13 +402,13 @@ const agregarNuevoVendedor = async () => {
           contrasena.value = '';
           useVendedor.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
           useVendedor.errorvalidacion = '';
-        }, 4500);
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al agregar el vendedor:', error);
@@ -405,7 +416,7 @@ const agregarNuevoVendedor = async () => {
       loading.value = false;
       setTimeout(() => {
         useVendedor.errorvalidacion = '';
-      }, 4500);
+      }, 7500);
     }
   }
 
@@ -419,24 +430,32 @@ const editarVendedor = async () => {
   // Validar los campos
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
-  } 
+  } else if (!nombre.value.trim()) {
+    nombreError.value = 'Solo espacios no es permitido, por favor digite un nombre real'
+  }
 
   if (!apellido.value) {
     apellidoError.value = 'El apellido es requerido';
+  } else if (!apellido.value.trim()) {
+    apellidoError.value = 'Solo espacios no es permitido, por favor digite un apellido real'
   }
 
   if (!cedula.value) {
     cedulaError.value = 'La cédula es requerida';
+  } else if (!cedula.value.trim()) {
+    cedulaError.value = 'Solo espacios no es permitido, por favor digite una cédula real'
+  } else if (!soloNumeros(cedula.value)) {
+    cedulaError.value = 'La cédula debe contener solo números (eliminar espacios si es el caso)';
   } else if (cedula.value.length !== 10) {
     cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
-  } else if (!soloNumeros(cedula.value)) {
-    cedulaError.value = 'La cédula debe contener solo números';
   }
 
   if (!telefono.value) {
     telefonoError.value = 'El teléfono es requerido';
+  } else if (!telefono.value.trim()) {
+    telefonoError.value = 'Solo espacios no es permitido, por favor digite un teléfono real'
   } else if (telefono.value.length !== 10) {
-    telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres';
+    telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
   }
 
   if (!nombreError.value && !apellidoError.value && !cedulaError.value && !telefonoError.value) {
@@ -460,13 +479,13 @@ const editarVendedor = async () => {
         setTimeout(() => {
           useVendedor.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
           useVendedor.errorvalidacion = '';
-        }, 4500);
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al editar el vendedor:', error);
@@ -474,7 +493,7 @@ const editarVendedor = async () => {
       loading.value = false;
       setTimeout(() => {
         useVendedor.errorvalidacion = '';
-      }, 4500);
+      }, 7500);
     }
   }
 }

@@ -45,7 +45,7 @@
                 <p>Por favor, espere...</p>
               </div>
               <label>
-                <input placeholder="" type="text" class="input" v-model="nombre">
+                <input placeholder="Nombre" type="text" class="input" v-model="nombre">
                 <span>Nombre</span>
               </label>
 
@@ -148,7 +148,7 @@ const mostrarMensajeExito = (message) => {
   mensaje.value = message;
   setTimeout(() => {
     mensaje.value = '';
-  }, 4500);
+  }, 5500);
 };
 
 const clearErrors = () => {
@@ -157,7 +157,7 @@ const clearErrors = () => {
     nombreError.value = null;
     useCiudad.errorvalidacion = '';
     mensaje.value = '';
-  }, 4500);
+  }, 5500);
 };
 
 const editar = (row) => {
@@ -231,10 +231,6 @@ const obtenerTextoEstado = (estado) => {
 };
 
 
-
-
-// VALIDACIONES 
-
 const agregarNuevaCiudad = async () => {
 
   nombreError.value = null;
@@ -243,7 +239,7 @@ const agregarNuevaCiudad = async () => {
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
-    nombreError.value = 'Nombre no valido'
+    nombreError.value = 'Solo espacios no es permitido, por favor digite un nombre de ciudad real'
   }
 
 
@@ -260,26 +256,28 @@ const agregarNuevaCiudad = async () => {
       if (useCiudad.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Ciudad añadida correctamente (presione ❌ para cerrar)';
+        loading.value = false;
         setTimeout(() => {
           nombre.value = '';
           useCiudad.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
+        loading.value = false;
         setTimeout(() => {
           useCiudad.errorvalidacion = '';
-        }, 4500);
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al agregar el ciudad:', error);
       mensajeColor.value = 'error';
+      loading.value = false;
       setTimeout(() => {
         useCiudad.errorvalidacion = '';
-      }, 4500);
+      }, 7500);
     }
   }
-
   loading.value = false;
   clearErrors();
 };
@@ -291,8 +289,8 @@ const editarCiudad = async () => {
   if (!nombre.value) {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
-    nombreError.value = 'Nombre no valido'
-  } 
+    nombreError.value = 'Solo espacios no es permitido, por favor digite un nombre de ciudad real'
+  }
 
   if (!nombreError.value) {
     loading.value = true
@@ -305,22 +303,27 @@ const editarCiudad = async () => {
       if (useCiudad.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Ciudad editada correctamente (presione ❌ para cerrar)';
+        loading.value = false;
         setTimeout(() => {
           useCiudad.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
         loading.value = false
+        setTimeout(() => {
+          useCiudad.errorvalidacion = '';
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al editar la ciudad:', error);
       mensajeColor.value = 'error';
       loading.value = false
+      setTimeout(() => {
+          useCiudad.errorvalidacion = '';
+        }, 7500);
     }
   }
-  clearErrors();
-  loading.value = false
 }
 
 onMounted(async () => {

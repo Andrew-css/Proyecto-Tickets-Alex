@@ -32,8 +32,8 @@ export const useCiudadStore = defineStore("ciudad", () => {
         data
       );
       console.log("Respuesta del servidor al agregar nueva ciudad:", response);
-      estatus.value = response.status
       rows.value.unshift(response.data);
+      estatus.value = response.status;
     } catch (error) {
       console.log("Error al agregar nueva ciudad:", error);
       errorvalidacion.value = error.response.data.error
@@ -48,16 +48,16 @@ export const useCiudadStore = defineStore("ciudad", () => {
         `https://transporte-el2a.onrender.com/api/ciudad/editar/${id}`,
         data
       );
-      estatus.value = response.status
       const index = rows.value.findIndex((c) => c._id === id);
       if (index !== -1) {
         rows.value[index] = response.data;
       }
       console.log("Respuesta del servidor al actualizar ciudad:", response);
+      estatus.value = response.status
     } catch (error) {
       console.log("Error al actualizar ciudad:", error);
-errorvalidacion.value = error.response.data.error.keyValue.nombre + " ya está registrada en la base de datos";      
-    }   
+      errorvalidacion.value = error.response.data.error;
+    }
   };
 
   const obtenerCiudades = async () => {
@@ -108,10 +108,10 @@ errorvalidacion.value = error.response.data.error.keyValue.nombre + " ya está r
     }
   };
 
-  function insertarToken(){
+  function insertarToken() {
     const token = localStorage.getItem("x-token");
 
-    if(!token) return false
+    if (!token) return false
 
     const axiosInstance = axios.create({
       headers: {
@@ -125,7 +125,7 @@ errorvalidacion.value = error.response.data.error.keyValue.nombre + " ya está r
   const obtener = async () => {
     try {
       const x = insertarToken()
-      if(!x) return null
+      if (!x) return null
 
       const response = await x.get(`https://transporte-el2a.onrender.com/api/ciudad/all`);
       return response.data;

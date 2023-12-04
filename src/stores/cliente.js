@@ -23,8 +23,8 @@ export const useClienteStore = defineStore("cliente", () => {
         data
       );
       console.log("Respuesta del servidor al agregar nuevo cliente:", response);
-      estatus.value = response.status
       rows.value.unshift(response.data.cliente);
+      estatus.value = response.status
     } catch (error) {
       console.log("e", error);
       errorvalidacion.value = error.response.data.error
