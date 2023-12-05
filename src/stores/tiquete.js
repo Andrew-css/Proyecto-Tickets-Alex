@@ -29,7 +29,8 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
         estatus.value = response.status;
       } catch (error) {
         console.log("e", error);
-        errorvalidacion.value = error.response.data.error
+        errorvalidacion.value = error.response.data.error;
+        estatus.value = error.response.status;
       }
   
     };

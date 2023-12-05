@@ -28,6 +28,7 @@
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
               <span v-if="rutaError" class="error-message">{{ rutaError }}</span>
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
               <div v-if="loading" class="text-center">
                 <q-spinner-hourglass color="primary" size="50px" />
                 <p>Cargando rutas, por favor espere...</p>
@@ -157,7 +158,14 @@
                     id="botoncerrar">❌</button>
                 </div>
                 <button type="button" @click="abrirModalAgregarCliente">Agregar Cliente</button>
-
+                <div v-if="mensajeExito" class="success-message">{{ mensajeExito }}</div>
+                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useTiquete.errorvalidacion }}</p>
+                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
+                <span v-if="clienteError || valorError" class="error-message">{{ clienteError || valorError }}</span>
+                <div v-if="loadingVender" class="text-center">
+                  <q-spinner-hourglass color="primary" size="50px" />
+                  <p>Por favor, espere...</p>
+                </div>
                 <q-select filled v-model="cliente" clearable use-input hide-selected fill-input input-debounce="0"
                   label="Digite cédula cliente" :options="clientes.map(c => ({ label: c.cedula, value: c }))"
                   @filter="filtrarClientes" style="width: 400px">
@@ -183,8 +191,7 @@
                 <button type="button" @click="vender" :disabled="loadingVender" class="submit">
                   {{ loadingVender ? 'Cargando...' : 'Vender' }}
                 </button>
-                <div v-if="mensajeExito" class="success-message">{{ mensajeExito }}</div>
-                <span v-if="clienteError || valorError" class="error-message">{{ clienteError || valorError }}</span>
+
               </div>
             </form>
           </div>
@@ -217,17 +224,23 @@
               </div>
               <label for="nombre">
                 <input placeholder="Nombre" type="text" class="input" v-model="nuevoNombre">
-
+                <span>Nombre</span>
               </label>
 
               <label for="cedula">
                 <input placeholder="Cedula" type="text" class="input" v-model="nuevaCedula">
-
+                <span>Cédula</span>
               </label>
 
               <label for="email">
-                <input placeholder="Email" type="text" class="input" v-model="nuevoEmail">
+                <input placeholder="Teléfono" type="text" class="input" v-model="nuevoTelefono">
+                <span>Teléfono</span>
+              </label>
 
+
+              <label for="email">
+                <input placeholder="Email" type="text" class="input" v-model="nuevoEmail">
+                <span>Email</span>
               </label>
 
               <!-- Resto del contenido del formulario... -->
@@ -287,6 +300,7 @@ const mensaje = ref('');
 const mensajeColor = ref('');
 const nombreError = ref(null);
 const cedulaError = ref(null);
+const telefonoError = ref(null)
 const emailError = ref(null);
 const clienteError = ref(null)
 const valorError = ref(null)
@@ -325,7 +339,6 @@ const seleccionarAsiento = (asiento) => {
     return;
   }
   asientoSeleccionado.value = asiento;
-  mostrarFormulario.value = true;
   mostrarruta.value = true;
 };
 
@@ -406,50 +419,55 @@ const vender = async () => {
     }, 4500);
   }
 
-  if (asientosVendidos.value.includes(asientoSeleccionado.value)) {
-    return;
-  }
-  asientosVendidos.value.push(asientoSeleccionado.value);
+  if (!valorError.value && !clienteError.value) {
+    loadingVender.value = true;
+    const data = {
+      vendedor: vendedorId.value,
+      ruta: ruta.value.value._id,
+      cliente: cliente.value.value._id,
+      fecha_salida: fecha_salida.value + "T" + horaSalidaFormateada.value + ".000Z",
+      bus: bus.value.value._id,
+      num_asiento: asientoSeleccionado.value,
+      valor: valor.value,
+    };
 
 
-  const data = {
-    vendedor: vendedorId.value,
-    ruta: ruta.value.value._id,
-    cliente: cliente.value.value._id,
-    fecha_salida: fecha_salida.value + "T" + horaSalidaFormateada.value + ".000Z",
-    bus: bus.value.value._id,
-    num_asiento: asientoSeleccionado.value,
-    valor: valor.value,
-  };
+    try {
+      const response = await useTiquete.agregarNuevoTiquete(data);
 
-  try {
-    const response = await useTiquete.agregarNuevoTiquete(data);
-
-    if (useTiquete.estatus === 200) {
-      mensajeColor.value = 'success';
-      mensajeExito.value = 'Tiquete vendido exitosamente';
-      setTimeout(() => {
-        cliente.value = '';
-        cedula.value = '';
-        email.value = '';
-        valor.value = '';
-        useTiquete.errorvalidacion = '';
-        mensaje.value = '';
-        mensajeExito.value = '';
-        mostrarFormulario.value = false
-      }, 4500);
-    } else {
+      if (useTiquete.estatus === 200) {
+        if (asientosVendidos.value.includes(asientoSeleccionado.value)) {
+          return;
+        }
+        asientosVendidos.value.push(asientoSeleccionado.value);
+        mensajeColor.value = 'success';
+        mensajeExito.value = 'Tiquete vendido exitosamente';
+        loadingVender.value = false;
+        setTimeout(() => {
+          cliente.value = '';
+          cedula.value = '';
+          email.value = '';
+          valor.value = '';
+          useTiquete.errorvalidacion = '';
+          mensaje.value = '';
+          mensajeExito.value = '';
+          mostrarruta.value = false
+        }, 4500);
+      } else if (useTiquete.estatus === 400){
+        mensajeColor.value = 'error';
+        loadingVender.value = false;
+        setTimeout(() => {
+          useTiquete.errorvalidacion = '';
+        }, 4500);
+      }
+    } catch (error) {
+      console.log('Error al agregar el tiquete:', error);
       mensajeColor.value = 'error';
+      loadingVender.value = false;
       setTimeout(() => {
         useTiquete.errorvalidacion = '';
       }, 4500);
     }
-  } catch (error) {
-    console.log('Error al agregar el tiquete:', error);
-    mensajeColor.value = 'error';
-    setTimeout(() => {
-      useTiquete.errorvalidacion = '';
-    }, 4500);
   }
   loadingVender.value = false;
 };
@@ -474,7 +492,7 @@ const cerrar = () => {
     rutaError.value = 'Por favor seleccione una ruta';
     setTimeout(() => {
       rutaError.value = '';
-    }, 4500);
+    }, 5500);
   } else {
     mostrarModalAgregar.value = false;
   }
@@ -583,6 +601,7 @@ const agregarNuevoCliente = async () => {
 
 
   if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value) {
+    loading.value = true;
     const data = {
       nombre: nuevoNombre.value,
       cedula: nuevaCedula.value,
@@ -596,15 +615,18 @@ const agregarNuevoCliente = async () => {
       if (useCliente.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Cliente añadido correctamente (presione ❌ para cerrar)';
+        loading.value = false;
         setTimeout(() => {
           nuevoNombre.value = '';
           nuevaCedula.value = '';
           nuevoEmail.value = '';
+          nuevoTelefono.value = '';
           useCliente.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
       } else {
         mensajeColor.value = 'error';
+        loading.value = false;
         setTimeout(() => {
           useCliente.errorvalidacion = '';
         }, 7500);
@@ -612,6 +634,7 @@ const agregarNuevoCliente = async () => {
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
+      loading.value = false;
       setTimeout(() => {
         useCliente.errorvalidacion = '';
       }, 7500);
@@ -832,10 +855,6 @@ p {
 
 .button:active {
   border: 1px solid #1976d2;
-}
-
-.error-message {
-  color: red;
 }
 
 #readonly {
