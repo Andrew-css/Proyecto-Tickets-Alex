@@ -61,7 +61,7 @@
 
 
               <label for="fecha_salida">
-                <input placeholder="" type="date" class="input" v-model="fecha_salida">
+                <input placeholder="" type="date" class="input" v-model="fecha_salida" :min="getCurrentDate()">
                 <span>Fecha de salida:</span>
               </label>
 
@@ -160,7 +160,9 @@
                 <button type="button" @click="abrirModalAgregarCliente">Agregar Cliente</button>
                 <div v-if="mensajeExito" class="success-message">{{ mensajeExito }}</div>
                 <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useTiquete.errorvalidacion }}</p>
-                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
+                <!-- <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
+                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
+                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useBus.errorvalidacion }}</p> -->
                 <span v-if="clienteError || valorError" class="error-message">{{ clienteError || valorError }}</span>
                 <div v-if="loadingVender" class="text-center">
                   <q-spinner-hourglass color="primary" size="50px" />
@@ -257,7 +259,7 @@
   
 <script setup>
 import { useTiqueteStore } from "../stores/tiquete.js";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, getCurrentInstance  } from "vue";
 import { useRutaStore } from "../stores/ruta.js";
 import { format } from 'date-fns';
 import { useClienteStore } from "../stores/cliente.js";
@@ -326,6 +328,16 @@ const clearErrors = () => {
 const soloNumeros = (value) => {
   const numeroRegex = /^[0-9]+$/;
   return numeroRegex.test(value);
+};
+
+const getCurrentDate = () => {
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.getMonth() + 1; // Los meses en JavaScript van de 0 a 11
+  const year = today.getFullYear();
+
+  // Formato de fecha: "AAAA-MM-DD"
+  return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
 };
 
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
