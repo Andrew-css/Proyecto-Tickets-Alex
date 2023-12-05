@@ -395,7 +395,7 @@ const agregarNuevoConductor = async () => {
           useConductor.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else {
+      }  else if (useConductor.estatus === 400)  {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
@@ -483,7 +483,7 @@ const editarConductor = async () => {
           useConductor.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else {
+      }  else if (useConductor.estatus === 400)  {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {

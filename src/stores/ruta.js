@@ -68,6 +68,7 @@ export const useRutaStore = defineStore("ruta", () => {
     } catch (error) {
       console.log("Error al agregar nueva ruta:", error);
       errorvalidacion.value = error.response.data.error
+      estatus.value = error.response.status;
     }
   };
 
@@ -86,6 +87,7 @@ export const useRutaStore = defineStore("ruta", () => {
     } catch (error) {
       console.log("Error al actualizar ruta:", error);
       errorvalidacion.value = error.response.data.error
+      estatus.value = error.response.status;
     }
   };
 

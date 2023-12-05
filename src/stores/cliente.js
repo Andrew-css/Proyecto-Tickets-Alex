@@ -24,10 +24,11 @@ export const useClienteStore = defineStore("cliente", () => {
       );
       console.log("Respuesta del servidor al agregar nuevo cliente:", response);
       rows.value.unshift(response.data.cliente);
-      estatus.value = response.status
+      estatus.value = response.status;
     } catch (error) {
       console.log("e", error);
-      errorvalidacion.value = error.response.data.error
+      errorvalidacion.value = error.response.data.error;
+      estatus.value = error.response.status;
     }
 
   };
@@ -49,6 +50,7 @@ export const useClienteStore = defineStore("cliente", () => {
     } catch (error) {
       console.log("e", error);
       errorvalidacion.value = error.response.data.error
+      estatus.value = error.response.status;
     }
 
   

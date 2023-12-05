@@ -72,7 +72,8 @@ export const useVendedorStore = defineStore("vendedor", () => {
       estatus.value = response.status;
     } catch (error) {
       console.log("Error al agregar nuevo vendedor:", error);
-      errorvalidacion.value = error.response.data.error
+      errorvalidacion.value = error.response.data.error;
+      estatus.value = error.response.status;
     }
   };
 
@@ -93,6 +94,7 @@ export const useVendedorStore = defineStore("vendedor", () => {
     } catch (error) {
       console.log("Error al actualizar vendedor:", error);
       errorvalidacion.value = error.response.data.error;
+      estatus.value = error.response.status;
     }
   };
 

@@ -354,7 +354,7 @@ const agregarNuevoCliente = async () => {
           useCliente.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else {
+      }  else if (useCliente.estatus === 400)   {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
@@ -436,7 +436,7 @@ const editarCliente = async () => {
           useCliente.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else {
+      } else if (useCliente.estatus === 400) {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {

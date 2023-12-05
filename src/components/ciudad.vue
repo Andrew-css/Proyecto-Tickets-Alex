@@ -262,7 +262,7 @@ const agregarNuevaCiudad = async () => {
           useCiudad.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else {
+      } else if (useCiudad.estatus === 400)   {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
@@ -295,6 +295,7 @@ const editarCiudad = async () => {
   if (!nombreError.value) {
     loading.value = true
     const data = {
+      _id: id.value,
       nombre: nombre.value,
     };
 
@@ -308,7 +309,7 @@ const editarCiudad = async () => {
           useCiudad.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else {
+      } else if (useCiudad.estatus === 400) {
         mensajeColor.value = 'error';
         loading.value = false
         setTimeout(() => {

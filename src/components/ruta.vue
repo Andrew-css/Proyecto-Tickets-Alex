@@ -15,8 +15,8 @@
       </button>
     </div>
     <div v-if="loading" class="text-center">
-    <q-spinner-hourglass color="primary" size="70px" />
-    <h6>Por favor, espere...</h6>
+      <q-spinner-hourglass color="primary" size="70px" />
+      <h6>Por favor, espere...</h6>
     </div>
 
     <!-- Modal agregar -->
@@ -33,9 +33,9 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
                   id="botoncerrar">❌</button>
               </div>
-              <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError  "
-                class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError
-                }}</span>
+              <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError" class="error-message">{{
+                ciudadOrigenError || ciudadDestinoError || horaSalidaError
+              }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
                 mensaje
@@ -52,8 +52,8 @@
                 </label> -->
 
               <q-select filled v-model="ciudad_origen" clearable use-input hide-selected fill-input input-debounce="0"
-                label="Seleccione ciudad origen" :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
-                @filter="filtrarCiudades" style="width: 400px">
+                label="Seleccione ciudad origen" :options="getFilteredCiudades(ciudades)" style="width: 400px"
+                @filter="filtrarCiudades">
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -64,8 +64,8 @@
               </q-select>
 
               <q-select filled v-model="ciudad_destino" clearable use-input hide-selected fill-input input-debounce="0"
-                label="Seleccione ciudad destino" :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
-                @filter="filtrarCiudades" style="width: 400px">
+                label="Seleccione ciudad destino" :options="getFilteredCiudades(ciudades)" style="width: 400px"
+                @filter="filtrarCiudades">
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -74,6 +74,7 @@
                   </q-item>
                 </template>
               </q-select>
+
 
               <!-- <label for="ciudad_destino">
                   <select v-model="ciudad_destino" id="ciudad_destino" class="input">
@@ -88,7 +89,7 @@
               </label>
 
 
-<!--               <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
+              <!--               <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
                 label="Seleccione bus" :options="buses.map(c => ({ label: c.placa, value: c._id }))"
                 @filter="filtrarBuses" style="width: 400px">
                 <template v-slot:no-option>
@@ -129,9 +130,9 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-              <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError "
-                class="error-message">{{ ciudadOrigenError || ciudadDestinoError || horaSalidaError
-                }}</span>
+              <span v-if="ciudadOrigenError || ciudadDestinoError || horaSalidaError" class="error-message">{{
+                ciudadOrigenError || ciudadDestinoError || horaSalidaError
+              }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
                 mensaje
@@ -147,9 +148,9 @@
                   </select>
                 </label> -->
 
-              <q-select filled v-model="ciudad_origen" clearable use-input hide-selected fill-input input-debounce="0"
-                label="Seleccione ciudad origen" :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
-                @filter="filtrarCiudades" style="width: 400px">
+                <q-select filled v-model="ciudad_origen" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione ciudad origen" :options="getFilteredCiudades(ciudades)" style="width: 400px"
+                @filter="filtrarCiudades">
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -160,8 +161,8 @@
               </q-select>
 
               <q-select filled v-model="ciudad_destino" clearable use-input hide-selected fill-input input-debounce="0"
-                label="Seleccione ciudad destino" :options="ciudades.map(c => ({ label: c.nombre, value: c._id }))"
-                @filter="filtrarCiudades" style="width: 400px">
+                label="Seleccione ciudad destino" :options="getFilteredCiudades(ciudades)" style="width: 400px"
+                @filter="filtrarCiudades">
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -184,7 +185,7 @@
               </label>
 
 
-<!--               <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
+              <!--               <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
                 label="Seleccione bus" :options="buses.map(c => ({ label: c.placa, value: c._id }))"
                 @filter="filtrarBuses" style="width: 400px">
                 <template v-slot:no-option>
@@ -288,6 +289,10 @@ const formatHoraSalida = (dateString) => {
   return format(date, 'HH:mm:ss');
 };
 
+console.log("Hola soy opciones: ", ciudades)
+
+
+
 const agregar = () => {
   mostrarModalAgregar.value = true
   ciudad_origen.value = "";
@@ -305,6 +310,28 @@ const cerrar = () => {
   mensaje.value = "";
   useRuta.errorvalidacion = "";
 };
+
+/* function deshabilitarCiudad(val) {
+
+console.log(val);
+
+for (const c of ciudades.value) {
+  console.log(c);
+  if (c.disable === true && ciudad_origen != c.nombre && ciudad_destino != c.nombre && c.estado!=0) {
+    c.disable = false
+    if (val === null) return
+  }
+}
+
+
+const buscar = ciudades.value.findIndex(c => c.nombre === val.nombre)
+console.log("hola soy buscar",buscar);
+if (buscar < 0) return false
+
+ciudades.value[buscar].disable = true
+console.log(ciudades.value);
+return true
+} */
 
 const cerrarEditar = () => {
   mostrarModalEditar.value = false
@@ -334,8 +361,8 @@ const clearErrors = () => {
 const editar = (row) => {
   console.log("Datos de la fila:", row);
   id.value = row._id;
-  ciudad_origen.value = {label:row.ciudad_origen.nombre, value: row.ciudad_origen._id};
-  ciudad_destino.value = {label:row.ciudad_destino.nombre, value: row.ciudad_destino._id};
+  ciudad_origen.value = { label: row.ciudad_origen.nombre, value: row.ciudad_origen._id };
+  ciudad_destino.value = { label: row.ciudad_destino.nombre, value: row.ciudad_destino._id };
   hora_salida.value = format(new Date(row.hora_salida), 'HH:mm');
   estado.value = row.estado;
   mostrarModalEditar.value = true;
@@ -419,7 +446,7 @@ const agregarNuevaRuta = async () => {
           useRuta.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else {
+      } else if (useRuta.estatus === 400) {
         mensajeColor.value = 'error';
         setTimeout(() => {
           useRuta.errorvalidacion = '';
@@ -464,7 +491,7 @@ const editarRuta = async () => {
     const fechaActual = new Date();
     const horaSalidaDate = new Date(fechaActual.toDateString() + ' ' + hora_salida.value);
     const data = {
-      ciudad_origen: ciudad_origen.value.value ,
+      ciudad_origen: ciudad_origen.value.value,
       ciudad_destino: ciudad_destino.value.value,
       hora_salida: horaSalidaDate,
     };
@@ -480,7 +507,7 @@ const editarRuta = async () => {
           useRuta.errorvalidacion = '';
           mensaje.value = '';
         }, 7500);
-      } else {
+      } else if (useRuta.estatus === 400) {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
@@ -514,6 +541,7 @@ async function obtenerCiudades() {
   try {
     await useCiudad.obtenerCiudades();
     ciudades.value = useCiudad.rows;
+    console.log("ola", ciudades)
   } catch (error) {
     console.log(error);
   }
@@ -527,6 +555,17 @@ async function obtenerCiudades() {
     console.log(error);
   }
 } */
+
+const getFilteredCiudades = (ciudades) => {
+  const ciudadesOptions = ciudades.map((c) => {
+    return {
+      label: c.estado === 0 ? `${c.nombre} - Inactiva` : c.nombre,
+      value: c._id,
+      disable: c.estado === 0,
+    };
+  });
+  return ciudadesOptions;
+};
 
 async function desactivarRuta(id) {
   await useRuta.desactivar(id);
@@ -544,7 +583,7 @@ const obtenerTextoEstado = (estado) => {
 
 const filtrarCiudades = (val, update) => {
   if (val === '') {
-    // Restablecer las opciones a la lista original de conductores cuando el input está vacío
+    // Restablecer las opciones a la lista original de ciudades cuando el input está vacío
     update(() => {
       ciudades.value = useCiudad.rows;
     });
@@ -556,6 +595,7 @@ const filtrarCiudades = (val, update) => {
     ciudades.value = useCiudad.rows.filter(c => c.nombre.toLowerCase().includes(needle));
   });
 }
+
 
 /* const filtrarBuses = (val, update) => {
   if (val === '') {
