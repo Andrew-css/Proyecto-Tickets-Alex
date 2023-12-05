@@ -9,7 +9,7 @@
         data-bs-target="#staticBackdrop" @click="abrir()"> <span class="button__text">Nueva Venta</span>
       </button>
       <button type="button" class="  button " style="margin:0 auto;" data-bs-toggle="modal" @click="abrirContinuarVenta()"
-        data-bs-target="#staticBackdrop"> <span class="button__text">Continuar Venta</span> 
+        data-bs-target="#staticBackdrop"> <span class="button__text">Continuar Venta</span>
       </button>
     </div>
 
@@ -46,9 +46,27 @@
                 </template>
               </q-select>
 
-              <!-- Inputs adicionales para mostrar la Hora_Salida y el Bus -->
-              <q-input filled v-model="horaSalida" label="Hora de Salida" readonly />
-              <q-input filled v-model="bus" label="Bus" readonly />
+              <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione un bus" :options="buses.map(c => ({ label: `${c.placa} / ${c.numero}`, value: c }))"
+                @filter="filtrarBuses" style="width: 400px">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+
+
+              <label for="fecha_salida">
+                <input placeholder="" type="date" class="input" v-model="fecha_salida">
+                <span>Fecha de salida:</span>
+              </label>
+
+
+              <q-input filled v-model="horaSalidaFormateada" label="Hora de Salida" readonly />
+
               <q-input filled v-model="fechaActual" label="Fecha Venta" readonly />
 
 
@@ -154,7 +172,7 @@
 
                 <q-input filled v-model="nombre" label="Nombre Cliente" readonly />
 
-                <q-input filled v-model="email" label="Email Cliente" readonly />
+                <q-input filled v-model="telefono" label="Telefono Cliente" readonly />
 
                 <q-input filled v-model="asientoSeleccionado" label="Numero Asiento" readonly />
 
@@ -186,7 +204,8 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrarAgregarCliente()"
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-              <span v-if="nombreError || cedulaError || emailError" class="error-message">{{ nombreError || cedulaError ||
+              <span v-if="nombreError || cedulaError || telefonoError || emailError" class="error-message">{{ nombreError
+                || cedulaError || telefonoError ||
                 emailError }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
@@ -230,17 +249,20 @@ import { useRutaStore } from "../stores/ruta.js";
 import { format } from 'date-fns';
 import { useClienteStore } from "../stores/cliente.js";
 import { useVendedorStore } from "../stores/vendedor.js";
+import { useBusStore } from "../stores/bus.js";
 
 const mostrarModalAgregar = ref(false)
 const rutas = ref([])
 const clientes = ref([])
+const buses = ref([])
 const ruta = ref('')
 const useRuta = useRutaStore()
 const useCliente = useClienteStore()
 const useTiquete = useTiqueteStore()
+const useBus = useBusStore();
 const useVendedor = useVendedorStore()
 const horaSalida = ref('');
-const bus = ref([]);
+const bus = ref('');
 const asientosBus = ref('');
 const valor = ref('');
 const loading = ref(false);
@@ -249,13 +271,17 @@ const mostrarFormulario = ref(false);
 const mostrarModalAgregarCliente = ref(false);
 const mostrarContinuarVenta = ref(false)
 const fechaActual = ref(format(new Date(), 'yyyy-MM-dd HH:mm:ss'));
+const fecha_salida = ref('');
+const horaSalidaFormateada = ref('');
 const vendedor = ref('');
 const cliente = ref('');
 const cedula = ref('');
 const nombre = ref('');
+const telefono = ref('');
 const email = ref('');
 const nuevoNombre = ref('');
 const nuevaCedula = ref('');
+const nuevoTelefono = ref('');
 const nuevoEmail = ref('');
 const mensaje = ref('');
 const mensajeColor = ref('');
@@ -272,7 +298,6 @@ const ventas = ref('')
 const loadingVender = ref(false);
 const mensajeExito = ref('');
 const mostrarruta = ref(false)
-
 
 console.log("Hola soy ruta seleccionada:", ruta)
 console.log("Hola soy vendedor id", vendedorId)
@@ -293,12 +318,10 @@ const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
 const seleccionarAsiento = (asiento) => {
   if (!Array.isArray(asientosVendidos.value)) {
-    // Si asientosVendidos no es un array, inicialízalo como un array vacío
     asientosVendidos.value = [];
   }
 
   if (asientosVendidos.value.includes(asiento)) {
-    // Asiento ya vendido, realizar acciones necesarias (mostrar mensaje, etc.)
     return;
   }
   asientoSeleccionado.value = asiento;
@@ -308,10 +331,9 @@ const seleccionarAsiento = (asiento) => {
 
 const cerrarFormulario = async () => {
   mostrarruta.value = false
-  }
+}
 
 watch(ruta, (nuevaRuta) => {
-  mostrarasientos.value = true
 
   if (nuevaRuta && nuevaRuta.value && nuevaRuta.value.hora_salida) {
     horaSalida.value = nuevaRuta.value.hora_salida;
@@ -319,24 +341,18 @@ watch(ruta, (nuevaRuta) => {
     horaSalida.value = '';
   }
 
+});
 
-  if (nuevaRuta && nuevaRuta.value && nuevaRuta.value.bus.placa) {
-    bus.value = nuevaRuta.value.bus.placa;
-  } else {
-    bus.value = '';
-  }
+watch(bus, (nuevoBus) => {
+  mostrarasientos.value = true
 
-  if (nuevaRuta && nuevaRuta.value && nuevaRuta.value.bus.asiento) {
-    asientosBus.value = nuevaRuta.value.bus.asiento;
+
+  if (nuevoBus && nuevoBus.value && nuevoBus.value.asiento) {
+    asientosBus.value = nuevoBus.value.asiento;
   } else {
     asientosBus.value = '';
   }
 
-  if (nuevaRuta && nuevaRuta.value && nuevaRuta.value.valor) {
-    valor.value = nuevaRuta.value.valor;
-  } else {
-    valor.value = '';
-  }
 });
 
 
@@ -348,17 +364,20 @@ watch(cliente, (nuevoCliente) => {
   }
 
 
-  if (nuevoCliente && nuevoCliente.value && nuevoCliente.value.email) {
-    email.value = nuevoCliente.value.email;
+  if (nuevoCliente && nuevoCliente.value && nuevoCliente.value.telefono) {
+    telefono.value = nuevoCliente.value.telefono;
   } else {
-    email.value = '';
+    telefono.value = '';
   }
 
 });
 
+watch(horaSalida, (newValue) => {
+  horaSalidaFormateada.value = formatHoraSalida(newValue);
+});
+
 
 const vender = async () => {
-  loadingVender.value = true;
   if (!cliente.value) {
     clienteError.value = 'Por favor digite la cedula del cliente'
     setTimeout(() => {
@@ -373,8 +392,14 @@ const vender = async () => {
       valorError.value = ''
       loadingVender.value = false;
     }, 4500);
+  } else if (!valor.value.trim()) {
+    valorError.value = 'Solo espacios no es permitido, por favor digite un valor real';
+    setTimeout(() => {
+      valorError.value = ''
+      loadingVender.value = false;
+    }, 4500);
   } else if (!soloNumeros(valor.value)) {
-    valorError.value = 'El valor debe contener solo números';
+    valorError.value = 'El valor debe contener solo números (eliminar espacios si es el caso)';
     setTimeout(() => {
       valorError.value = ''
       loadingVender.value = false;
@@ -382,13 +407,8 @@ const vender = async () => {
   }
 
   if (asientosVendidos.value.includes(asientoSeleccionado.value)) {
-    // Asiento ya vendido, realizar acciones necesarias (mostrar mensaje, etc.)
     return;
   }
-
-  // Resto del código para la venta...
-
-  // Después de realizar la venta, agregar el asiento a la lista de vendidos
   asientosVendidos.value.push(asientoSeleccionado.value);
 
 
@@ -396,8 +416,10 @@ const vender = async () => {
     vendedor: vendedorId.value,
     ruta: ruta.value.value._id,
     cliente: cliente.value.value._id,
-    fecha_salida: fechaActual.value,
+    fecha_salida: fecha_salida.value + "T" + horaSalidaFormateada.value + ".000Z",
+    bus: bus.value.value._id,
     num_asiento: asientoSeleccionado.value,
+    valor: valor.value,
   };
 
   try {
@@ -454,7 +476,6 @@ const cerrar = () => {
       rutaError.value = '';
     }, 4500);
   } else {
-    // Clear the error message immediately when the condition is not met
     mostrarModalAgregar.value = false;
   }
 };
@@ -484,6 +505,19 @@ const obtenerRutas = async () => {
   }
 };
 
+
+const obtenerBuses = async () => {
+  try {
+    loading.value = true;
+    await useBus.obtenerBuses();
+    buses.value = useBus.rows;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loading.value = false;
+  }
+};
+
 async function obtenerClientes() {
   try {
     await useCliente.obtenerClientes();
@@ -497,8 +531,6 @@ async function continuarVenta() {
   try {
     await useTiquete.continuarVentaTiquete();
     ventas.value = useTiquete.rows;
-
-    // Obtener los asientos vendidos de la respuesta de la petición
     asientosVendidos.value = useTiquete.rows.map(tiquete => tiquete.num_asiento);
 
   } catch (error) {
@@ -515,37 +547,46 @@ const agregarNuevoCliente = async () => {
   emailError.value = null;
   useCliente.errorvalidacion = '';
 
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
   if (!nuevoNombre.value) {
     nombreError.value = 'El nombre es requerido';
   } else if (!nuevoNombre.value.trim()) {
-    nombreError.value = 'Nombre no valido'
-  } else if (nuevoNombre.value.length > 15) {
-    nombreError.value = 'El nombre no debe tener más de 15 caracteres';
-  } else if (!/^[a-zA-Z\s]+$/.test(nuevoNombre.value)) {
-    nombreError.value = 'El nombre debe ser una cadena de texto válida'
+    nombreError.value = 'Solo espacios no es permitido, por favor digite un nombre real'
   }
 
   if (!nuevaCedula.value) {
     cedulaError.value = 'La cédula es requerida';
-  } else if (nuevaCedula.value.length !== 10) {
-    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres';
   } else if (!soloNumeros(nuevaCedula.value)) {
-    cedulaError.value = 'La cédula debe contener solo números';
+    cedulaError.value = 'La cédula debe contener solo números (sin espacios si es el caso)';
+  } else if (nuevaCedula.value.length !== 10) {
+    cedulaError.value = 'La cédula debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
+  }
+
+  if (!nuevoTelefono.value) {
+    telefonoError.value = 'El telefono es requerido ';
+  } else if (!nuevoTelefono.value.trim()) {
+    telefonoError.value = 'Solo espacios no es permitido, por favor digite un teléfono real'
+  } else if (nuevoTelefono.value.length !== 10) {
+    telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
   }
 
   if (!nuevoEmail.value) {
     emailError.value = 'El email es requerido';
+  } else if (!nuevoEmail.value.trim()) {
+    emailError.value = 'Solo espacios no es permitido, por favor digite un email real'
   } else if (!emailRegex.test(nuevoEmail.value)) {
-    emailError.value = 'El email debe ser válido';
+    emailError.value = 'El email debe ser válido (eliminar espacios si es el caso)';
   }
 
 
 
 
-  if (!nombreError.value && !cedulaError.value && !emailError.value) {
+  if (!nombreError.value && !cedulaError.value && !telefonoError.value && !emailError.value) {
     const data = {
       nombre: nuevoNombre.value,
       cedula: nuevaCedula.value,
+      telefono: nuevoTelefono.value,
       email: nuevoEmail.value,
     };
 
@@ -561,19 +602,19 @@ const agregarNuevoCliente = async () => {
           nuevoEmail.value = '';
           useCliente.errorvalidacion = '';
           mensaje.value = '';
-        }, 4500);
+        }, 5500);
       } else {
         mensajeColor.value = 'error';
         setTimeout(() => {
           useCliente.errorvalidacion = '';
-        }, 4500);
+        }, 7500);
       }
     } catch (error) {
       console.log('Error al agregar el cliente:', error);
       mensajeColor.value = 'error';
       setTimeout(() => {
         useCliente.errorvalidacion = '';
-      }, 4500);
+      }, 7500);
     }
   }
 
@@ -597,7 +638,6 @@ const filtrarRutas = (val, update) => {
 
 const filtrarClientes = (val, update) => {
   if (val === '') {
-    // Restablecer las opciones a la lista original de conductores cuando el input está vacío
     update(() => {
       clientes.value = useCliente.rows;
     });
@@ -610,11 +650,34 @@ const filtrarClientes = (val, update) => {
   });
 }
 
+const filtrarBuses = (val, update) => {
+  if (val === '') {
+    update(() => {
+      buses.value = useBus.rows;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    buses.value = useBus.rows.filter(c => `${c.numero} / ${c.placa}`.toLowerCase().includes(needle));
+  });
+}
+
+const formatHoraSalida = (dateString) => {
+  const date = new Date(dateString);
+  return format(date, 'HH:mm:ss');
+};
+
+
+
+
 
 onMounted(async () => {
   obtenerRutas();
   obtenerClientes();
-  await continuarVenta(); // Asegúrate de esperar a que la función termine antes de continuar
+  obtenerBuses();
+  await continuarVenta();
 });
 
 </script>
@@ -755,7 +818,7 @@ p {
 
 .button:hover .button__text {
   color: transparent;
-      
+
 }
 
 .button:hover .button__icon {
@@ -989,9 +1052,9 @@ p {
   margin-top: 200px;
 }
 
-.botoneliminarx{
+.botoneliminarx {
   display: flex;
-    width: 94%;
-    justify-content: flex-end;
+  width: 94%;
+  justify-content: flex-end;
 }
 </style>

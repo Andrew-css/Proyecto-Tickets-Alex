@@ -65,7 +65,7 @@
               <div class="text-center">{{ props.row.cliente.nombre }}</div>
             </q-td>
             <q-td auto-width>
-              <div class="text-center">{{ props.row.fecha_salida }}</div>
+              <div class="text-center">{{ formatFecha(props.row.createdAt) }}</div>
             </q-td>
             <q-td auto-width>
               <div class="text-center">{{ props.row.num_asiento }}</div>
@@ -119,16 +119,15 @@ let mostrarModalTiquete = ref(false)
 let mensaje = ref('');
 let mensajeColor = ref(''); 
 
-const formatHoraSalida = (dateString) => {
+const formatFecha = (dateString) => {
   const date = new Date(dateString);
-  // Formatear solo la hora en formato 'HH:mm:ss'
-  return format(date, 'HH:mm:ss');
+  return format(date, 'yyyy-MM-dd HH:mm:ss');
 };
 
 const editar = (row) => {
   console.log(row);
   id.value = row._id;
-  fecha_venta.value = format(new Date(row.fecha_salida), 'yyyy-MM-dd HH:mm:ss');
+  fecha_venta.value =  format(new Date(row.createdAt), 'yyyy-MM-dd HH:mm:ss ')
   fecha_salida.value = format(new Date(row.fecha_salida), 'yyyy-MM-dd ') + format(new Date(row.ruta.hora_salida), 'HH:mm:ss');
   cedula.value = row.cliente.cedula;
   cliente.value = row.cliente.nombre;

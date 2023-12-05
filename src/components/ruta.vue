@@ -464,7 +464,7 @@ const editarRuta = async () => {
     const fechaActual = new Date();
     const horaSalidaDate = new Date(fechaActual.toDateString() + ' ' + hora_salida.value);
     const data = {
-      ciudad_origen: ciudad_origen.value.value,
+      ciudad_origen: ciudad_origen.value.value ,
       ciudad_destino: ciudad_destino.value.value,
       hora_salida: horaSalidaDate,
     };

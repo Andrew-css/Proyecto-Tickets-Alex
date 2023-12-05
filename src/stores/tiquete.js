@@ -13,7 +13,7 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
     let errorvalidacion = ref("")
     let estatus = ref()
     let tickets = ref([])
-    let fechaVenta = ref("")
+
   
   
     const agregarNuevoTiquete = async (data) => {
@@ -25,7 +25,6 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
           data
         );
         console.log("Respuesta del servidor al agregar nuevo tiquete:", response);
-        fechaVenta = new Date();
         rows.value.push(response.data.tiquetePopulate);
         estatus.value = response.status;
       } catch (error) {
@@ -164,7 +163,6 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
       obtener,
       continuarVentaTiquete,
       tickets,
-      fechaVenta,
     };
 
 
