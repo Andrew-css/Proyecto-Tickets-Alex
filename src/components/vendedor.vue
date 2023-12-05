@@ -403,7 +403,7 @@ const agregarNuevoVendedor = async () => {
           useVendedor.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else {
+      } else if (useVendedor.estatus === 400) {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
@@ -480,7 +480,7 @@ const editarVendedor = async () => {
           useVendedor.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else {
+      } else if (useVendedor.estatus === 400) {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {

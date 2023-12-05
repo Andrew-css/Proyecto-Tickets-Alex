@@ -67,8 +67,8 @@
 
 
               <q-select filled v-model="conductor" clearable use-input hide-selected fill-input input-debounce="0"
-                label="Seleccione un conductor" :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
-                @filter="filtrarConductores" style="width: 400px">
+                label="Seleccione conductor" :options="getFilteredConductores(conductores)" style="width: 400px"
+                @filter="filtrarConductores">
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -136,8 +136,8 @@
               </label>
 
               <q-select filled v-model="conductor" clearable use-input hide-selected fill-input input-debounce="0"
-                label="Seleccione un conductor" :options="conductores.map(c => ({ label: c.nombre, value: c._id }))"
-                @filter="filtrarConductores" style="width: 400px">
+                label="Seleccione conductor" :options="getFilteredConductores(conductores)" style="width: 400px"
+                @filter="filtrarConductores">
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -425,7 +425,7 @@ const agregarNuevoBus = async () => {
           useBus.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else {
+      } else if (useBus.estatus === 400)  {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
@@ -505,7 +505,7 @@ const editarBus = async () => {
           useBus.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else {
+      } else if (useBus.estatus === 400) {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
@@ -546,18 +546,22 @@ const obtenerTextoEstado = (estado) => {
   return estado === 1 ? "Activo" : "Inactivo";
 };
 
-onMounted(async () => {
-  obtenerBuses();
-  obtenerConductores();
-  desactivarBus()
-  activarBus()
-});
+const getFilteredConductores = (conductores) => {
+  // Filtrar las ciudades inactivas y convertirlas al formato de opciones del q-select
+  const conductoresOptions = conductores.map((c) => {
+    return {
+      label: c.estado === 0 ? `${c.nombre} - Inactiv@` : c.nombre,
+      value: c._id,
+      disable: c.estado === 0,
+    };
+  });
+  return conductoresOptions;
+};
 
-const conductoresList = ref([])
 
 const filtrarConductores = (val, update) => {
   if (val === '') {
-    // Restablecer las opciones a la lista original de conductores cuando el input está vacío
+    // Restablecer las opciones a la lista original de ciudades cuando el input está vacío
     update(() => {
       conductores.value = useConductor.rows;
     });
@@ -570,11 +574,12 @@ const filtrarConductores = (val, update) => {
   });
 }
 
-const handleKeydown = (event) => {
-  if (event.key === ' ') {
-    event.preventDefault();
-  }
-};
+onMounted(async () => {
+  obtenerBuses();
+  obtenerConductores();
+  desactivarBus()
+  activarBus()
+});
 
 </script>
 

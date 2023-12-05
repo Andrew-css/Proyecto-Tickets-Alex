@@ -36,7 +36,8 @@ export const useCiudadStore = defineStore("ciudad", () => {
       estatus.value = response.status;
     } catch (error) {
       console.log("Error al agregar nueva ciudad:", error);
-      errorvalidacion.value = error.response.data.error
+      errorvalidacion.value = error.response.data.error;
+      estatus.value = error.response.status;
     }
   };
 
@@ -57,6 +58,7 @@ export const useCiudadStore = defineStore("ciudad", () => {
     } catch (error) {
       console.log("Error al actualizar ciudad:", error);
       errorvalidacion.value = error.response.data.error;
+      estatus.value = error.response.status;
     }
   };
 

@@ -53,7 +53,8 @@ export const useConductorStore = defineStore("conductor", () => {
       estatus.value = response.status
     } catch (error) {
       console.log("Error al agregar nuevo conductor:", error);
-      errorvalidacion.value = error.response.data.error
+      errorvalidacion.value = error.response.data.error;
+      estatus.value = error.response.status;
     }
   };
 
@@ -72,7 +73,8 @@ export const useConductorStore = defineStore("conductor", () => {
       estatus.value = response.status
     } catch (error) {
       console.log("Error al actualizar conductor:", error);
-      errorvalidacion.value = error.response.data.error
+      errorvalidacion.value = error.response.data.error;
+      estatus.value = error.response.status;
     }
   };
 

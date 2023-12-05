@@ -34,7 +34,7 @@
                 <p>Cargando rutas, por favor espere...</p>
               </div>
 
-              <q-select filled v-model="ruta" clearable use-input hide-selected fill-input input-debounce="0"
+              <!-- <q-select filled v-model="ruta" clearable use-input hide-selected fill-input input-debounce="0"
                 label="Seleccione una ruta"
                 :options="rutas.map(c => ({ label: `${c.ciudad_origen.nombre} / ${c.ciudad_destino.nombre}`, value: c }))"
                 @filter="filtrarRutas" style="width: 400px">
@@ -45,11 +45,35 @@
                     </q-item-section>
                   </q-item>
                 </template>
+              </q-select> -->
+
+              <q-select filled v-model="ruta" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione ruta" :options="getFilteredRutas(rutas)" style="width: 400px"
+                @filter="filtrarRutas">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
               </q-select>
 
-              <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
+              <!-- <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
                 label="Seleccione un bus" :options="buses.map(c => ({ label: `${c.placa} / ${c.numero}`, value: c }))"
                 @filter="filtrarBuses" style="width: 400px">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select> -->
+
+              <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione bus" :options="getFilteredBuses(buses)" style="width: 400px"
+                @filter="filtrarBuses">
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -130,9 +154,14 @@
 
 
     <div class="allasientos" v-if="mostrarasientos">
+
+      <p>Ruta: {{ ruta.label }}</p>
+      <p>Bus: {{ bus.label }}</p>
+      <p>Fecha Salida: {{ fecha_salida }} {{ horaSalidaFormateada }}</p>
+
       <div class="asientos-container">
        
-        <button id="butonasiento" class="btn-shine" v-for="asiento in Array(asientosBus).fill().map((_, index) => index + 1)" :key="asiento"
+        <button id="butonasiento" v-for="asiento in Array(asientosBus).fill().map((_, index) => index + 1)" :key="asiento"
           @click="seleccionarAsiento(asiento)" :class="{
             'asiento-seleccionado': asientoSeleccionado === asiento,
             'asiento': true,
@@ -173,7 +202,7 @@
                   <q-spinner-hourglass color="primary" size="50px" />
                   <p>Por favor, espere...</p>
                 </div>
-                <q-select filled v-model="cliente" clearable use-input hide-selected fill-input input-debounce="0"
+                <!-- <q-select filled v-model="cliente" clearable use-input hide-selected fill-input input-debounce="0"
                   label="Digite cédula cliente" :options="clientes.map(c => ({ label: c.cedula, value: c }))"
                   @filter="filtrarClientes" style="width: 400px">
                   <template v-slot:no-option>
@@ -183,7 +212,19 @@
                       </q-item-section>
                     </q-item>
                   </template>
-                </q-select>
+                </q-select> -->
+
+                <q-select filled v-model="cliente" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione bus" :options="getFilteredClientes(clientes)" style="width: 400px"
+                @filter="filtrarClientes">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
 
                 <q-input filled v-model="nombre" label="Nombre Cliente" readonly />
 
@@ -367,6 +408,7 @@ watch(ruta, (nuevaRuta) => {
 
   if (nuevaRuta && nuevaRuta.value && nuevaRuta.value.hora_salida) {
     horaSalida.value = nuevaRuta.value.hora_salida;
+    console.log("Hola soy hora seleccionada", horaSalida)
   } else {
     horaSalida.value = '';
   }
@@ -662,7 +704,7 @@ const agregarNuevoCliente = async () => {
   clearErrors();
 };
 
-const filtrarRutas = (val, update) => {
+/* const filtrarRutas = (val, update) => {
   if (val === '') {
     update(() => {
       rutas.value = useRuta.rows;
@@ -674,19 +716,52 @@ const filtrarRutas = (val, update) => {
     const needle = val.toLowerCase();
     rutas.value = useRuta.rows.filter(c => `${c.ciudad_origen.nombre} / ${c.ciudad_destino.nombre}`.toLowerCase().includes(needle));
   });
+}; */
+
+const getFilteredRutas = (rutas) => {
+  const rutasOptions = rutas.map((c) => {
+    return {
+      label: c.estado === 0 ? `${c.ciudad_origen.nombre} / ${c.ciudad_destino.nombre} - Inactiva` : `${c.ciudad_origen.nombre} / ${c.ciudad_destino.nombre}`,
+      value: c,
+      disable: c.estado === 0,
+    };
+  });
+  return rutasOptions;
 };
 
-const filtrarClientes = (val, update) => {
+const getFilteredBuses = (buses) => {
+  const busesOptions = buses.map((c) => {
+    return {
+      label: c.estado === 0 ? `${c.numero} / ${c.placa} - Inactivo` : `${c.numero} / ${c.placa}`,
+      value: c,
+      disable: c.estado === 0,
+    };
+  });
+  return busesOptions;
+};
+
+const getFilteredClientes = (clientes) => {
+  const clientesOptions = clientes.map((c) => {
+    return {
+      label: c.estado === 0 ? `${c.cedula} - Inactiva` : c.cedula,
+      value: c,
+      disable: c.estado === 0,
+    };
+  });
+  return clientesOptions;
+};
+
+const filtrarRutas = (val, update) => {
   if (val === '') {
     update(() => {
-      clientes.value = useCliente.rows;
+      rutas.value = useRuta.rows;
     });
     return;
   }
 
   update(() => {
     const needle = val.toLowerCase();
-    clientes.value = useCliente.rows.filter(c => c.cedula.toLowerCase().includes(needle));
+    rutas.value = useRuta.rows.filter(c => `${c.ciudad_origen.nombre} / ${c.ciudad_destino.nombre}`.toLowerCase().includes(needle));
   });
 }
 
@@ -703,6 +778,48 @@ const filtrarBuses = (val, update) => {
     buses.value = useBus.rows.filter(c => `${c.numero} / ${c.placa}`.toLowerCase().includes(needle));
   });
 }
+
+const filtrarClientes = (val, update) => {
+  if (val === '') {
+    update(() => {
+      clientes.value = useCliente.rows;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    clientes.value = useCliente.rows.filter(c => c.cedula.toLowerCase().includes(needle));
+  });
+}
+
+/* const filtrarClientes = (val, update) => {
+  if (val === '') {
+    update(() => {
+      clientes.value = useCliente.rows;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    clientes.value = useCliente.rows.filter(c => c.cedula.toLowerCase().includes(needle));
+  });
+} */
+
+/* const filtrarBuses = (val, update) => {
+  if (val === '') {
+    update(() => {
+      buses.value = useBus.rows;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    buses.value = useBus.rows.filter(c => `${c.numero} / ${c.placa}`.toLowerCase().includes(needle));
+  });
+} */
 
 const formatHoraSalida = (dateString) => {
   const date = new Date(dateString);
@@ -1105,7 +1222,6 @@ p {
   align-items: center;
   cursor: pointer;
   text-transform: uppercase;
-  background-color: #fff;
   border: 1px solid rgba(22, 76, 167, 0.6);
   border-radius: 10px;
   color: #1d89ff;
@@ -1176,17 +1292,17 @@ p {
   }
 }
 
-.btn-shine {
+#butonasiento {
   border: 1px solid;
   overflow: hidden;
   position: relative;
 }
 
-.btn-shine span {
+#butonasiento span {
   z-index: 20;
 }
 
-.btn-shine:after {
+#butonasiento:after {
   content: "";
   height: 155px;
   left: -75px;
@@ -1199,7 +1315,7 @@ p {
   z-index: -10;
 }
 
-.btn-shine:hover:after {
+#butonasiento:hover:after {
   left: 120%;
   transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
 }
