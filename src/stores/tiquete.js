@@ -25,7 +25,7 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
           data
         );
         console.log("Respuesta del servidor al agregar nuevo tiquete:", response);
-        rows.value.push(response.data.tiquetePopulate);
+        rows.value.unshift(response.data.tiquetePopulate);
         estatus.value = response.status;
       } catch (error) {
         console.log("e", error);
