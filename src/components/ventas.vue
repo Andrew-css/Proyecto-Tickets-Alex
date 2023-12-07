@@ -34,19 +34,6 @@
                 <p>Cargando rutas, por favor espere...</p>
               </div>
 
-              <!-- <q-select filled v-model="ruta" clearable use-input hide-selected fill-input input-debounce="0"
-                label="Seleccione una ruta"
-                :options="rutas.map(c => ({ label: `${c.ciudad_origen.nombre} / ${c.ciudad_destino.nombre}`, value: c }))"
-                @filter="filtrarRutas" style="width: 400px">
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No se encontraron resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select> -->
-
               <q-select filled v-model="ruta" clearable use-input hide-selected fill-input input-debounce="0"
                 label="Seleccione ruta" :options="getFilteredRutas(rutas)" style="width: 400px" @filter="filtrarRutas">
                 <template v-slot:no-option>
@@ -57,19 +44,6 @@
                   </q-item>
                 </template>
               </q-select>
-
-              <!-- <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
-                label="Seleccione un bus" :options="buses.map(c => ({ label: `${c.placa} / ${c.numero}`, value: c }))"
-                @filter="filtrarBuses" style="width: 400px">
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No se encontraron resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select> -->
-
               <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
                 label="Seleccione bus" :options="getFilteredBuses(buses)" style="width: 400px" @filter="filtrarBuses">
                 <template v-slot:no-option>
@@ -194,12 +168,10 @@
                   <button type="button" data-bs-dismiss="modal" @click="cerrarFormulario" class="eliminarx"
                     id="botoncerrar">❌</button>
                 </div>
-                <button type="button" id="butonasiento" @click="abrirModalAgregarCliente">Agregar Cliente</button>
+                <button type="button" id="butonasiento" style="width: 300px; margin-top:-70px"  @click="abrirModalAgregarCliente">Agregar Cliente</button>
                 <div v-if="mensajeExito" class="success-message">{{ mensajeExito }}</div>
                 <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useTiquete.errorvalidacion }}</p>
-                <!-- <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
-                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useRuta.errorvalidacion }}</p>
-                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useBus.errorvalidacion }}</p> -->
+             
                 <span v-if="clienteError || valorError" class="error-message">{{ clienteError || valorError }}</span>
                 <div v-if="loadingVender" class="text-center">
                   <q-spinner-hourglass color="primary" size="50px" />
@@ -240,7 +212,7 @@
 
 
                 <button type="button" @click="vender" :disabled="loadingVender" class="submit">
-                  {{ loadingVender ? 'Cargando...' : 'Vender' }}
+                  {{ loadingVender ? 'Cargando...' : 'Vender y imprimir' }}
                 </button>
 
               </div>
@@ -312,6 +284,8 @@ import { format } from 'date-fns';
 import { useClienteStore } from "../stores/cliente.js";
 import { useVendedorStore } from "../stores/vendedor.js";
 import { useBusStore } from "../stores/bus.js";
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+
 
 const mostrarModalAgregar = ref(false)
 const rutas = ref([])
@@ -725,20 +699,6 @@ const agregarNuevoCliente = async () => {
   clearErrors();
 };
 
-/* const filtrarRutas = (val, update) => {
-  if (val === '') {
-    update(() => {
-      rutas.value = useRuta.rows;
-    });
-    return;
-  }
-
-  update(() => {
-    const needle = val.toLowerCase();
-    rutas.value = useRuta.rows.filter(c => `${c.ciudad_origen.nombre} / ${c.ciudad_destino.nombre}`.toLowerCase().includes(needle));
-  });
-}; */
-
 const getFilteredRutas = (rutas) => {
   const rutasOptions = rutas.map((c) => {
     return {
@@ -814,34 +774,6 @@ const filtrarClientes = (val, update) => {
   });
 }
 
-/* const filtrarClientes = (val, update) => {
-  if (val === '') {
-    update(() => {
-      clientes.value = useCliente.rows;
-    });
-    return;
-  }
-
-  update(() => {
-    const needle = val.toLowerCase();
-    clientes.value = useCliente.rows.filter(c => c.cedula.toLowerCase().includes(needle));
-  });
-} */
-
-/* const filtrarBuses = (val, update) => {
-  if (val === '') {
-    update(() => {
-      buses.value = useBus.rows;
-    });
-    return;
-  }
-
-  update(() => {
-    const needle = val.toLowerCase();
-    buses.value = useBus.rows.filter(c => `${c.numero} / ${c.placa}`.toLowerCase().includes(needle));
-  });
-} */
-
 const formatHoraSalida = (dateString) => {
   const date = new Date(dateString);
   return format(date, 'HH:mm:ss');
@@ -857,6 +789,8 @@ onMounted(async () => {
   obtenerBuses();
   await continuarVenta();
 });
+
+// Funcion Imprimir ticket pdf
 
 </script>
   

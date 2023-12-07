@@ -14,8 +14,8 @@
           <img src="../assets/perfil.jpeg" alt="">
           
         </div>
-        <h5 class="user">{{ nombreVendedor }}</h5>
-        <h5 class="user">Administrativo</h5>
+           <h5 class="user">{{ nombreVendedor }}</h5>
+           <h5 class="user">Administrativo</h5>
       </div>
       <div class="btns-m">
         <button class="btn-17">
@@ -101,6 +101,9 @@ export default {
 </script>
 
 <style>
+.container-info{
+
+}
 .router{
   text-decoration: none;
   width: 100%;
@@ -277,4 +280,8 @@ export default {
   height: 100%;
   text-decoration: none;
 }
+.user{
+  margin: 0;
+}
+
 </style>

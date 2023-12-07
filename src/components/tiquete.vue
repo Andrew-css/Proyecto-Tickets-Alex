@@ -139,7 +139,6 @@ const editar = (row) => {
   destino.value = row.ruta.ciudad_destino.nombre
   num_asiento.value = row.num_asiento
   valor.value = row.valor
-  mostrarModalTiquete.value = true
   generarPDF();
 };
 
