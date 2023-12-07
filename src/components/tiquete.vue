@@ -146,7 +146,7 @@ const editar = (row) => {
 const generarPDF = async () => {
   try {
     const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage();
+    const page = pdfDoc.addPage([370, 900]);
 
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fontSizeMain = 17;
@@ -168,6 +168,7 @@ const generarPDF = async () => {
       width: imageWidth,
       height: imageHeight,
     });
+
     page.drawText('CITYEXPRESS', { x: 145, y: 800, font, size:fontSizeMain, color: rgb(0, 0, 0) });
     page.drawText('INFORMACION DE TIQUETE', { x: 110, y: 780, font, size:fontSizeMainn, color: rgb(0, 0, 0) });
     page.drawText('WWW.CityExpress.com', { x: 130, y: 760, font, size:fontSizeMainn, color: rgb(0, 0, 0) });
