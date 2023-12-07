@@ -81,7 +81,7 @@
               </div>
             </q-td>
             <q-td auto-width>
-              <q-btn label="🎫" color="primary" @click="editar(props.row)" data-bs-toggle="modal"
+              <q-btn label="📁" color="primary" @click="editar(props.row)" data-bs-toggle="modal"
                 data-bs-target="#editClientModal" />
               <q-btn label="✅" color="primary" @click="useTiquete.activar(props.row._id)" v-if="props.row.estado === 0" />
               <q-btn label="❌" color="primary" @click="useTiquete.desactivar(props.row._id)"
