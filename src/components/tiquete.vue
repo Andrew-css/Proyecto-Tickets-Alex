@@ -149,37 +149,56 @@ const generarPDF = async () => {
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage();
 
-    // Estilo de fuente y tamaño
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fontSizeMain = 17;
-    const fontSizeMainn = 14; // Tamaño de letra para líneas principales
+    const fontSizeMainn = 14; 
     const fontSizeDetails = 12;
+    const totas = 15;
 
-    // Contenido del PDF con estilo de ticket
-    page.drawText('CITYEXPRESS', { x: 210, y: 800, font, size:fontSizeMain, color: rgb(0, 0, 0) });
-    page.drawText('INFORMACION DE TIQUETE', { x: 170, y: 760, font, size:fontSizeMainn, color: rgb(0, 0, 0) });
-    page.drawText(`Fecha de Venta: ${fecha_venta.value}`, { x: 50, y: 730, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`Fecha de Salida: ${fecha_salida.value}`, { x: 50, y: 700, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`Cedula: ${cedula.value}`, { x: 50, y: 670, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`Cliente: ${cliente.value}`, { x: 50, y: 640, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`Telefono: ${telefono.value}`, { x: 50, y: 610, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`Vehiculo: ${vehiculo.value}`, { x: 50, y: 580, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`Numero Vehiculo: ${numerovehiculo.value}`, { x: 50, y: 550, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`Origen de ruta: ${origen.value}`, { x: 50, y: 520, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`Destino de ruta: ${destino.value}`, { x: 50, y: 490, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    const imageUrl = './src/images/imagen.png';
+    const imageBytes = await fetch(imageUrl).then((res) => res.arrayBuffer());
+    const image = await pdfDoc.embedPng(imageBytes);
 
-    page.drawLine({ start: { x: 50, y: 480 }, end: { x: 350, y: 480 }, thickness: 1, color: rgb(0, 0, 0) });
+    const imageWidth = 100;
+    const imageHeight = 100; 
+    const imageX = 200; 
+    const imageY = 600;
+    page.drawImage(image, {
+      x: imageX,
+      y: imageY,
+      width: imageWidth,
+      height: imageHeight,
+    });
+    page.drawText('CITYEXPRESS', { x: 145, y: 800, font, size:fontSizeMain, color: rgb(0, 0, 0) });
+    page.drawText('INFORMACION DE TIQUETE', { x: 110, y: 780, font, size:fontSizeMainn, color: rgb(0, 0, 0) });
+    page.drawText('WWW.CityExpress.com', { x: 130, y: 760, font, size:fontSizeMainn, color: rgb(0, 0, 0) });
 
-    page.drawText(`Numero de asiento: ${num_asiento.value}`, { x: 50, y: 450, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`Valor: ${valor.value}`, { x: 200, y: 450, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`F.VENTA: ${fecha_venta.value}`, { x: 50, y: 730, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`F.SALIDA: ${fecha_salida.value}`, { x: 50, y: 710, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`C.C: ${cedula.value}`, { x: 50, y: 690, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`CLIENTE: ${cliente.value}`, { x: 50, y: 670, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`TEL: ${telefono.value}`, { x: 50, y: 650, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`VEHICULO: ${vehiculo.value}`, { x: 50, y: 630, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`NUM.VEHICULO: ${numerovehiculo.value}`, { x: 50, y: 610, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`ORIGEN: ${origen.value}`, { x: 50, y: 590, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`DESTINO: ${destino.value}`, { x: 50, y: 570, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
 
-    page.drawLine({ start: { x: 50, y: 430 }, end: { x: 350, y: 430 }, thickness: 1, color: rgb(0, 0, 0) });
+    page.drawText(`- - - - - - - - - - - - - - - - - - - - - - - - - - - -`, { x: 50, y: 550, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`SILLA`, { x: 90, y: 530, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`${num_asiento.value}`, { x: 103, y: 510, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`VALOR`, { x: 160, y: 530, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`${valor.value}`, { x: 165, y: 510, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`- - - - - - - - - - - - - - - - - - - - - - - - - - - -`, { x: 50, y: 495, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+
+    page.drawText(`TOTAL: $${valor.value}`, { x: 95, y: 470, font, size:totas, color: rgb(0, 0, 0) });
 
     const pdfBytes = await pdfDoc.save();
 
     const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
 
     const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    await new Promise((resolve) => resolve());
 
     window.open(pdfUrl, '_blank');
   } catch (error) {
