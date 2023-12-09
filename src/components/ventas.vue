@@ -27,8 +27,74 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrarModal()"
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-              <span v-if="rutaError || busError || fechaSalidaError" class="error-message">{{ rutaError || busError || fechaSalidaError }}</span>
+              <span v-if="rutaError || busError || fechaSalidaError" class="error-message">{{ rutaError || busError ||
+                fechaSalidaError }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useTiquete.errorvalidacion }}</p>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Cargando rutas, por favor espere...</p>
+              </div>
+
+              <q-select filled v-model="ruta" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione ruta" :options="getFilteredRutas(rutas)" style="width: 400px" @filter="filtrarRutas">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+              <q-select filled v-model="bus" clearable use-input hide-selected fill-input input-debounce="0"
+                label="Seleccione bus" :options="getFilteredBuses(buses)" style="width: 400px" @filter="filtrarBuses">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No se encontraron resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+
+
+
+
+              <label for="fecha_salida">
+                <input placeholder="" type="date" class="input" v-model="fecha_salida" :min="getCurrentDate()">
+                <span>Fecha de salida:</span>
+              </label>
+
+
+              <q-input filled v-model="horaSalidaFormateada" label="Hora de Salida" readonly />
+
+              <q-input filled v-model="fechaActual" label="Fecha Venta" readonly />
+
+
+
+
+              <button type="button" @click="cerrar()" class="submit">Enviar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </q-dialog>
+
+    <!-- Modal continuarVenta -->
+
+    <q-dialog v-model="mostrarContinuarVenta" position="top">
+      <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div class="cerrar">
+                <p class="title">Seleccione
+                </p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrarContinuarVenta()"
+                  class="row justify-center items-center" id="botoncerrar">❌</button>
+              </div>
+              <span v-if="rutaError || busError || fechaSalidaError" class="error-message">{{ rutaError || busError ||
+                fechaSalidaError }}</span>
               <div v-if="loading" class="text-center">
                 <q-spinner-hourglass color="primary" size="50px" />
                 <p>Cargando rutas, por favor espere...</p>
@@ -69,55 +135,7 @@
 
 
 
-              <button type="button" @click="cerrar()" class="submit">Enviar</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </q-dialog>
-
-    <!-- Modal continuarVenta -->
-
-    <q-dialog v-model="mostrarContinuarVenta" position="top">
-      <div class="modal fade" style="margin-top: 12%;" id="staticBackdrop" data-bs-backdrop="static"
-        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <form class="form">
-              <div class="cerrar">
-                <p class="title">Seleccione
-                </p>
-                <button type="button" data-bs-dismiss="modal" @click="cerrarContinuarVenta()"
-                  class="row justify-center items-center" id="botoncerrar">❌</button>
-              </div>
-              <span v-if="rutaError" class="error-message">{{ rutaError }}</span>
-              <div v-if="loading" class="text-center">
-                <q-spinner-hourglass color="primary" size="50px" />
-                <p>Cargando rutas, por favor espere...</p>
-              </div>
-
-              <q-select filled v-model="ruta" clearable use-input hide-selected fill-input input-debounce="0"
-                label="Seleccione una ruta"
-                :options="rutas.map(c => ({ label: `${c.ciudad_origen.nombre} / ${c.ciudad_destino.nombre}`, value: c }))"
-                @filter="filtrarRutas" style="width: 400px">
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No se encontraron resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-
-              <!-- Inputs adicionales para mostrar la Hora_Salida y el Bus -->
-              <q-input filled v-model="horaSalida" label="Hora de Salida" readonly />
-              <q-input filled v-model="bus" label="Bus" readonly />
-              <q-input filled v-model="fechaActual" label="Fecha Venta" readonly />
-
-
-
-
-              <button type="button" @click="cerrarContinuarVenta()" class="submit">Continuar Venta</button>
+              <button type="button" @click="obtenerAsientosOcupados()" class="submit">Continuar Venta</button>
             </form>
           </div>
         </div>
@@ -128,9 +146,9 @@
     <div class="allasientos" v-if="mostrarasientos">
       <div id="infopasaje">
         <span id="sp">Ruta: </span>
-        <p>{{ ruta.label }}</p>
+        <p>{{ route }}</p>
         <span id="sp">Bus: </span>
-        <p>{{ bus.label }}</p>
+        <p>{{ buz }}</p>
         <span id="sp">Fecha salida: </span>
         <p> {{ fecha_salida }} {{ horaSalidaFormateada }}</p>
       </div>
@@ -140,17 +158,16 @@
 
         <button id="butonasiento" v-for="asiento in Array(asientosBus).fill().map((_, index) => index + 1)" :key="asiento"
           @click="seleccionarAsiento(asiento)" :class="{
-            'asiento-seleccionado': asientoSeleccionado === asiento,
-            'asiento': true,
             'asiento-vendido': asientosVendidos.includes(asiento),
+            'asiento': true,
+            'asiento-seleccionado': asientoSeleccionado === asiento,
           }">
           <div class="content-button">
             <span class="numero-asiento">{{ asiento }}</span>
-
             <img style="height: 80px;" src="../assets/asined.png" alt="Asiento {{ asiento }}" />
-
           </div>
         </button>
+
       </div>
     </div>
 
@@ -168,26 +185,27 @@
                   <button type="button" data-bs-dismiss="modal" @click="cerrarFormulario" class="eliminarx"
                     id="botoncerrar">❌</button>
                 </div>
-                <button type="button" id="butonasiento" style="width: 300px; margin-top:-70px"  @click="abrirModalAgregarCliente">Agregar Cliente</button>
+                <button type="button" id="butonasiento" style="width: 300px; margin-top:-70px"
+                  @click="abrirModalAgregarCliente">Agregar Cliente</button>
                 <div v-if="mensajeExito" class="success-message">{{ mensajeExito }}</div>
                 <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useTiquete.errorvalidacion }}</p>
-             
+
                 <span v-if="clienteError || valorError" class="error-message">{{ clienteError || valorError }}</span>
                 <div v-if="loadingVender" class="text-center">
                   <q-spinner-hourglass color="primary" size="50px" />
                   <p>Por favor, espere...</p>
                 </div>
                 <!-- <q-select filled v-model="cliente" clearable use-input hide-selected fill-input input-debounce="0"
-                  label="Digite cédula cliente" :options="clientes.map(c => ({ label: c.cedula, value: c }))"
-                  @filter="filtrarClientes" style="width: 400px">
-                  <template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="text-grey">
-                        No se encontraron resultados
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                </q-select> -->
+                    label="Digite cédula cliente" :options="clientes.map(c => ({ label: c.cedula, value: c }))"
+                    @filter="filtrarClientes" style="width: 400px">
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">
+                          No se encontraron resultados
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                  </q-select> -->
 
                 <q-select filled v-model="cliente" clearable use-input hide-selected fill-input input-debounce="0"
                   label="Seleccione o digite la cédula del cliente" :options="getFilteredClientes(clientes)"
@@ -234,7 +252,8 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrarAgregarCliente()"
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-              <span v-if="nombreError || cedulaError || telefonoError || emailError" class="error-message">{{ nombreError || cedulaError || telefonoError || emailError }}</span>
+              <span v-if="nombreError || cedulaError || telefonoError || emailError" class="error-message">{{ nombreError
+                || cedulaError || telefonoError || emailError }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
                 mensaje
@@ -275,7 +294,7 @@
 
   </div>
 </template>
-  
+    
 <script setup>
 import { useTiqueteStore } from "../stores/tiquete.js";
 import { onMounted, ref, watch, getCurrentInstance } from "vue";
@@ -286,12 +305,15 @@ import { useVendedorStore } from "../stores/vendedor.js";
 import { useBusStore } from "../stores/bus.js";
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
-
 const mostrarModalAgregar = ref(false)
 const rutas = ref([])
 const clientes = ref([])
 const buses = ref([])
+const asientos = ref([])
+const route = ref('');
+const buz = ref('');
 const ruta = ref('')
+const numeroDeAsiento = ref();
 const useRuta = useRutaStore()
 const useCliente = useClienteStore()
 const useTiquete = useTiqueteStore()
@@ -338,7 +360,7 @@ const loadingVender = ref(false);
 const mensajeExito = ref('');
 const mostrarruta = ref(false);
 
-console.log("Hola soy ruta seleccionada:", ruta)
+
 console.log("Hola soy vendedor id", vendedorId)
 
 const clearErrors = () => {
@@ -351,12 +373,12 @@ const clearErrors = () => {
 
 const clearErrorsCliente = () => {
 
-setTimeout(() => {
-  nombreError.value = null;
-  cedulaError.value = null;
-  telefonoError.value = null;
-  emailError.value = null;
-}, 5500);
+  setTimeout(() => {
+    nombreError.value = null;
+    cedulaError.value = null;
+    telefonoError.value = null;
+    emailError.value = null;
+  }, 5500);
 };
 
 const soloNumeros = (value) => {
@@ -376,7 +398,11 @@ const getCurrentDate = () => {
 
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
+//Seleccionar asiento
+
 const seleccionarAsiento = (asiento) => {
+
+
   if (!Array.isArray(asientosVendidos.value)) {
     asientosVendidos.value = [];
   }
@@ -384,33 +410,87 @@ const seleccionarAsiento = (asiento) => {
   if (asientosVendidos.value.includes(asiento)) {
     return;
   }
+
+
   asientoSeleccionado.value = asiento;
   mostrarruta.value = true;
 };
 
+
 const cerrarFormulario = async () => {
-  mostrarruta.value = false
+  mostrarruta.value = false;
 }
+
+//Asientos ocupados continuar venta
+
+async function obtenerAsientosOcupados() {
+  if (!ruta.value) {
+    rutaError.value = 'Por favor seleccione una ruta';
+    setTimeout(() => {
+      rutaError.value = '';
+    }, 5500);
+  } else if (!bus.value) {
+    busError.value = 'Por favor seleccione un bus';
+    setTimeout(() => {
+      busError.value = '';
+    }, 5500);
+  } else if (!fecha_salida.value) {
+    fechaSalidaError.value = 'Por favor seleccione una fecha de salida';
+    setTimeout(() => {
+      fechaSalidaError.value = '';
+    }, 5500);
+  } else {
+    mostrarContinuarVenta.value = false;
+    mostrarasientos.value = true;
+
+    const data = {
+      bus: bus.value.value._id,
+      ruta: ruta.value.value._id,
+      fecha_salida: fecha_salida.value + "T" + horaSalidaFormateada.value + ".000Z",
+    };
+    try {
+      const idBus = data.bus;
+      const idRuta = data.ruta;
+      const fecha_salida = data.fecha_salida;
+      console.log("Hola soy id bus", idBus);
+      console.log("Hola soy id ruta", idRuta);
+      console.log("Hola soy fecha_salida", fecha_salida);
+      await useTiquete.obtenerAsientosOcupados(idBus, idRuta, fecha_salida);
+      asientos.value = useTiquete.asientos;
+
+      for (let i = 0; i < asientos._rawValue.length; i++) {
+        const numeroDeAsiento = asientos._rawValue[i].num_asiento;
+        console.log("Hola soy numero asiento", numeroDeAsiento);
+        asientosVendidos.value.push(numeroDeAsiento);
+      }
+      console.log("Hola soy asientos vendidos backend2", asientosVendidos)
+      console.log("Hola soy asientos ocupados", asientos)
+    } catch (error) {
+      console.log("Error", error);
+    };
+  }
+};
 
 watch(ruta, (nuevaRuta) => {
 
   if (nuevaRuta && nuevaRuta.value && nuevaRuta.value.hora_salida) {
     horaSalida.value = nuevaRuta.value.hora_salida;
+    route.value = nuevaRuta.value.ciudad_origen.nombre + " / " + nuevaRuta.value.ciudad_destino.nombre
     console.log("Hola soy hora seleccionada", horaSalida)
   } else {
-    horaSalida.value = '';
+    return;
   }
-
+  console.log("Hola soy ruta seleccionada:", ruta)
 });
 
 watch(bus, (nuevoBus) => {
-  mostrarasientos.value = true
-
-
   if (nuevoBus && nuevoBus.value && nuevoBus.value.asiento) {
     asientosBus.value = nuevoBus.value.asiento;
+    console.log("Hola soy nuevo bus", bus)
+    console.log("Hola soy bus", nuevoBus)
+    buz.value = nuevoBus.value.numero + " / " + nuevoBus.value.placa;
   } else {
-    asientosBus.value = '';
+    return;
   }
 
 });
@@ -519,6 +599,8 @@ const vender = async () => {
   loadingVender.value = false;
 };
 
+
+
 const abrirModalAgregarCliente = () => {
   mostrarModalAgregarCliente.value = true;
 };
@@ -545,13 +627,14 @@ const cerrar = () => {
     setTimeout(() => {
       busError.value = '';
     }, 5500);
-  } else if (!fecha_salida.value){
+  } else if (!fecha_salida.value) {
     fechaSalidaError.value = 'Por favor seleccione una fecha de salida';
     setTimeout(() => {
       fechaSalidaError.value = '';
     }, 5500);
   } else {
     mostrarModalAgregar.value = false;
+    mostrarasientos.value = true;
   }
 };
 
@@ -602,16 +685,7 @@ async function obtenerClientes() {
   }
 }
 
-async function continuarVenta() {
-  try {
-    await useTiquete.continuarVentaTiquete();
-    ventas.value = useTiquete.rows;
-    asientosVendidos.value = useTiquete.rows.map(tiquete => tiquete.num_asiento);
 
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 console.log('Asientos Vendidos:', asientosVendidos);
 
@@ -779,15 +853,10 @@ const formatHoraSalida = (dateString) => {
   return format(date, 'HH:mm:ss');
 };
 
-
-
-
-
-onMounted(async () => {
+onMounted(() => {
   obtenerRutas();
   obtenerClientes();
   obtenerBuses();
-  await continuarVenta();
 });
 
 // Funcion Imprimir ticket pdf
@@ -980,7 +1049,7 @@ p {
   position: relative;
 }
 
-#form{
+#form {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1160,7 +1229,6 @@ p {
   display: flex;
   justify-content: space-between;
   margin-right: 20px;
-
 }
 
 
@@ -1179,29 +1247,21 @@ p {
 
 .asiento-seleccionado {
   background-color: #4caf50;
-  /* Cambia el color de fondo al asiento seleccionado */
   border: 2px solid #388e3c;
-  /* Cambia el borde al asiento seleccionado */
   color: #fff;
-  /* Cambia el color del texto al asiento seleccionado si es necesario */
-
 }
 
 .formulario {
   display: grid;
   grid-template-columns: 1fr;
-  /* Una columna */
   gap: 20px;
-  /* Espacio entre elementos */
   padding: 20px;
-  /* Padding para separar del borde */
+
 }
 
 .asiento-vendido {
   background-color: red;
-  /* Color de fondo para los asientos vendidos */
   cursor: not-allowed;
-  /* Cursor not-allowed para los asientos vendidos */
 }
 
 .allasientos {
@@ -1225,7 +1285,6 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
   text-transform: uppercase;
   border: 1px solid rgba(22, 76, 167, 0.6);
   border-radius: 10px;
@@ -1337,15 +1396,13 @@ p {
   height: 100px;
 }
 
-#infopasaje{
+#infopasaje {
   display: flex;
   justify-content: space-between;
   font-size: 15px;
 }
 
-#sp{
+#sp {
   font-weight: bolder;
 }
-
-
 </style>

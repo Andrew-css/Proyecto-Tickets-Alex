@@ -13,6 +13,7 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
     let errorvalidacion = ref("")
     let estatus = ref()
     let tickets = ref([])
+    let asientos = ref([])
 
   
   
@@ -84,6 +85,22 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
         console.error("Error al obtener tiquetes desde el backend:", error);
       }
     };
+
+    const obtenerAsientosOcupados = async (idBus, idRuta, fecha_salida) => {
+      try {
+        const x = insertarToken();
+        if (!x) return null;
+  
+        let res = await x.get(`https://transporte-el2a.onrender.com/api/tiquete/asientosOcupados/${idBus}/${idRuta}/${fecha_salida}`)
+        console.log("Hola sor res", res)
+        asientos.value = res.data;
+        console.log("Hola soy asientos vendidos backend", asientos);
+        return res
+      }  catch (error) {
+        console.error("Error al obtener asientos ocupados desde el backend:", error);
+      }
+    }
+
   
     const activado = ref(false);
   
@@ -164,6 +181,8 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
       obtener,
       continuarVentaTiquete,
       tickets,
+      obtenerAsientosOcupados,
+      asientos,
     };
 
 
