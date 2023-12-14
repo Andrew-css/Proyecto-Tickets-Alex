@@ -90,7 +90,7 @@
               <div class="cerrar">
                 <p class="title">Seleccione
                 </p>
-                <button type="button" data-bs-dismiss="modal" @click="cerrarContinuarVenta()"
+                <button type="button" data-bs-dismiss="modal" @click="cerrarContinuarVenta"
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
               <span v-if="rutaError || busError || fechaSalidaError" class="error-message">{{ rutaError || busError ||
@@ -151,6 +151,9 @@
         <p>{{ buz }}</p>
         <span id="sp">Fecha salida: </span>
         <p> {{ fecha_salida }} {{ horaSalidaFormateada }}</p>
+      </div>
+      <div v-if="mostrarvendidos">
+        <p>Número de asiento vendido: {{ asientosVendidos.join(', ') }}</p>
       </div>
 
 
@@ -230,8 +233,14 @@
 
 
                 <button type="button" @click="vender" :disabled="loadingVender" class="submit">
-                  {{ loadingVender ? 'Cargando...' : 'Vender y imprimir' }}
+                  {{ loadingVender ? 'Cargando...' : 'Vender' }}
                 </button>
+                <div v-if="mostrarImprimir">
+                  <button type="button" @click="generarPDF" :disabled="loadingVender" class="submit">
+                  {{ loadingVender ? 'Cargando...' : 'Imprimir' }}
+                </button>
+                </div>
+                
 
               </div>
             </form>
@@ -299,7 +308,7 @@
 import { useTiqueteStore } from "../stores/tiquete.js";
 import { onMounted, ref, watch, getCurrentInstance } from "vue";
 import { useRutaStore } from "../stores/ruta.js";
-import { format } from 'date-fns';
+import { format, utcToZonedTime } from 'date-fns-tz';
 import { useClienteStore } from "../stores/cliente.js";
 import { useVendedorStore } from "../stores/vendedor.js";
 import { useBusStore } from "../stores/bus.js";
@@ -327,7 +336,9 @@ const loading = ref(false);
 const mostrarasientos = ref(false);
 const mostrarFormulario = ref(false);
 const mostrarModalAgregarCliente = ref(false);
-const mostrarContinuarVenta = ref(false)
+const mostrarContinuarVenta = ref(false);
+const mostrarImprimir = ref(false);
+const mostrarvendidos = ref(false);
 const fechaActual = ref(format(new Date(), 'yyyy-MM-dd HH:mm:ss'));
 const fecha_salida = ref('');
 const horaSalidaFormateada = ref('');
@@ -359,6 +370,7 @@ const ventas = ref('');
 const loadingVender = ref(false);
 const mensajeExito = ref('');
 const mostrarruta = ref(false);
+const tiquetepdf = ref([]);
 
 
 console.log("Hola soy vendedor id", vendedorId)
@@ -419,6 +431,7 @@ const seleccionarAsiento = (asiento) => {
 
 const cerrarFormulario = async () => {
   mostrarruta.value = false;
+  mostrarImprimir.value = false;
 }
 
 //Asientos ocupados continuar venta
@@ -442,6 +455,7 @@ async function obtenerAsientosOcupados() {
   } else {
     mostrarContinuarVenta.value = false;
     mostrarasientos.value = true;
+    mostrarvendidos.value = true; 
 
     const data = {
       bus: bus.value.value._id,
@@ -557,7 +571,8 @@ const vender = async () => {
       num_asiento: asientoSeleccionado.value,
       valor: valor.value,
     };
-
+    
+   
 
     try {
       const response = await useTiquete.agregarNuevoTiquete(data);
@@ -569,6 +584,10 @@ const vender = async () => {
         asientosVendidos.value.push(asientoSeleccionado.value);
         mensajeColor.value = 'success';
         mensajeExito.value = 'Tiquete vendido exitosamente';
+        mostrarImprimir.value = true;
+        tiquetepdf.value.push(useTiquete.infoTiquete);
+        generarPDF();
+        console.log("Hola soy tiquetepdf", tiquetepdf)
         loadingVender.value = false;
         setTimeout(() => {
           cliente.value = '';
@@ -578,7 +597,6 @@ const vender = async () => {
           useTiquete.errorvalidacion = '';
           mensaje.value = '';
           mensajeExito.value = '';
-          mostrarruta.value = false
         }, 4500);
       } else if (useTiquete.estatus === 400) {
         mensajeColor.value = 'error';
@@ -606,7 +624,7 @@ const abrirModalAgregarCliente = () => {
 };
 
 const cerrarAgregarCliente = () => {
-  mostrarModalAgregarCliente.value = false
+  mostrarModalAgregarCliente.value = false;
   nombre.value = "";
   cedula.value = "";
   email.value = "";
@@ -647,7 +665,8 @@ const abrirContinuarVenta = () => {
 };
 
 const cerrarContinuarVenta = () => {
-  mostrarContinuarVenta.value = false
+  mostrarContinuarVenta.value = false;
+
 };
 
 
@@ -861,6 +880,68 @@ onMounted(() => {
 
 // Funcion Imprimir ticket pdf
 
+const generarPDF = async () => {
+  try {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([370, 900]);
+
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontSizeMain = 17;
+    const fontSizeMainn = 14; 
+    const fontSizeDetails = 12;
+    const totas = 15;
+
+    const imageUrl = './src/images/imagen.png';
+    const imageBytes = await fetch(imageUrl).then((res) => res.arrayBuffer());
+    const image = await pdfDoc.embedPng(imageBytes);
+    const fechaSalidaUTC = utcToZonedTime(new Date(useTiquete.infoTiquete.fecha_salida), 'UTC');
+    const imageWidth = 100;
+    const imageHeight = 100; 
+    const imageX = 200; 
+    const imageY = 600;
+    page.drawImage(image, {
+      x: imageX,
+      y: imageY,
+      width: imageWidth,
+      height: imageHeight,
+    });
+
+    page.drawText('CITYEXPRESS', { x: 145, y: 800, font, size:fontSizeMain, color: rgb(0, 0, 0) });
+    page.drawText('INFORMACION DE TIQUETE', { x: 110, y: 780, font, size:fontSizeMainn, color: rgb(0, 0, 0) });
+    page.drawText('WWW.CityExpress.com', { x: 130, y: 760, font, size:fontSizeMainn, color: rgb(0, 0, 0) });
+
+    page.drawText(`F.VENTA: ${format(new Date(useTiquete.infoTiquete.createdAt), 'yyyy-MM-dd HH:mm:ss ')}`, { x: 50, y: 730, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`F.SALIDA: ${format(fechaSalidaUTC, 'yyyy-MM-dd HH:mm:ss', { timeZone: 'UTC' })}`, { x: 50, y: 710, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`C.C: ${useTiquete.infoTiquete.cliente.cedula}`, { x: 50, y: 690, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`CLIENTE: ${useTiquete.infoTiquete.cliente.nombre}`, { x: 50, y: 670, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`TEL: ${useTiquete.infoTiquete.cliente.telefono}`, { x: 50, y: 650, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`VEHICULO: ${useTiquete.infoTiquete.bus.placa}`, { x: 50, y: 630, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`NUM.VEHICULO: ${useTiquete.infoTiquete.bus.numero}`, { x: 50, y: 610, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`ORIGEN: ${useTiquete.infoTiquete.ruta.ciudad_origen.nombre}`, { x: 50, y: 590, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`DESTINO: ${useTiquete.infoTiquete.ruta.ciudad_destino.nombre}`, { x: 50, y: 570, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+
+    page.drawText(`- - - - - - - - - - - - - - - - - - - - - - - - - - - -`, { x: 50, y: 550, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`SILLA`, { x: 90, y: 530, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`${useTiquete.infoTiquete.num_asiento}`, { x: 103, y: 510, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`VALOR`, { x: 160, y: 530, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`${useTiquete.infoTiquete.valor}`, { x: 165, y: 510, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`- - - - - - - - - - - - - - - - - - - - - - - - - - - -`, { x: 50, y: 495, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+
+    page.drawText(`TOTAL: $${useTiquete.infoTiquete.valor}`, { x: 95, y: 470, font, size:totas, color: rgb(0, 0, 0) });
+
+    const pdfBytes = await pdfDoc.save();
+
+    const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    await new Promise((resolve) => resolve());
+
+    window.open(pdfUrl, '_blank');
+  } catch (error) {
+    console.error('Error al generar el PDF:', error);
+  }
+};
 </script>
   
 <style scoped>

@@ -14,6 +14,7 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
     let estatus = ref()
     let tickets = ref([])
     let asientos = ref([])
+    let infoTiquete = ref([]);
 
   
   
@@ -27,6 +28,7 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
         );
         console.log("Respuesta del servidor al agregar nuevo tiquete:", response);
         rows.value.unshift(response.data.tiquetePopulate);
+        infoTiquete.value = response.data.tiquetePopulate;
         estatus.value = response.status;
       } catch (error) {
         console.log("e", error);
@@ -183,6 +185,7 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
       tickets,
       obtenerAsientosOcupados,
       asientos,
+      infoTiquete,
     };
 
 
