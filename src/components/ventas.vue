@@ -920,20 +920,8 @@ const generarPDF = async () => {
     const fontSizeDetails = 12;
     const totas = 15;
 
-    const imageUrl = './src/assets/imagen.png';
-    const imageBytes = await fetch(imageUrl).then((res) => res.arrayBuffer());
-    const image = await pdfDoc.embedPng(imageBytes);
     const fechaSalidaUTC = utcToZonedTime(new Date(useTiquete.infoTiquete.fecha_salida), 'UTC');
-    const imageWidth = 100;
-    const imageHeight = 100;
-    const imageX = 200;
-    const imageY = 600;
-    page.drawImage(image, {
-      x: imageX,
-      y: imageY,
-      width: imageWidth,
-      height: imageHeight,
-    });
+
 
     page.drawText('CITYEXPRESS', { x: 145, y: 800, font, size: fontSizeMain, color: rgb(0, 0, 0) });
     page.drawText('INFORMACION DE TIQUETE', { x: 110, y: 780, font, size: fontSizeMainn, color: rgb(0, 0, 0) });
