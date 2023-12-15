@@ -145,12 +145,19 @@
 
     <div class="allasientos" v-if="mostrarasientos">
       <div id="infopasaje">
-        <span id="sp">Ruta: </span>
-        <p>{{ route }}</p>
-        <span id="sp">Bus: </span>
-        <p>{{ buz }}</p>
-        <span id="sp">Fecha salida: </span>
-        <p> {{ fecha_salida }} {{ horaSalidaFormateada }}</p>
+        <table>
+          <tr>
+            <th>Ruta</th>
+            <th>Bus</th>
+            <th>Fecha salida</th>
+          </tr>
+          <tr>
+            <td>{{ route }}</td>
+            <td>{{ buz }}</td>
+            <td>{{ fecha_salida }} {{ horaSalidaFormateada }}</td>
+          </tr>
+        </table>
+
       </div>
       <div v-if="mostrarvendidos">
         <p>Número de asiento vendido: {{ asientosVendidos.join(', ') }}</p>
@@ -197,7 +204,7 @@
                 <div v-if="mensajeExito" class="success-message">{{ mensajeExito }}</div>
                 <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useTiquete.errorvalidacion }}</p>
 
-                <span v-if="clienteError || valorError" class="error-message">{{ clienteError || valorError }}</span>
+                <span v-if="clienteError || valorError || asientoError" class="error-message">{{ clienteError || valorError || asientoError}}</span>
                 <div v-if="loadingVender" class="text-center">
                   <q-spinner-hourglass color="primary" size="50px" />
                   <p>Por favor, espere...</p>
@@ -374,6 +381,7 @@ const vendedorId = ref(localStorage.getItem('vendedorId'))
 const ventas = ref('');
 const loadingVender = ref(false);
 const mensajeExito = ref('');
+const asientoError = ref(null)
 const mostrarruta = ref(false);
 const tiquetepdf = ref([]);
 
@@ -548,6 +556,14 @@ const vender = async () => {
     clienteError.value = 'Por favor digite la cedula del cliente'
     setTimeout(() => {
       clienteError.value = ''
+      loadingVender.value = false;
+    }, 4500);
+  }
+
+  if(!asientoSeleccionado.value){
+    asientoError.value = 'Asiento ya vendido, por favor seleccione otro asiento'
+    setTimeout(() => {
+      asientoError.value = ''
       loadingVender.value = false;
     }, 4500);
   }
@@ -1494,9 +1510,41 @@ p {
   display: flex;
   justify-content: space-between;
   font-size: 15px;
+  margin: 20px 0px;
 }
 
 #sp {
   font-weight: bolder;
 }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  padding: 8px;
+  text-align: left;
+  font-size: 25px;
+  border: 1px solid black;
+}
+
+td {
+  padding: 8px;
+  text-align: left;
+  font-size: 20px;
+  border: 1px solid black;
+}
+
+.modal-dialog{
+  max-height: 600px; 
+  overflow-y: auto;
+}
+
+@media only screen and (max-height: 600px) {
+  .modal-dialog {
+    max-height: 80vh; /* Utilizar el 80% del alto de la pantalla en pantallas más pequeñas */
+  }
+}
+
 </style>

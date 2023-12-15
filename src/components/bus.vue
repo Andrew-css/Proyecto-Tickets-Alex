@@ -899,4 +899,15 @@ p {
   margin-left: 10px;
   margin-top: 10px;
 }
+
+.modal-dialog{
+  max-height: 600px; 
+  overflow-y: auto;
+}
+
+@media only screen and (max-height: 600px) {
+  .modal-dialog {
+    max-height: 80vh; /* Utilizar el 80% del alto de la pantalla en pantallas más pequeñas */
+  }
+}
 </style>
