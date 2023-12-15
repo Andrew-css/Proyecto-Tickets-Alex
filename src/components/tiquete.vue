@@ -154,7 +154,7 @@ const generarPDF = async () => {
     const fontSizeDetails = 12;
     const totas = 15;
 
-    const imageUrl = './src/images/imagen.png';
+    const imageUrl = './src/assets/imagen.png';
     const imageBytes = await fetch(imageUrl).then((res) => res.arrayBuffer());
     const image = await pdfDoc.embedPng(imageBytes);
 

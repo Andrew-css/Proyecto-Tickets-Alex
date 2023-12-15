@@ -148,7 +148,7 @@
                   </select>
                 </label> -->
 
-                <q-select filled v-model="ciudad_origen" clearable use-input hide-selected fill-input input-debounce="0"
+              <q-select filled v-model="ciudad_origen" clearable use-input hide-selected fill-input input-debounce="0"
                 label="Seleccione ciudad origen" :options="getFilteredCiudades(ciudades)" style="width: 400px"
                 @filter="filtrarCiudades">
                 <template v-slot:no-option>
@@ -438,11 +438,11 @@ const agregarNuevaRuta = async () => {
       if (useRuta.estatus === 200) {
         mensajeColor.value = 'success';
         mensaje.value = 'Ruta añadida correctamente (presione ❌ para cerrar)';
-        loading.value = false
+        loading.value = false;
+        ciudad_origen.value = '';
+        ciudad_destino.value = '';
+        hora_salida.value = '';
         setTimeout(() => {
-          ciudad_origen.value = '';
-          ciudad_destino.value = '';
-          hora_salida.value = '';
           useRuta.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);

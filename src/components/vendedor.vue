@@ -18,125 +18,126 @@
       </button>
     </div>
     <div v-if="loading" class="text-center">
-    <q-spinner-hourglass color="primary" size="70px" />
-    <h6>Por favor, espere...</h6>
+      <q-spinner-hourglass color="primary" size="70px" />
+      <h6>Por favor, espere...</h6>
     </div>
     <q-dialog v-model="mostrarModalAgregar" position="top">
-        <div class="modal fade" style="margin-top: 5%;" id="staticBackdrop" data-bs-backdrop="static"
-          data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <form class="form">
-                <div class="cerrar">
-                  <p class="title">Añadir vendedor</p>
-                  <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
-                    id="botoncerrar">❌</button>
-                </div>
-                <span v-if="nombreError || apellidoError || cedulaError || telefonoError || usuarioError || contrasenaError"
-                  class="error-message">{{ nombreError || apellidoError || cedulaError || telefonoError || usuarioError ||
-                    contrasenaError }}</span>
-                <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useVendedor.errorvalidacion }}</p>
-                <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-                  mensaje
-                }}</span>
-                <div v-if="loading" class="text-center">
-                  <q-spinner-hourglass color="primary" size="50px" />
-                  <p>Por favor, espere...</p>
-                </div>
-                <label for="nombre">
-                  <input placeholder="Nombre" type="text" class="input" v-model="nombre">
-                  <span>Nombre</span>
-                </label>
+      <div class="modal fade" style="margin-top: 5%;" id="staticBackdrop" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addClientModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div class="cerrar">
+                <p class="title">Añadir vendedor</p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
+                  id="botoncerrar">❌</button>
+              </div>
+              <span v-if="nombreError || apellidoError || cedulaError || telefonoError || usuarioError || contrasenaError"
+                class="error-message">{{ nombreError || apellidoError || cedulaError || telefonoError || usuarioError ||
+                  contrasenaError }}</span>
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useVendedor.errorvalidacion }}</p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                mensaje
+              }}</span>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
+              <label for="nombre">
+                <input placeholder="Nombre" type="text" class="input" v-model="nombre">
+                <span>Nombre</span>
+              </label>
 
-                <label for="apellido">
-                  <input placeholder="Apellido" type="text" class="input" v-model="apellido">
-                  <span>Apellido</span>
-                </label>
+              <label for="apellido">
+                <input placeholder="Apellido" type="text" class="input" v-model="apellido">
+                <span>Apellido</span>
+              </label>
 
-                <label for="cedula">
-                  <input placeholder="Cedula" type="text" class="input" v-model="cedula">
-                  <span>Cédula</span>
-                </label>
+              <label for="cedula">
+                <input placeholder="Cedula" type="text" class="input" v-model="cedula">
+                <span>Cédula</span>
+              </label>
 
-                <label for="telefono">
-                  <input placeholder="Telefono" type="text" class="input" v-model="telefono">
-                  <span>Teléfono</span>
-                </label>
+              <label for="telefono">
+                <input placeholder="Telefono" type="text" class="input" v-model="telefono">
+                <span>Teléfono</span>
+              </label>
 
-                <label for="usuario">
-                  <input placeholder="Usuario" type="text" class="input" v-model="usuario">
-                  <span>Usuario</span>
-                </label>
+              <label for="usuario">
+                <input placeholder="Usuario" type="text" class="input" v-model="usuario">
+                <span>Usuario</span>
+              </label>
 
-                <label for="contrasena">
-                  <input placeholder="Contrasena" type="text" class="input" v-model="contrasena">
-                  <span>Contraseña</span>
-                </label>
+              <label for="contrasena">
+                <input placeholder="Contrasena" type="text" class="input" v-model="contrasena">
+                <span>Contraseña</span>
+              </label>
 
-                <!-- Resto del contenido del formulario... -->
+              <!-- Resto del contenido del formulario... -->
 
-                <button type="button" @click="agregarNuevoVendedor" class="submit">Enviar</button>
-              </form>
-            </div>
+              <button type="button" @click="agregarNuevoVendedor" class="submit">Enviar</button>
+            </form>
           </div>
         </div>
+      </div>
     </q-dialog>
 
     <q-dialog v-model="mostrarModalEditar" position="top">
-        <div class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static"
-              data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <form class="form">
-                    <div class="cerrar">
-                      <p class="title">Editar Vendedor</p>
-                      <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()" class="row justify-center items-center"
-                        id="botoncerrar">❌</button>
-                    </div>
-                    <span v-if="nombreError || apellidoError || cedulaError || telefonoError || usuarioError || contrasenaError"
-                      class="error-message">{{ nombreError || apellidoError || cedulaError || telefonoError || usuarioError || contrasenaError
-                      }}</span>
-                    <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useVendedor.errorvalidacion }}</p>
-                    <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
-                      mensaje
-                    }}</span>
-                    <div v-if="loading" class="text-center">
-                      <q-spinner-hourglass color="primary" size="50px" />
-                      <p>Por favor, espere...</p>
-                    </div>
-                    <label for="nombre">
-                      <input placeholder="Nombre" type="text" class="input" v-model="nombre">
-                      <span>Nombre</span>
-                    </label>
-
-                    <label for="apellido">
-                      <input placeholder="Apellido" type="text" class="input" v-model="apellido">
-                      <span>Apellido</span>
-                    </label>
-
-                    <label for="cedula">
-                      <input placeholder="Cedula" type="text" class="input" v-model="cedula">
-                      <span>Cedula</span>
-                    </label>
-
-                    <label for="telefono">
-                      <input placeholder="Telefono" type="text" class="input" v-model="telefono">
-                      <span>Teléfono</span>
-                    </label>
-
-                    
-                    <!-- Resto del contenido del formulario... -->
-
-                    <button type="button" @click="editarVendedor" class="submit">Enviar</button>
-                  </form>
-                </div>
+      <div class="modal fade" style="margin-top: 12%;" id="editClientModal" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form">
+              <div class="cerrar">
+                <p class="title">Editar Vendedor</p>
+                <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
+                  class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-            </div>
+              <span v-if="nombreError || apellidoError || cedulaError || telefonoError || usuarioError || contrasenaError"
+                class="error-message">{{ nombreError || apellidoError || cedulaError || telefonoError || usuarioError ||
+                  contrasenaError
+                }}</span>
+              <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useVendedor.errorvalidacion }}</p>
+              <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
+                mensaje
+              }}</span>
+              <div v-if="loading" class="text-center">
+                <q-spinner-hourglass color="primary" size="50px" />
+                <p>Por favor, espere...</p>
+              </div>
+              <label for="nombre">
+                <input placeholder="Nombre" type="text" class="input" v-model="nombre">
+                <span>Nombre</span>
+              </label>
+
+              <label for="apellido">
+                <input placeholder="Apellido" type="text" class="input" v-model="apellido">
+                <span>Apellido</span>
+              </label>
+
+              <label for="cedula">
+                <input placeholder="Cedula" type="text" class="input" v-model="cedula">
+                <span>Cedula</span>
+              </label>
+
+              <label for="telefono">
+                <input placeholder="Telefono" type="text" class="input" v-model="telefono">
+                <span>Teléfono</span>
+              </label>
+
+
+              <!-- Resto del contenido del formulario... -->
+
+              <button type="button" @click="editarVendedor" class="submit">Enviar</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </q-dialog>
 
 
 
-   
+
     <div class="q-pa-xl">
       <q-table class="text-center" :rows="rows" :columns="columns" row-key="id">
         <template v-slot:top>
@@ -207,8 +208,8 @@ let cedulaError = ref(null);
 let telefonoError = ref(null);
 let usuarioError = ref(null);
 let contrasenaError = ref(null);
-const mostrarModalAgregar = ref (false);
-const mostrarModalEditar = ref  (false);
+const mostrarModalAgregar = ref(false);
+const mostrarModalEditar = ref(false);
 
 
 
@@ -232,7 +233,7 @@ const agregar = () => {
   contrasena.value = "";
   mensaje.value = "";
   useVendedor.errorvalidacion = "";
-  mostrarModalAgregar.value= true
+  mostrarModalAgregar.value = true
 };
 
 const editar = (row) => {
@@ -245,7 +246,7 @@ const editar = (row) => {
   usuario.value = row.usuario;
   contrasena.value = row.contrasena;
   estado.value = row.estado;
-  mostrarModalEditar.value= true
+  mostrarModalEditar.value = true
 };
 
 const cerrar = () => {
@@ -257,7 +258,7 @@ const cerrar = () => {
   contrasena.value = "";
   mensaje.value = "";
   useVendedor.errorvalidacion = "";
-  mostrarModalAgregar.value= false
+  mostrarModalAgregar.value = false
 };
 
 const cerrarEditar = () => {
@@ -269,7 +270,7 @@ const cerrarEditar = () => {
   contrasena.value = "";
   mensaje.value = "";
   useVendedor.errorvalidacion = "";
-  mostrarModalEditar.value= false
+  mostrarModalEditar.value = false
 };
 
 const columns = ref([
@@ -393,13 +394,13 @@ const agregarNuevoVendedor = async () => {
         mensajeColor.value = 'success';
         mensaje.value = 'Vendedor añadido correctamente (presione ❌ para cerrar)';
         loading.value = false;
+        nombre.value = '';
+        apellido.value = '';
+        cedula.value = '';
+        telefono.value = '';
+        usuario.value = '';
+        contrasena.value = '';
         setTimeout(() => {
-          nombre.value = '';
-          apellido.value = '';
-          cedula.value = '';
-          telefono.value = '';
-          usuario.value = '';
-          contrasena.value = '';
           useVendedor.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
@@ -839,13 +840,13 @@ p {
   display: flex;
 }
 
-.select{
+.select {
   border: 1px solid rgb(193, 193, 193);
   border-radius: 15px;
 }
 
-#labelmodaladd{
+#labelmodaladd {
   margin-left: 10px;
-    margin-top: 10px;
+  margin-top: 10px;
 }
 </style>

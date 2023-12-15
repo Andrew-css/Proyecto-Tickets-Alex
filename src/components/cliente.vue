@@ -32,7 +32,8 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrar()" class="row justify-center items-center"
                   id="botoncerrar">❌</button>
               </div>
-              <span v-if="nombreError || cedulaError || telefonoError || emailError" class="error-message">{{ nombreError || cedulaError ||
+              <span v-if="nombreError || cedulaError || telefonoError || emailError" class="error-message">{{ nombreError
+                || cedulaError ||
                 telefonoError || emailError }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
@@ -87,8 +88,9 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-              <span v-if="nombreError || cedulaError || telefonoError || emailError" class="error-message">{{ nombreError || cedulaError ||
-               telefonoError || emailError }}</span>
+              <span v-if="nombreError || cedulaError || telefonoError || emailError" class="error-message">{{ nombreError
+                || cedulaError ||
+                telefonoError || emailError }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useCliente.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
                 mensaje
@@ -305,7 +307,7 @@ const agregarNuevoCliente = async () => {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
     nombreError.value = 'Solo espacios no es permitido, por favor digite un nombre real'
-  } 
+  }
 
   if (!cedula.value) {
     cedulaError.value = 'La cédula es requerida';
@@ -313,7 +315,7 @@ const agregarNuevoCliente = async () => {
     cedulaError.value = 'La cédula debe contener solo números (sin espacios si es el caso)';
   } else if (cedula.value.length !== 10) {
     cedulaError.value = 'La cédula debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
-  } 
+  }
 
   if (!telefono.value) {
     telefonoError.value = 'El telefono es requerido ';
@@ -321,7 +323,7 @@ const agregarNuevoCliente = async () => {
     telefonoError.value = 'Solo espacios no es permitido, por favor digite un teléfono real'
   } else if (telefono.value.length !== 10) {
     telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
-  } 
+  }
 
   if (!email.value) {
     emailError.value = 'El email es requerido';
@@ -346,15 +348,15 @@ const agregarNuevoCliente = async () => {
         mensajeColor.value = 'success';
         mensaje.value = 'Cliente añadido correctamente (presione ❌ para cerrar)';
         loading.value = false;
+        nombre.value = '';
+        cedula.value = '';
+        email.value = '';
+        telefono.value = '';
         setTimeout(() => {
-          nombre.value = '';
-          cedula.value = '';
-          email.value = '';
-          telefono.value = '';
           useCliente.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      }  else if (useCliente.estatus === 400)   {
+      } else if (useCliente.estatus === 400) {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
@@ -389,7 +391,7 @@ const editarCliente = async () => {
     nombreError.value = 'El nombre es requerido';
   } else if (!nombre.value.trim()) {
     nombreError.value = 'Solo espacios no es permitido, por favor digite un nombre real'
-  } 
+  }
 
   if (!cedula.value) {
     cedulaError.value = 'La cédula es requerida';
@@ -397,7 +399,7 @@ const editarCliente = async () => {
     cedulaError.value = 'La cédula debe contener solo números (sin espacios si es el caso)';
   } else if (cedula.value.length !== 10) {
     cedulaError.value = 'La cédula debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
-  } 
+  }
 
   if (!telefono.value) {
     telefonoError.value = 'El telefono es requerido ';
@@ -405,7 +407,7 @@ const editarCliente = async () => {
     telefonoError.value = 'Solo espacios no es permitido, por favor digite un teléfono real'
   } else if (telefono.value.length !== 10) {
     telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres (eliminar espacios si es el caso)';
-  } 
+  }
 
   if (!email.value) {
     emailError.value = 'El email es requerido';

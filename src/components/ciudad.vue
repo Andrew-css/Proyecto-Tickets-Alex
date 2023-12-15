@@ -257,8 +257,8 @@ const agregarNuevaCiudad = async () => {
         mensajeColor.value = 'success';
         mensaje.value = 'Ciudad añadida correctamente (presione ❌ para cerrar)';
         loading.value = false;
+        nombre.value = '';
         setTimeout(() => {
-          nombre.value = '';
           useCiudad.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);

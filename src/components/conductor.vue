@@ -92,7 +92,9 @@
                 <button type="button" data-bs-dismiss="modal" @click="cerrarEditar()"
                   class="row justify-center items-center" id="botoncerrar">❌</button>
               </div>
-              <span v-if="nombreError || cedulaError || telefonoError || emailError || numlicenciaError" class="error-message">{{ nombreError || cedulaError || telefonoError || emailError || numlicenciaError }}</span>
+              <span v-if="nombreError || cedulaError || telefonoError || emailError || numlicenciaError"
+                class="error-message">{{ nombreError || cedulaError || telefonoError || emailError || numlicenciaError
+                }}</span>
               <p style="color: red; font-weight: bold; font-size: 20px;"> {{ useConductor.errorvalidacion }}</p>
               <span v-if="mensaje" :class="[mensajeColor === 'success' ? 'success-message' : 'error-message']">{{
                 mensaje
@@ -350,7 +352,7 @@ const agregarNuevoConductor = async () => {
     telefonoError.value = 'Solo espacios no es permitido, por favor digite un teléfono real'
   } else if (telefono.value.length !== 10) {
     telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres (eliminar espacios si es el caso)'
-  } 
+  }
 
   if (!email.value) {
     emailError.value = 'El email es requerido';
@@ -386,16 +388,16 @@ const agregarNuevoConductor = async () => {
         mensajeColor.value = 'success';
         mensaje.value = 'Conductor añadido correctamente (presione ❌ para cerrar)';
         loading.value = false;
+        nombre.value = '';
+        cedula.value = '';
+        telefono.value = "";
+        email.value = "";
+        num_licencia.value = "";
         setTimeout(() => {
-          nombre.value = '';
-          cedula.value = '';
-          telefono.value = "";
-          email.value = "";
-          num_licencia.value = "";
           useConductor.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      }  else if (useConductor.estatus === 400)  {
+      } else if (useConductor.estatus === 400) {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
@@ -446,7 +448,7 @@ const editarConductor = async () => {
     telefonoError.value = 'Solo espacios no es permitido, por favor digite un teléfono real'
   } else if (telefono.value.length !== 10) {
     telefonoError.value = 'El teléfono debe tener exactamente 10 caracteres (eliminar espacios si es el caso)'
-  } 
+  }
 
   if (!email.value) {
     emailError.value = 'El email es requerido';
@@ -483,7 +485,7 @@ const editarConductor = async () => {
           useConductor.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      }  else if (useConductor.estatus === 400)  {
+      } else if (useConductor.estatus === 400) {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {

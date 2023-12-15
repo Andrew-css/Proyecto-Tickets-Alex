@@ -601,11 +601,12 @@ const vender = async () => {
         generarPDF();
         console.log("Hola soy tiquetepdf", tiquetepdf)
         loadingVender.value = false;
+        cliente.value = '';
+        cedula.value = '';
+        email.value = '';
+        valor.value = '';
+        asientoSeleccionado.value = null;
         setTimeout(() => {
-          cliente.value = '';
-          cedula.value = '';
-          email.value = '';
-          valor.value = '';
           useTiquete.errorvalidacion = '';
           mensaje.value = '';
           mensajeExito.value = '';
@@ -775,11 +776,11 @@ const agregarNuevoCliente = async () => {
         mensajeColor.value = 'success';
         mensaje.value = 'Cliente añadido correctamente (presione ❌ para cerrar)';
         loading.value = false;
+        nuevoNombre.value = '';
+        nuevaCedula.value = '';
+        nuevoEmail.value = '';
+        nuevoTelefono.value = '';
         setTimeout(() => {
-          nuevoNombre.value = '';
-          nuevaCedula.value = '';
-          nuevoEmail.value = '';
-          nuevoTelefono.value = '';
           useCliente.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
@@ -903,7 +904,7 @@ const generarPDF = async () => {
     const fontSizeDetails = 12;
     const totas = 15;
 
-    const imageUrl = './src/images/imagen.png';
+    const imageUrl = './src/assets/imagen.png';
     const imageBytes = await fetch(imageUrl).then((res) => res.arrayBuffer());
     const image = await pdfDoc.embedPng(imageBytes);
     const fechaSalidaUTC = utcToZonedTime(new Date(useTiquete.infoTiquete.fecha_salida), 'UTC');

@@ -50,9 +50,8 @@
               </label>
 
               <label for="asiento">
-                <input placeholder="Cantidad Asientos" type="text" class="input" v-model="asiento"
-                >
-                  <span>Cantidad Asientos</span>
+                <input placeholder="Cantidad Asientos" type="text" class="input" v-model="asiento">
+                <span>Cantidad Asientos</span>
               </label>
 
               <label for="placa">
@@ -120,9 +119,8 @@
               </label>
 
               <label for="asiento">
-                <input placeholder="Cantidad Asientos" type="text" class="input" v-model="asiento"
-                >
-                  <span>Cantidad Asientos</span>
+                <input placeholder="Cantidad Asientos" type="text" class="input" v-model="asiento">
+                <span>Cantidad Asientos</span>
               </label>
 
               <label for="placa">
@@ -281,7 +279,7 @@ const editar = (row) => {
   numero.value = row.numero;
   conductor.value = { label: row.conductor.nombre, value: row.conductor._id };
   estado.value = row.estado;
- mostrarModalEditar.value = true;
+  mostrarModalEditar.value = true;
 };
 
 const columns = ref([
@@ -383,7 +381,7 @@ const agregarNuevoBus = async () => {
 
   if (!placa.value) {
     placaError.value = 'La placa es requerida';
-  }else if (!placa.value.trim()) {
+  } else if (!placa.value.trim()) {
     placaError.value = 'Solo espacios no es permitido, por favor digite una placa real'
   } else if (placa.value.length > 7) {
     placaError.value = 'La placa no puede tener más de 7 caracteres (eliminar espacios si es el caso)';
@@ -393,7 +391,7 @@ const agregarNuevoBus = async () => {
     numeroError.value = 'El número de bus es requerido';
   } else if (!numero.value.trim()) {
     numeroError.value = 'Solo espacios no es permitido, por favor digite un numero de bus real'
-  } 
+  }
 
   if (!conductor.value) {
     conductorError.value = 'El conductor es requerido';
@@ -416,16 +414,16 @@ const agregarNuevoBus = async () => {
         mensajeColor.value = 'success';
         mensaje.value = 'Bus añadido correctamente (presione ❌ para cerrar)';
         loading.value = false;
+        empresa.value = '';
+        asiento.value = '';
+        placa.value = '';
+        numero.value = '';
+        conductor.value = '';
         setTimeout(() => {
-          empresa.value = '';
-          asiento.value = '';
-          placa.value = '';
-          numero.value = '';
-          conductor.value = '';
           useBus.errorvalidacion = '';
           mensaje.value = '';
         }, 5500);
-      } else if (useBus.estatus === 400)  {
+      } else if (useBus.estatus === 400) {
         mensajeColor.value = 'error';
         loading.value = false;
         setTimeout(() => {
@@ -437,8 +435,8 @@ const agregarNuevoBus = async () => {
       mensajeColor.value = 'error';
       loading.value = false;
       setTimeout(() => {
-          useBus.errorvalidacion = '';
-        }, 7500);
+        useBus.errorvalidacion = '';
+      }, 7500);
     }
   }
   loading.value = false;
@@ -467,7 +465,7 @@ const editarBus = async () => {
 
   if (!placa.value) {
     placaError.value = 'La placa es requerida';
-  }else if (!placa.value.trim()) {
+  } else if (!placa.value.trim()) {
     placaError.value = 'Solo espacios no es permitido, por favor digite una placa real'
   } else if (placa.value.length > 7) {
     placaError.value = 'La placa no puede tener más de 7 caracteres (eliminar espacios si es el caso)';
@@ -477,7 +475,7 @@ const editarBus = async () => {
     numeroError.value = 'El número de bus es requerido';
   } else if (!numero.value.trim()) {
     numeroError.value = 'Solo espacios no es permitido, por favor digite un numero de bus real'
-  } 
+  }
 
   if (!conductor.value) {
     conductorError.value = 'El conductor es requerido';
@@ -517,8 +515,8 @@ const editarBus = async () => {
       mensajeColor.value = 'error';
       loading.value = false;
       setTimeout(() => {
-          useBus.errorvalidacion = '';
-        }, 7500);
+        useBus.errorvalidacion = '';
+      }, 7500);
     }
   }
 }
