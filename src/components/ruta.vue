@@ -934,6 +934,18 @@ p {
   overflow-y: auto;
 }
 
+.modal-dialog::-webkit-scrollbar {
+  width: 0.5em; 
+}
+
+.modal-dialog::-webkit-scrollbar-track {
+  background-color: transparent; 
+}
+
+.modal-dialog::-webkit-scrollbar-thumb {
+  background-color: transparent; 
+}
+
 @media only screen and (max-height: 600px) {
   .modal-dialog {
     max-height: 80vh; /* Utilizar el 80% del alto de la pantalla en pantallas más pequeñas */

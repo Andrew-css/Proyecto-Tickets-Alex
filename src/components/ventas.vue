@@ -581,7 +581,7 @@ const vender = async () => {
       loadingVender.value = false;
     }, 4500);
   } else if (!soloNumeros(valor.value)) {
-    valorError.value = 'El valor debe contener solo números (eliminar espacios si es el caso)';
+    valorError.value = 'El valor debe contener solo números (eliminar espacios/números negativos no permitidos si es el caso)';
     setTimeout(() => {
       valorError.value = ''
       loadingVender.value = false;
@@ -1535,15 +1535,27 @@ td {
   font-size: 20px;
   border: 1px solid black;
 }
-
-.modal-dialog{
-  max-height: 600px; 
+.modal-dialog {
+  max-height: 600px;
   overflow-y: auto;
+}
+
+
+.modal-dialog::-webkit-scrollbar {
+  width: 0.5em; 
+}
+
+.modal-dialog::-webkit-scrollbar-track {
+  background-color: transparent; 
+}
+
+.modal-dialog::-webkit-scrollbar-thumb {
+  background-color: transparent; 
 }
 
 @media only screen and (max-height: 600px) {
   .modal-dialog {
-    max-height: 80vh; /* Utilizar el 80% del alto de la pantalla en pantallas más pequeñas */
+    max-height: 80vh; 
   }
 }
 
