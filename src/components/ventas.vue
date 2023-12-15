@@ -1553,7 +1553,7 @@ td {
   background-color: transparent; 
 }
 
-@media only screen and (max-height: 600px) {
+@media only screen and (max-height: 700px) {
   .modal-dialog {
     max-height: 80vh; 
   }
