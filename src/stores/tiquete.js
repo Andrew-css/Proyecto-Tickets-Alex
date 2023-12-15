@@ -97,8 +97,10 @@ export const useTiqueteStore = defineStore("tiquete",()=>{
         console.log("Hola sor res", res)
         asientos.value = res.data;
         console.log("Hola soy asientos vendidos backend", asientos);
+        estatus.value = res.status;
         return res
       }  catch (error) {
+        estatus.value = x.status;
         console.error("Error al obtener asientos ocupados desde el backend:", error);
       }
     }

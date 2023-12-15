@@ -154,6 +154,10 @@
       </div>
       <div v-if="mostrarvendidos">
         <p>Número de asiento vendido: {{ asientosVendidos.join(', ') }}</p>
+        <div v-if="loadingAsientos" class="text-center">
+          <q-spinner-hourglass color="primary" size="50px" />
+          <p>Cargando asientos vendidos, por favor espere...</p>
+        </div>
       </div>
 
 
@@ -237,10 +241,10 @@
                 </button>
                 <div v-if="mostrarImprimir">
                   <button type="button" @click="generarPDF" :disabled="loadingVender" class="submit">
-                  {{ loadingVender ? 'Cargando...' : 'Imprimir' }}
-                </button>
+                    {{ loadingVender ? 'Cargando...' : 'Imprimir Tiquete' }}
+                  </button>
                 </div>
-                
+
 
               </div>
             </form>
@@ -312,7 +316,7 @@ import { format, utcToZonedTime } from 'date-fns-tz';
 import { useClienteStore } from "../stores/cliente.js";
 import { useVendedorStore } from "../stores/vendedor.js";
 import { useBusStore } from "../stores/bus.js";
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts, StandardFontValues } from 'pdf-lib';
 
 const mostrarModalAgregar = ref(false)
 const rutas = ref([])
@@ -337,6 +341,7 @@ const mostrarasientos = ref(false);
 const mostrarFormulario = ref(false);
 const mostrarModalAgregarCliente = ref(false);
 const mostrarContinuarVenta = ref(false);
+const loadingAsientos = ref(false);
 const mostrarImprimir = ref(false);
 const mostrarvendidos = ref(false);
 const fechaActual = ref(format(new Date(), 'yyyy-MM-dd HH:mm:ss'));
@@ -423,7 +428,6 @@ const seleccionarAsiento = (asiento) => {
     return;
   }
 
-
   asientoSeleccionado.value = asiento;
   mostrarruta.value = true;
 };
@@ -455,7 +459,7 @@ async function obtenerAsientosOcupados() {
   } else {
     mostrarContinuarVenta.value = false;
     mostrarasientos.value = true;
-    mostrarvendidos.value = true; 
+    mostrarvendidos.value = true;
 
     const data = {
       bus: bus.value.value._id,
@@ -463,22 +467,30 @@ async function obtenerAsientosOcupados() {
       fecha_salida: fecha_salida.value + "T" + horaSalidaFormateada.value + ".000Z",
     };
     try {
+      asientosVendidos.value = [];
+      loadingAsientos.value = true;
       const idBus = data.bus;
       const idRuta = data.ruta;
       const fecha_salida = data.fecha_salida;
       console.log("Hola soy id bus", idBus);
       console.log("Hola soy id ruta", idRuta);
       console.log("Hola soy fecha_salida", fecha_salida);
-      await useTiquete.obtenerAsientosOcupados(idBus, idRuta, fecha_salida);
-      asientos.value = useTiquete.asientos;
 
-      for (let i = 0; i < asientos._rawValue.length; i++) {
-        const numeroDeAsiento = asientos._rawValue[i].num_asiento;
-        console.log("Hola soy numero asiento", numeroDeAsiento);
-        asientosVendidos.value.push(numeroDeAsiento);
+      await useTiquete.obtenerAsientosOcupados(idBus, idRuta, fecha_salida);
+
+      if (useTiquete.estatus === 200) {
+        loadingAsientos.value = false;
+        asientos.value = useTiquete.asientos;
+
+        for (let i = 0; i < asientos._rawValue.length; i++) {
+          const numeroDeAsiento = asientos._rawValue[i].num_asiento;
+          console.log("Hola soy numero asiento", numeroDeAsiento);
+          asientosVendidos.value.push(numeroDeAsiento);
+        }
+        console.log("Hola soy asientos vendidos backend2", asientosVendidos)
+        console.log("Hola soy asientos ocupados", asientos)
       }
-      console.log("Hola soy asientos vendidos backend2", asientosVendidos)
-      console.log("Hola soy asientos ocupados", asientos)
+
     } catch (error) {
       console.log("Error", error);
     };
@@ -571,8 +583,8 @@ const vender = async () => {
       num_asiento: asientoSeleccionado.value,
       valor: valor.value,
     };
-    
-   
+
+
 
     try {
       const response = await useTiquete.agregarNuevoTiquete(data);
@@ -887,7 +899,7 @@ const generarPDF = async () => {
 
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fontSizeMain = 17;
-    const fontSizeMainn = 14; 
+    const fontSizeMainn = 14;
     const fontSizeDetails = 12;
     const totas = 15;
 
@@ -896,8 +908,8 @@ const generarPDF = async () => {
     const image = await pdfDoc.embedPng(imageBytes);
     const fechaSalidaUTC = utcToZonedTime(new Date(useTiquete.infoTiquete.fecha_salida), 'UTC');
     const imageWidth = 100;
-    const imageHeight = 100; 
-    const imageX = 200; 
+    const imageHeight = 100;
+    const imageX = 200;
     const imageY = 600;
     page.drawImage(image, {
       x: imageX,
@@ -906,28 +918,28 @@ const generarPDF = async () => {
       height: imageHeight,
     });
 
-    page.drawText('CITYEXPRESS', { x: 145, y: 800, font, size:fontSizeMain, color: rgb(0, 0, 0) });
-    page.drawText('INFORMACION DE TIQUETE', { x: 110, y: 780, font, size:fontSizeMainn, color: rgb(0, 0, 0) });
-    page.drawText('WWW.CityExpress.com', { x: 130, y: 760, font, size:fontSizeMainn, color: rgb(0, 0, 0) });
+    page.drawText('CITYEXPRESS', { x: 145, y: 800, font, size: fontSizeMain, color: rgb(0, 0, 0) });
+    page.drawText('INFORMACION DE TIQUETE', { x: 110, y: 780, font, size: fontSizeMainn, color: rgb(0, 0, 0) });
+    page.drawText('WWW.CityExpress.com', { x: 130, y: 760, font, size: fontSizeMainn, color: rgb(0, 0, 0) });
 
-    page.drawText(`F.VENTA: ${format(new Date(useTiquete.infoTiquete.createdAt), 'yyyy-MM-dd HH:mm:ss ')}`, { x: 50, y: 730, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`F.SALIDA: ${format(fechaSalidaUTC, 'yyyy-MM-dd HH:mm:ss', { timeZone: 'UTC' })}`, { x: 50, y: 710, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`C.C: ${useTiquete.infoTiquete.cliente.cedula}`, { x: 50, y: 690, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`CLIENTE: ${useTiquete.infoTiquete.cliente.nombre}`, { x: 50, y: 670, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`TEL: ${useTiquete.infoTiquete.cliente.telefono}`, { x: 50, y: 650, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`VEHICULO: ${useTiquete.infoTiquete.bus.placa}`, { x: 50, y: 630, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`NUM.VEHICULO: ${useTiquete.infoTiquete.bus.numero}`, { x: 50, y: 610, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`ORIGEN: ${useTiquete.infoTiquete.ruta.ciudad_origen.nombre}`, { x: 50, y: 590, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`DESTINO: ${useTiquete.infoTiquete.ruta.ciudad_destino.nombre}`, { x: 50, y: 570, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`F.VENTA: ${format(new Date(useTiquete.infoTiquete.createdAt), 'yyyy-MM-dd HH:mm:ss ')}`, { x: 50, y: 730, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`F.SALIDA: ${format(fechaSalidaUTC, 'yyyy-MM-dd HH:mm:ss', { timeZone: 'UTC' })}`, { x: 50, y: 710, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`C.C: ${useTiquete.infoTiquete.cliente.cedula}`, { x: 50, y: 690, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`CLIENTE: ${useTiquete.infoTiquete.cliente.nombre}`, { x: 50, y: 670, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`TEL: ${useTiquete.infoTiquete.cliente.telefono}`, { x: 50, y: 650, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`VEHICULO: ${useTiquete.infoTiquete.bus.placa}`, { x: 50, y: 630, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`NUM.VEHICULO: ${useTiquete.infoTiquete.bus.numero}`, { x: 50, y: 610, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`ORIGEN: ${useTiquete.infoTiquete.ruta.ciudad_origen.nombre}`, { x: 50, y: 590, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`DESTINO: ${useTiquete.infoTiquete.ruta.ciudad_destino.nombre}`, { x: 50, y: 570, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
 
-    page.drawText(`- - - - - - - - - - - - - - - - - - - - - - - - - - - -`, { x: 50, y: 550, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`SILLA`, { x: 90, y: 530, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`${useTiquete.infoTiquete.num_asiento}`, { x: 103, y: 510, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`VALOR`, { x: 160, y: 530, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`${useTiquete.infoTiquete.valor}`, { x: 165, y: 510, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
-    page.drawText(`- - - - - - - - - - - - - - - - - - - - - - - - - - - -`, { x: 50, y: 495, font, size:fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`- - - - - - - - - - - - - - - - - - - - - - - - - - - -`, { x: 50, y: 550, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`SILLA`, { x: 90, y: 530, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`${useTiquete.infoTiquete.num_asiento}`, { x: 103, y: 510, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`VALOR`, { x: 160, y: 530, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`${useTiquete.infoTiquete.valor}`, { x: 165, y: 510, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
+    page.drawText(`- - - - - - - - - - - - - - - - - - - - - - - - - - - -`, { x: 50, y: 495, font, size: fontSizeDetails, color: rgb(0, 0, 0) });
 
-    page.drawText(`TOTAL: $${useTiquete.infoTiquete.valor}`, { x: 95, y: 470, font, size:totas, color: rgb(0, 0, 0) });
+    page.drawText(`TOTAL: $${useTiquete.infoTiquete.valor}`, { x: 95, y: 470, font, size: totas, color: rgb(0, 0, 0) });
 
     const pdfBytes = await pdfDoc.save();
 
